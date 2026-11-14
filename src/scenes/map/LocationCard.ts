@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { RUN_BALANCE } from '../../config/balance';
-import { LOCATION_PHOTOS, photoTextureKey } from '../../content/locationPhotos';
 import type { LocationConfig } from '../../core/types';
 import { t } from '../../i18n';
 import { createButton } from '../../ui/Button';
+import { drawFramedPhoto } from '../../ui/framedPhoto';
 import { FONT_SIZE, LOCATION_CARD, STAT_ICONS, type Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
@@ -31,7 +31,7 @@ export function showLocationCard(
       color: PALETTE.sun,
     }),
   );
-  card.add(drawPhoto(scene, location.id));
+  card.add(drawFramedPhoto(scene, location.id, PHOTO));
   card.add(addGoals(scene, location));
   card.add(
     addText(scene, CENTER_X, LOCATION_CARD.y + 168, locationText(location.id, 'why'), {
@@ -55,31 +55,6 @@ function createBackground(
   const panel = scene.add.graphics();
   drawTechPanel(panel, LOCATION_CARD, PALETTE.marsLight);
   return [outside, panel, inside];
-}
-
-function drawPhoto(scene: Phaser.Scene, locationId: string): Phaser.GameObjects.GameObject[] {
-  const frame = scene.add.graphics();
-  drawTechPanel(frame, PHOTO, PALETTE.metalLight, PALETTE.marsDark);
-  const center = { x: PHOTO.x + PHOTO.width / 2, y: PHOTO.y + PHOTO.height / 2 };
-  const photo = LOCATION_PHOTOS[locationId];
-  if (photo && scene.textures.exists(photoTextureKey(locationId))) {
-    const image = scene.add.image(center.x, center.y, photoTextureKey(locationId));
-    image.setDisplaySize(PHOTO.width - 8, PHOTO.height - 8);
-    const credit = addText(scene, center.x, PHOTO.y + PHOTO.height + 8, photo.credit, {
-      size: FONT_SIZE.small,
-      color: PALETTE.metalLight,
-    });
-    return [frame, image, credit];
-  }
-  // Pixel-art placeholder until the real photo is added (spec 13).
-  frame.fillStyle(PALETTE.mars, 1);
-  frame.fillRect(PHOTO.x + 4, center.y, PHOTO.width - 8, PHOTO.height / 2 - 4);
-  frame.fillStyle(PALETTE.marsLight, 1).fillCircle(center.x + 30, center.y + 6, 16);
-  const pending = addText(scene, center.x, PHOTO.y + 16, t('map.photoPending'), {
-    size: FONT_SIZE.small,
-    color: PALETTE.sand,
-  });
-  return [frame, pending];
 }
 
 function addGoals(scene: Phaser.Scene, location: LocationConfig): Phaser.GameObjects.Text[] {

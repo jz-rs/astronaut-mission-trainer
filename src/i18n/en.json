@@ -89,5 +89,9 @@
   "map.goal.challenge": "{stat} always ≥ {minimum}",
   "map.photoPending": "Real photo: soon",
   "result.map": "Map",
-  "result.worstEvent": "💥 What hurt the base most: {event}"
+  "result.worstEvent": "💥 What hurt the base most: {event}",
+  "rover.instruction": "Dodge rocks and tap the shiny stones!",
+  "rover.samples": "🧪 +{samples} samples",
+  "rover.garage": "Rover",
+  "rover.away": "🚙 The rover is out"
 }

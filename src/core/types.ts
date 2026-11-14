@@ -85,4 +85,6 @@ export interface RunState {
   status: RunStatus;
   events: ScheduledEvent[];
   eventNews: EventNews[];
+  /** Spec 15 — true while the rover is out collecting samples. */
+  roverOut: boolean;
 }

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { setLanguage } from './i18n';
 import { MINIGAME_SCENES } from './minigames/registry';
+import { RoverExpeditionScene } from './minigames/rover/RoverExpeditionScene';
 import { BaseScene } from './scenes/base/BaseScene';
 import { MarsMapScene } from './scenes/map/MarsMapScene';
 import { MenuScene } from './scenes/MenuScene';
@@ -27,7 +28,15 @@ async function startGame(): Promise<void> {
     pixelArt: true,
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     input: { activePointers: 2 },
-    scene: [MenuScene, BaseScene, ResultScene, SourcesScene, MarsMapScene, ...MINIGAME_SCENES],
+    scene: [
+      MenuScene,
+      BaseScene,
+      ResultScene,
+      SourcesScene,
+      MarsMapScene,
+      RoverExpeditionScene,
+      ...MINIGAME_SCENES,
+    ],
   });
   // Only while developing: lets the browser console inspect the game (window.game).
   if (import.meta.env.DEV) Object.assign(window, { game });

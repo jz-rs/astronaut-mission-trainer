@@ -25,6 +25,7 @@ export function createRun(
     status: 'playing',
     events,
     eventNews: [],
+    roverOut: false,
   };
 }
 
