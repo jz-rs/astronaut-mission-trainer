@@ -38,5 +38,6 @@
   "result.reason.evacuated": "{stat} ran out",
   "result.reason.challenge": "{stat} dropped below {minimum}%",
   "result.reason.samples": "Not enough rover samples ({samples}/{goal})",
-  "minigame.placeholder.button": "TAP"
+  "minigame.placeholder.button": "TAP",
+  "hud.noEnergy": "No energy!"
 }

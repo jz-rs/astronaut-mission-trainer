@@ -59,6 +59,11 @@ export const PLACEHOLDER_MINIGAME_BALANCE = {
   tapsGoal: 5,
 } as const;
 
+/** A bar below this value blinks red, and so does its room (spec 04). */
+export const ALERT_BALANCE = {
+  lowStatThreshold: 30,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,
