@@ -1,0 +1,20 @@
+[
+  {
+    "id": "solar-flare-2024-05",
+    "type": "solar-storm",
+    "locations": ["jezero", "olympus-mons", "valles-marineris"],
+    "warningSolsBefore": [0, 1],
+    "effect": { "shield": -40 },
+    "source": "DONKI — https://kauai.ccmc.gsfc.nasa.gov/DONKI/",
+    "realDate": "2024-05-10"
+  },
+  {
+    "id": "dust-storm-gale",
+    "type": "dust-storm",
+    "locations": ["gale", "valles-marineris"],
+    "warningSolsBefore": [1],
+    "effect": { "energy": -30 },
+    "source": "TODO: agregar fuente NASA en docs/DATA_SOURCES.md",
+    "realDate": null
+  }
+]

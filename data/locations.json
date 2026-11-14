@@ -1,0 +1,42 @@
+[
+  {
+    "id": "jezero",
+    "order": 1,
+    "starsToUnlock": 0,
+    "samplesGoal": 4,
+    "challenge": { "stat": "oxygen", "minimum": 30 },
+    "decayMultiplier": {}
+  },
+  {
+    "id": "gale",
+    "order": 2,
+    "starsToUnlock": 2,
+    "samplesGoal": 6,
+    "challenge": { "stat": "energy", "minimum": 20 },
+    "decayMultiplier": { "energy": 1.6 }
+  },
+  {
+    "id": "olympus-mons",
+    "order": 3,
+    "starsToUnlock": 4,
+    "samplesGoal": 6,
+    "challenge": { "stat": "shield", "minimum": 25 },
+    "decayMultiplier": { "shield": 1.6 }
+  },
+  {
+    "id": "north-pole",
+    "order": 4,
+    "starsToUnlock": 6,
+    "samplesGoal": 8,
+    "challenge": { "stat": "energy", "minimum": 20 },
+    "decayMultiplier": { "energy": 1.8, "food": 1.2 }
+  },
+  {
+    "id": "valles-marineris",
+    "order": 5,
+    "starsToUnlock": 8,
+    "samplesGoal": 10,
+    "challenge": { "stat": "food", "minimum": 25 },
+    "decayMultiplier": { "oxygen": 1.3, "food": 1.3, "shield": 1.3, "energy": 1.3 }
+  }
+]
