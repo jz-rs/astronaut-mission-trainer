@@ -42,3 +42,7 @@ export const STAT_ICONS: Record<StatId, string> = {
   shield: '☢️',
   energy: '⚡',
 };
+
+/** Minigames open as a panel over the base, leaving the HUD visible so the bar visibly rises (spec 06). */
+export const MINIGAME_PANEL: Rect = { x: 48, y: 50, width: 544, height: 302 };
+export const MINIGAME_AREA: Rect = { x: 60, y: 96, width: 520, height: 248 };

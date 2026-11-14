@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { setLanguage } from './i18n';
+import { MINIGAME_SCENES } from './minigames/registry';
 import { BaseScene } from './scenes/base/BaseScene';
 import { MenuScene } from './scenes/MenuScene';
 import { ResultScene } from './scenes/ResultScene';
@@ -24,7 +25,7 @@ async function startGame(): Promise<void> {
     pixelArt: true,
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     input: { activePointers: 2 },
-    scene: [MenuScene, BaseScene, ResultScene],
+    scene: [MenuScene, BaseScene, ResultScene, ...MINIGAME_SCENES],
   });
   // Only while developing: lets the browser console inspect the game (window.game).
   if (import.meta.env.DEV) Object.assign(window, { game });

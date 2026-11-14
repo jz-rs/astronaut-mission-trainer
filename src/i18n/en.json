@@ -37,5 +37,6 @@
   "result.allStars": "Perfect mission!",
   "result.reason.evacuated": "{stat} ran out",
   "result.reason.challenge": "{stat} dropped below {minimum}%",
-  "result.reason.samples": "Not enough rover samples ({samples}/{goal})"
+  "result.reason.samples": "Not enough rover samples ({samples}/{goal})",
+  "minigame.placeholder.button": "TAP"
 }
