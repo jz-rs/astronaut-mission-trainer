@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 import { CREW_BALANCE } from '../../config/balance';
 import { BOT_IDS } from '../../core/run';
 import type { CrewMember, RunState, TaskId } from '../../core/types';
-import { ASTRONAUT_SCALE, BOT_IDLE_SPOTS, MIN_TOUCH_SIZE, type Point } from '../../ui/layout';
+import { BOT_IDLE_SPOTS, type Point } from '../../ui/layout';
 import { CREW_SUIT_COLORS } from '../../ui/astronautFrames';
 import { PALETTE } from '../../ui/palette';
 import { AstronautSprite, type WalkTarget } from './AstronautSprite';
@@ -10,9 +10,8 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 /**
  * Spec 05 — Draws the 3 bots. It only READS the run state: when a bot's task changes,
  * its sprite walks to the room (or back to the corridor) and shows a progress bar while working.
- * Tapping a bot on MANUAL that waits in the corridor selects it, so the next tapped room
- * becomes its order. A bot on AUTO or inside a room lets the tap through to the room, so a kid
- * tapping a busy room always goes in to play instead of selecting the bot by accident.
+ * Tapping a bot on MANUAL (in the corridor or at work) selects it, so the next tapped room
+ * becomes its order. A bot on AUTO lets the tap through to its room.
  */
 const PROGRESS_WIDTH = 28;
 /**
@@ -51,9 +50,8 @@ export class BotsView {
       if (!bot) continue;
       const { image } = bot.astronaut;
       bot.ring.setVisible(member.id === selectedBotId).setPosition(image.x, image.y);
-      // Bots on AUTO decide alone and bots at work are in a room: neither is tappable,
-      // so a tap there reaches the room.
-      if (image.input) image.input.enabled = !member.autoMode && member.task === null;
+      // Bots on AUTO decide alone: they are not tappable, so a tap on their room reaches the room.
+      if (image.input) image.input.enabled = !member.autoMode;
       this.followTask(member, bot);
       this.drawProgress(member, bot);
     }
@@ -89,24 +87,16 @@ export class BotsView {
     ring.lineStyle(2, PALETTE.white, 1).strokeEllipse(0, 0, 34, 12); // around the feet
     const color = CREW_SUIT_COLORS[botId] ?? 'red';
     const astronaut = new AstronautSprite(this.scene, this.idleSpot(botId), color);
-    makeFingerSized(astronaut.image);
+    makeTappable(astronaut.image);
     const progress = this.scene.add.graphics().setDepth(1);
     return { astronaut, ring, progress, shownTask: null };
   }
 }
 
-/** Bots are small: the touch area is enlarged to the minimum finger size. */
-function makeFingerSized(image: Phaser.GameObjects.Sprite): void {
-  const hitSize = MIN_TOUCH_SIZE / ASTRONAUT_SCALE;
-  const hitArea = new Phaser.Geom.Rectangle(
-    image.width / 2 - hitSize / 2,
-    image.height / 2 - hitSize / 2,
-    hitSize,
-    hitSize,
-  );
-  image.setInteractive({
-    hitArea,
-    hitAreaCallback: Phaser.Geom.Rectangle.Contains,
-    useHandCursor: true,
-  });
+/**
+ * Only the astronaut's own body is tappable (not an enlarged square): a MANUAL bot working in a
+ * room can be tapped to give it a new order, and the rest of the room still opens the minigame.
+ */
+function makeTappable(image: Phaser.GameObjects.Sprite): void {
+  image.setInteractive({ useHandCursor: true });
 }
