@@ -38,5 +38,6 @@
   "result.reason.evacuated": "{stat} llegó a 0",
   "result.reason.challenge": "{stat} bajó del {minimum}%",
   "result.reason.samples": "Faltaron muestras del rover ({samples}/{goal})",
-  "minigame.placeholder.button": "TOCÁ"
+  "minigame.placeholder.button": "TOCÁ",
+  "hud.noEnergy": "¡Sin energía!"
 }

@@ -1,4 +1,4 @@
-import type { StatId } from '../core/types';
+import type { StatId, TaskId } from '../core/types';
 
 /**
  * Sizes and positions shared by every scene, in game pixels (the canvas is scaled to the screen).
@@ -46,3 +46,18 @@ export const STAT_ICONS: Record<StatId, string> = {
 /** Minigames open as a panel over the base, leaving the HUD visible so the bar visibly rises (spec 06). */
 export const MINIGAME_PANEL: Rect = { x: 48, y: 50, width: 544, height: 302 };
 export const MINIGAME_AREA: Rect = { x: 60, y: 96, width: 520, height: 248 };
+
+/** The base: 4 rooms around one central corridor (spec 04). */
+export const CORRIDOR: Rect = { x: 16, y: 184, width: 608, height: 40 };
+
+export const ROOM_RECTS: Record<TaskId, Rect> = {
+  'oxygen-factory': { x: 32, y: 52, width: 268, height: 124 },
+  greenhouse: { x: 340, y: 52, width: 268, height: 124 },
+  'solar-panels': { x: 32, y: 232, width: 268, height: 120 },
+  'shield-wall': { x: 340, y: 232, width: 268, height: 120 },
+};
+
+/** Where the player waits when not working. */
+export const PLAYER_IDLE_SPOT: Point = { x: 320, y: 204 };
+
+export const WALK_SPEED_PX_PER_SECOND = 150;
