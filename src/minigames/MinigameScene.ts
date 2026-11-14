@@ -37,7 +37,8 @@ import {
 import { addCloseButton } from '../ui/closeButton';
 import { addIconLabel } from '../ui/iconLabel';
 import { PALETTE, STAT_COLORS } from '../ui/palette';
-import { ROOM_BACKGROUNDS, STAT_ICON_SPRITES } from '../ui/sprites';
+import { roomBackgroundKey } from '../ui/biomes';
+import { STAT_ICON_SPRITES } from '../ui/sprites';
 import { addScanlines, drawTechPanel } from '../ui/techFrame';
 
 export interface MinigameResult {
@@ -49,6 +50,8 @@ export interface MinigameStartData {
   taskId: TaskId;
   /** 1 = normal. Comes from the location decay multiplier of this task's bar. */
   difficulty: number;
+  /** Level the base is on: its rooms show a real photo of that place through the window. */
+  locationId?: string;
   onFinish: (result: MinigameResult) => void;
   /** The kid tapped the X: the task was not done. */
   onExit?: () => void;
@@ -63,6 +66,7 @@ const ROOM_CROP_TOP = 130;
 export abstract class MinigameScene extends Phaser.Scene {
   protected taskId: TaskId = 'solar-panels';
   protected difficulty = 1;
+  private locationId: string | undefined;
   private onFinish: MinigameStartData['onFinish'] = () => undefined;
   private onExit: () => void = () => undefined;
   private elapsedMs = 0;
@@ -80,6 +84,7 @@ export abstract class MinigameScene extends Phaser.Scene {
   init(data: MinigameStartData): void {
     this.taskId = data.taskId;
     this.difficulty = data.difficulty;
+    this.locationId = data.locationId;
     this.onFinish = data.onFinish;
     this.onExit = data.onExit ?? (() => undefined);
     this.elapsedMs = 0;
@@ -161,7 +166,8 @@ export abstract class MinigameScene extends Phaser.Scene {
 
   /** The empty room of this task fills the play area; the minigame sprites go on top. */
   private drawRoom(): void {
-    const room = this.add.image(MINIGAME_AREA.x, 0, ROOM_BACKGROUNDS[this.taskId]).setOrigin(0);
+    const roomKey = roomBackgroundKey(this.taskId, this.locationId);
+    const room = this.add.image(MINIGAME_AREA.x, 0, roomKey).setOrigin(0);
     const scale = MINIGAME_AREA.width / room.width;
     room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
     room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);

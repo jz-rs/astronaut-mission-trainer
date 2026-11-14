@@ -16,6 +16,7 @@ import { recordMinigameResult } from '../../services/progressUpdates';
 import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
+import { preloadBiome } from '../../ui/biomes';
 import { addScanlines } from '../../ui/techFrame';
 import { finishRun } from '../runEnd';
 import { SCENE_KEYS } from '../sceneKeys';
@@ -34,6 +35,7 @@ import { Hud } from './Hud';
 import { RoomView } from './RoomView';
 import { TaskEffectsView } from './TaskEffectsView';
 import { TutorialGuide } from './TutorialGuide';
+import { addFrost, addWeather } from './WeatherView';
 import { addYouTag } from './youTag';
 
 /**
@@ -82,9 +84,14 @@ export class BaseScene extends Phaser.Scene {
     this.rooms = new Map();
   }
 
+  /** The images of this level (map, rooms, frost); the rest of the kit was loaded at boot. */
+  preload(): void {
+    preloadBiome(this, this.locationId);
+  }
+
   create(): void {
     this.session = this.createSession();
-    this.mapStatus = drawBaseMap(this);
+    this.mapStatus = drawBaseMap(this, this.locationId);
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
@@ -96,8 +103,7 @@ export class BaseScene extends Phaser.Scene {
       (taskId, crewId) => this.workSpot(taskId, crewId),
       (botId) => this.selectBot(botId),
     );
-    this.hud = new Hud(this);
-    this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
+    this.createTopLayer();
     this.pickRoomHint = createPickRoomHint(this);
     this.eventAnnouncer = new EventAnnouncer(this);
     this.garage = new GarageView(this, () => this.sendRover());
@@ -110,6 +116,14 @@ export class BaseScene extends Phaser.Scene {
       () => this.leaveRun(),
     );
     addScanlines(this);
+  }
+
+  /** Weather falls over the base, the HUD goes on top, and the pole's frost covers even the HUD. */
+  private createTopLayer(): void {
+    addWeather(this, this.locationId);
+    this.hud = new Hud(this);
+    this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
+    addFrost(this, this.locationId);
   }
 
   private createSession(): GameSession {
@@ -163,6 +177,7 @@ export class BaseScene extends Phaser.Scene {
     const data: MinigameStartData = {
       taskId,
       difficulty: this.session.state.location.decayMultiplier[stat] ?? 1,
+      locationId: this.locationId,
       onFinish: (result) => this.handleMinigameFinished(result),
       onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
     };
