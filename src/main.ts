@@ -4,6 +4,7 @@ import { MINIGAME_SCENES } from './minigames/registry';
 import { BaseScene } from './scenes/base/BaseScene';
 import { MenuScene } from './scenes/MenuScene';
 import { ResultScene } from './scenes/ResultScene';
+import { SourcesScene } from './scenes/SourcesScene';
 import { loadProgress } from './services/progressStorage';
 import { FONT_FAMILY, FONT_SIZE, GAME_HEIGHT, GAME_WIDTH } from './ui/layout';
 import { cssColor, PALETTE } from './ui/palette';
@@ -25,7 +26,7 @@ async function startGame(): Promise<void> {
     pixelArt: true,
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     input: { activePointers: 2 },
-    scene: [MenuScene, BaseScene, ResultScene, ...MINIGAME_SCENES],
+    scene: [MenuScene, BaseScene, ResultScene, SourcesScene, ...MINIGAME_SCENES],
   });
   // Only while developing: lets the browser console inspect the game (window.game).
   if (import.meta.env.DEV) Object.assign(window, { game });

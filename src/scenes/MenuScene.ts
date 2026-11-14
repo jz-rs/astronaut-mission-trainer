@@ -44,6 +44,7 @@ export class MenuScene extends Phaser.Scene {
     });
     this.tweens.add({ targets: play, scale: 1.05, yoyo: true, repeat: -1, duration: 600 });
     this.createLanguageButtons();
+    this.createSourcesButton();
     addScanlines(this);
   }
 
@@ -104,6 +105,19 @@ export class MenuScene extends Phaser.Scene {
         color: isCurrent ? PALETTE.sun : PALETTE.metal,
         onPress: () => this.changeLanguage(language),
       });
+    });
+  }
+
+  private createSourcesButton(): void {
+    createButton(this, {
+      x: 572,
+      y: 330,
+      width: 112,
+      height: 36,
+      label: `📚 ${t('menu.sources')}`,
+      fontSize: FONT_SIZE.small,
+      color: PALETTE.metal,
+      onPress: () => this.scene.start(SCENE_KEYS.sources),
     });
   }
 

@@ -3,4 +3,5 @@ export const SCENE_KEYS = {
   menu: 'MenuScene',
   base: 'BaseScene',
   result: 'ResultScene',
+  sources: 'SourcesScene',
 } as const;

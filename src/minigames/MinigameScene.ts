@@ -19,6 +19,7 @@
  */
 import Phaser from 'phaser';
 import { MINIGAME_BALANCE, TASK_BALANCE } from '../config/balance';
+import { randomFactKey } from '../content/facts';
 import { clampPerformance } from '../core/training';
 import type { TaskId } from '../core/types';
 import { t, type TranslationKey } from '../i18n';
@@ -164,7 +165,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     });
     message.setDepth(RESULT_DEPTH).setScale(0);
     this.tweens.add({ targets: message, scale: 1, duration: 250, ease: 'Back.Out' });
-    const fact = t(`task.${this.taskId}.fact` as const);
+    const fact = t(randomFactKey(this.taskId));
     addText(this, centerX, MINIGAME_AREA.y + 150, fact, {
       size: FONT_SIZE.small,
       color: PALETTE.cyan,
