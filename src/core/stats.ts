@@ -28,11 +28,19 @@ export function canAffordTask(stats: Stats, taskId: TaskId): boolean {
   return stats.energy >= TASK_BALANCE[taskId].energyCost;
 }
 
-/** Applies the reward of a finished task, scaled by how well it was done. */
-export function applyTaskResult(stats: Stats, taskId: TaskId, performance: number): void {
+export interface TaskEffect {
+  gained: number;
+  spent: number;
+}
+
+/** Applies the reward of a finished task, scaled by how well it was done, and says what changed. */
+export function applyTaskResult(stats: Stats, taskId: TaskId, performance: number): TaskEffect {
   const { stat, gain, energyCost } = TASK_BALANCE[taskId];
+  const energyBefore = stats.energy;
   stats.energy = clampStat(stats.energy - energyCost);
+  const statBefore = stats[stat];
   stats[stat] = clampStat(stats[stat] + gain * performance);
+  return { gained: stats[stat] - statBefore, spent: energyBefore - stats.energy };
 }
 
 export function updateLowestStats(lowest: Stats, current: Stats): void {

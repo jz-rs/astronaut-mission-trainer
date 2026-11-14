@@ -75,6 +75,16 @@ export interface EventNews {
   eventId: string;
 }
 
+/** A finished task, so scenes can show what it changed ("+30 oxygen, -10 energy"). */
+export interface TaskNews {
+  crewId: string;
+  taskId: TaskId;
+  /** Points the task's bar really went up (less near the top of the bar). */
+  gained: number;
+  /** Energy points really spent. */
+  spent: number;
+}
+
 /** Spec 16 — Two astronauts must hold the lever at the same time to resist a solar storm. */
 export interface LeverEmergency {
   eventId: string;
@@ -110,6 +120,8 @@ export interface RunState {
   status: RunStatus;
   events: ScheduledEvent[];
   eventNews: EventNews[];
+  /** Every finished task, in order, so the base can show its effect on the bars. */
+  taskNews: TaskNews[];
   /** Spec 15 — true while the rover is out collecting samples. */
   roverOut: boolean;
   emergency: LeverEmergency | null;

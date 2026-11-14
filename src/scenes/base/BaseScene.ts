@@ -6,7 +6,7 @@ import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
-import { TASK_IDS, type TaskId } from '../../core/types';
+import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
 import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
@@ -31,6 +31,9 @@ import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
 import { RoomView } from './RoomView';
+import { TaskEffectsView } from './TaskEffectsView';
+import { TutorialGuide } from './TutorialGuide';
+import { addYouTag } from './youTag';
 
 /**
  * Spec 04 (+ bots from spec 05) — The base during a run. It never calculates game rules:
@@ -56,6 +59,8 @@ export class BaseScene extends Phaser.Scene {
   private eventAnnouncer!: EventAnnouncer;
   private garage!: GarageView;
   private teamwork!: TeamworkViews;
+  private taskEffects!: TaskEffectsView;
+  private tutorial!: TutorialGuide;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -83,6 +88,7 @@ export class BaseScene extends Phaser.Scene {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
     this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, 'violet');
+    addYouTag(this, this.player.image);
     this.bots = new BotsView(
       this,
       this.session.state.crew,
@@ -95,6 +101,8 @@ export class BaseScene extends Phaser.Scene {
     this.eventAnnouncer = new EventAnnouncer(this);
     this.garage = new GarageView(this, () => this.sendRover());
     this.teamwork = new TeamworkViews(this, this.session, OVERLAY_KEYS);
+    this.taskEffects = new TaskEffectsView(this, this.hud);
+    this.tutorial = new TutorialGuide(this);
     addScanlines(this);
   }
 
@@ -108,8 +116,9 @@ export class BaseScene extends Phaser.Scene {
 
   update(time: number, deltaMs: number): void {
     if (this.runEnded) return;
-    this.session.update(deltaMs);
+    if (!this.tutorial.pausesGame) this.session.update(deltaMs);
     const { state } = this.session;
+    this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state, time);
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
@@ -123,6 +132,7 @@ export class BaseScene extends Phaser.Scene {
 
   private handleRoomTap(taskId: TaskId): void {
     if (this.minigameOpen || this.runEnded) return;
+    this.tutorial.roomTapped();
     if (this.selectedBotId) {
       this.orderBot(this.selectedBotId, taskId);
       return;
@@ -160,6 +170,10 @@ export class BaseScene extends Phaser.Scene {
     recordMinigameResult(taskId, performance);
   }
 
+  private handleTaskEffectShown(news: TaskNews): void {
+    if (news.crewId === PLAYER_ID) this.tutorial.playerTaskDone(TASK_BALANCE[news.taskId].stat);
+  }
+
   private selectBot(botId: string): void {
     if (this.minigameOpen) return;
     this.setSelectedBot(this.selectedBotId === botId ? null : botId);
@@ -183,7 +197,10 @@ export class BaseScene extends Phaser.Scene {
   private toggleAuto(botId: string): void {
     const bot = this.session.state.crew.find((member) => member.id === botId);
     if (!bot) return;
-    this.session.dispatch({ type: 'setAutoMode', crewId: botId, enabled: !bot.autoMode });
+    const enableAuto = !bot.autoMode;
+    this.session.dispatch({ type: 'setAutoMode', crewId: botId, enabled: enableAuto });
+    // Switching a bot to MANUAL means "I want to give it an order": it waits for a room right away.
+    this.setSelectedBot(enableAuto ? null : botId);
   }
 
   /** Each crew member has its own spot in a room so they never overlap. */

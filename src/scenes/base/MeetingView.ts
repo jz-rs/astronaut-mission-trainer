@@ -10,6 +10,7 @@ import { FONT_SIZE, GAME_WIDTH, MINIGAME_PANEL, STAT_ICONS } from '../../ui/layo
 import { CREW_COLORS, PALETTE, STAT_COLORS } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
+import { eventKey } from './EventAnnouncer';
 
 /**
  * Spec 16 — Crisis meeting, like an Among Us emergency meeting: 2 big options with icons,
@@ -52,20 +53,20 @@ export class MeetingView {
     );
     this.votes = this.scene.add.graphics();
     this.container = this.scene.add.container(0, 0, [
-      ...this.createFrame(),
+      ...this.createFrame(meeting),
       ...options,
       this.votes,
     ]);
     this.container.setDepth(DEPTH);
   }
 
-  private createFrame(): Phaser.GameObjects.GameObject[] {
+  private createFrame(meeting: CrisisMeeting): Phaser.GameObjects.GameObject[] {
     const blocker = this.scene.add.zone(0, 0, this.scene.scale.width, this.scene.scale.height);
     blocker.setOrigin(0).setInteractive(); // the base is paused: no taps go through
     const panel = this.scene.add.graphics();
     drawTechPanel(panel, MINIGAME_PANEL, PALETTE.alert);
     const centerX = GAME_WIDTH / 2;
-    const title = addText(this.scene, centerX, MINIGAME_PANEL.y + 24, t('collab.meetingTitle'), {
+    const title = addText(this.scene, centerX, MINIGAME_PANEL.y + 24, meetingTitle(meeting), {
       size: FONT_SIZE.small,
       color: PALETTE.sun,
     });
@@ -118,4 +119,9 @@ export class MeetingView {
       });
     });
   }
+}
+
+/** The meeting says which crisis is coming; without it, voting makes no sense. */
+function meetingTitle(meeting: CrisisMeeting): string {
+  return t('collab.meetingWhy', { event: t(eventKey(meeting.eventId, 'name')) });
 }
