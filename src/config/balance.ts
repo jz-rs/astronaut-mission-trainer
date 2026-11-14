@@ -49,6 +49,14 @@ export const MINIGAME_BALANCE = {
   resultDisplayMs: 1_800,
   perfectThreshold: 1.1,
   goodThreshold: 0.7,
+  /** Finishing a minigame early adds up to this bonus over 1.0 ... */
+  speedBonusMax: 0.2,
+  /** ... and the full bonus needs this fraction of the time still left. */
+  fullBonusTimeLeftFraction: 0.5,
+} as const;
+
+export const PLACEHOLDER_MINIGAME_BALANCE = {
+  tapsGoal: 5,
 } as const;
 
 export const SCORING = {
