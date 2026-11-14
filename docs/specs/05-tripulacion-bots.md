@@ -32,7 +32,7 @@ Que la jugadora sienta que es **la comandante**: puede mandar a sus 3 bots a hac
 - [ ] Ningún atajo especial para bots en `core/`.
 
 ## Archivos
-**Propios:** `src/bots/*`, `src/core/training.ts`, `src/scenes/base/CrewView.ts`, `tests/autoPilot.test.ts`, `tests/training.test.ts`.
+**Propios:** `src/bots/*`, `src/core/training.ts`, la parte visual de los bots en `src/scenes/base/`, `tests/autoPilot.test.ts`, `tests/training.test.ts`.
 **Contratos que usa:** `GameAction`, `balance.ts` (`CREW_BALANCE`), `services/progressStorage.ts`.
 
 ## Dependencias

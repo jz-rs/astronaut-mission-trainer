@@ -10,8 +10,9 @@ Sos la comandante de una base en Marte. Con tu tripulación (bots, y más adelan
 
 1. **`docs/GDD.md`** — qué juego estamos haciendo (10 min de lectura).
 2. **`docs/PLAN.md`** — fases, prioridades y quién hace qué.
-3. **`docs/specs/README.md`** — la lista de tareas. Cada tarea es un spec con su objetivo.
-4. **`AGENTS.md`** — las reglas que siguen nuestros agentes (y nosotras).
+3. **`docs/ROADMAP.md`** — hitos y cómo validamos y testeamos cada uno.
+4. **`docs/specs/README.md`** — la lista de tareas. Cada tarea es un spec con su objetivo.
+5. **`AGENTS.md`** — las reglas que siguen nuestros agentes (y nosotras).
 
 ## 🔁 Cómo trabajamos
 
@@ -28,13 +29,13 @@ npm run dev      # abre http://localhost:5173
 npm run check    # lint + tipos + tests
 ```
 
-> ⚠️ **Estado actual del código:** existe un prototipo técnico armado con Claude antes de terminar la planificación. **Todavía no está aprobado.** El spec `docs/specs/02-revision-prototipo.md` describe qué contiene y la decisión pendiente: usarlo como base o descartarlo.
+> **Estado actual del código:** existe la **lógica del juego** (back) con tests. Todavía **no hay parte visual**: la arman los specs 02, 04 y 11 siguiendo la dirección de arte del spec 01. Ver `docs/specs/02-base-tecnica.md`.
 
 ## 📁 Estructura
 
 ```
 AGENTS.md / CLAUDE.md   Reglas para agentes
-docs/                   GDD, plan, specs, guía de estilo, fuentes NASA, decisiones
+docs/                   GDD, plan, roadmap, specs, guía de estilo, fuentes NASA, decisiones
 data/                   Contenido editable (lugares, eventos)
 src/                    Código (ver AGENTS.md §3)
 public/assets/          Imágenes, sonidos, fotos NASA

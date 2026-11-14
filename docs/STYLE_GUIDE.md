@@ -18,7 +18,7 @@
 | Peligro / barra baja | rojo | — |
 
 ## Paleta
-🔲 A definir con el set de referencia. Propuesta inicial (en `src/ui/palette.ts`):
+🔲 A definir con el set de referencia. Propuesta inicial (se pasa a código en `src/ui/palette.ts`, spec 02):
 
 `#1a1423` noche · `#2b2340` espacio · `#3d3a52` metal oscuro · `#6b6f8a` metal · `#b4b8cc` metal claro · `#f4f1e8` blanco · `#7a2e1f` Marte oscuro · `#c4532f` Marte · `#e88a4f` Marte claro · `#f2c288` arena · `#5ec8e5` celeste · `#6cc24a` verde · `#f7d94c` sol · `#e5484d` alerta · `#9b6bdf` violeta
 

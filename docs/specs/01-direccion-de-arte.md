@@ -53,7 +53,7 @@ Completar `docs/STYLE_GUIDE.md` con lo que ganó: paleta final, tamaños (tile, 
 
 ## Archivos
 **Propios:** `public/assets/**`, `docs/STYLE_GUIDE.md`.
-**Contratos que usa:** `src/ui/palette.ts` — si la paleta final cambia, **avisar** (afecta a todas) y actualizar el archivo junto con A.
+**Contratos que usa:** `src/ui/palette.ts` (lo crea A en el spec 02 con la paleta propuesta) — al votar la paleta final, **avisar** (afecta a todas) y actualizarlo junto con A.
 
 ## Dependencias
 **Depende de:** nada — es lo primero.

@@ -28,7 +28,6 @@ Es la sensación "Among Us": moverte por la base y hacer tareas. Y es la primera
 - [ ] Las salas con barra < 30 titilan.
 - [ ] Funciona con el dedo en un celu en horizontal (áreas táctiles ≥ 48 px).
 - [ ] La escena no calcula reglas del juego: solo lee el estado y manda acciones.
-- [ ] Si se usa el prototipo: arreglado el bug de "tocar sala no mueve a la jugadora".
 
 ## Archivos
 **Propios:** `src/scenes/base/*`.

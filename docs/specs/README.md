@@ -19,7 +19,7 @@ Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá 
 | # | Spec | Rol | Prioridad | Fase | Estado |
 |---|---|---|---|---|---|
 | 01 | [Dirección de arte y set de imágenes](01-direccion-de-arte.md) | C | P0 | 0 | ⚪ |
-| 02 | [Revisión del prototipo existente](02-revision-prototipo.md) | A | P0 | 0 | ⚪ |
+| 02 | [Base técnica: lógica + esqueleto del front](02-base-tecnica.md) | A | P0 | 0 | ⚪ |
 | 03 | [Núcleo de la partida](03-nucleo-partida.md) | A | P0 | 1 | ⚪ |
 | 04 | [Base y movimiento](04-base-y-movimiento.md) | A | P0 | 1 | ⚪ |
 | 05 | [Tripulación y bots](05-tripulacion-bots.md) | A | P0 | 1 | ⚪ |

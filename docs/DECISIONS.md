@@ -15,6 +15,13 @@ Formato:
 
 ---
 
+## 2026-11-14 — Se conserva el back y se descarta el front del prototipo
+- Quién: el equipo
+- Qué se decidió: la lógica (`src/core`, `src/bots`, `src/config`, `src/services`, `src/i18n`, `data`, tests) queda como base. Toda la parte visual del prototipo se borró por no cumplir con la calidad estética buscada.
+- Por qué: la lógica está testeada y sigue el GDD; la estética se define primero con el spec 01.
+- A quién afecta: todas. El front se rehace desde el spec 02 (esqueleto) siguiendo `STYLE_GUIDE.md`. El prototipo visual queda en el commit `fb40014` solo como referencia técnica.
+- ¿Avisado al equipo?: sí (este documento).
+
 ## 2026-11-14 — Nombre del proyecto: Astronaut Mission Trainer
 - Quién: el equipo
 - Qué se decidió: el juego y el repo se llaman **Astronaut Mission Trainer** (paquete `astronaut-mission-trainer`).

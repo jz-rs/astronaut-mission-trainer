@@ -1,5 +1,7 @@
 # Plan de trabajo
 
+> Cómo validamos cada etapa: ver [`ROADMAP.md`](ROADMAP.md).
+
 Entrega: **mañana a la tarde**. Equipo: 3 programadoras con agentes de IA y generadores de imágenes.
 
 ## Roles
@@ -18,7 +20,7 @@ Cada spec tiene **una sola dueña**. Se puede pedir ayuda, pero la responsable e
 Objetivo: que las 3 estemos alineadas antes de producir.
 - **Todas**: leer `GDD.md` + los specs, aprobar con ✅ o comentar.
 - **C**: [01 Dirección de arte](specs/01-direccion-de-arte.md) — set de imágenes de referencia → **votamos el estilo entre las 3**.
-- **A**: [02 Revisión del prototipo](specs/02-revision-prototipo.md) — decidir si el código existente se usa.
+- **A**: [02 Base técnica](specs/02-base-tecnica.md) — revisar la lógica existente con el equipo y armar el esqueleto del front + CI.
 - **B**: [06 Contrato de minijuegos](specs/06-contrato-minijuegos.md) — fijar la interfaz para que A y B no se bloqueen.
 
 **Salida de la fase 0**: estilo visual votado, código base decidido, interfaz de minijuegos fijada.
@@ -46,7 +48,7 @@ El juego tiene que poder jugarse de punta a punta, aunque sea feo.
 | 16 Palanca de a dos + reunión de crisis | Pulido de minijuegos | Sonido, animaciones |
 
 ### Fase 4 — Entrega 🏁
-- **C**: [17 Deploy y demo](specs/17-deploy-y-demo.md).
+- **C**: [17 Deploy y demo](specs/17-deploy-y-demo.md) (el deploy automático se configura **en la fase 1**, para probar en el celu desde temprano).
 - **Congelar el código ~3 h antes de la entrega.** Después de eso solo arreglos de bugs.
 - Todas: probar en celus distintos, preparar el pitch.
 

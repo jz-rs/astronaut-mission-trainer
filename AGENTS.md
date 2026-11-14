@@ -22,9 +22,10 @@ Estos archivos los usan varias personas. Cambiarlos puede romper el trabajo de l
 |---|---|---|
 | Tipos del juego (stats, tareas, tripulación) | `src/core/types.ts` | Todas |
 | Acciones del juego | `src/core/actions.ts` (`GameAction`) | Motor, bots, minijuegos |
-| Interfaz de minijuegos | `src/minigames/MinigameScene.ts`, `src/minigames/registry.ts` | Motor, minijuegos |
+| Interfaz de minijuegos *(la crea el spec 06)* | `src/minigames/MinigameScene.ts`, `src/minigames/registry.ts` | Motor, minijuegos |
 | Números de balance | `src/config/balance.ts` | Todas |
-| Paleta y estilos visuales | `src/ui/palette.ts`, `src/ui/layout.ts`, `docs/STYLE_GUIDE.md` | Todas |
+| Paleta y estilos visuales *(código: los crea el spec 02)* | `src/ui/palette.ts`, `src/ui/layout.ts`, `docs/STYLE_GUIDE.md` | Todas |
+| Arranque del juego y navegación *(los crea el spec 02)* | `src/main.ts`, `src/scenes/sceneKeys.ts` | Todas |
 | Textos e idiomas | `src/i18n/es.json`, `src/i18n/en.json` | Todas |
 | Formato de datos | `data/*.json` | Motor, contenido |
 | Dependencias y configuración | `package.json`, `tsconfig.json`, `eslint.config.js`, `vite.config.ts` | Todas |
