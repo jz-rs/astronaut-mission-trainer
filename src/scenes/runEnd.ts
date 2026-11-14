@@ -1,5 +1,6 @@
 import type Phaser from 'phaser';
 import type { GameSession } from '../core/GameSession';
+import { findWorstEvent } from '../core/events';
 import { findEmptyStat } from '../core/stats';
 import { loadProgress } from '../services/progressStorage';
 import { recordRunResult } from '../services/progressUpdates';
@@ -24,6 +25,7 @@ export function finishRun(scene: Phaser.Scene, session: GameSession): void {
     samples: state.samples,
     samplesGoal: state.location.samplesGoal,
     locationId: state.location.id,
+    worstEventId: findWorstEvent(state),
   };
   scene.scene.start(SCENE_KEYS.result, data);
 }

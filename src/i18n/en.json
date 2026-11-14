@@ -88,5 +88,6 @@
   "map.goal.samples": "Collect {goal} samples",
   "map.goal.challenge": "{stat} always ≥ {minimum}",
   "map.photoPending": "Real photo: soon",
-  "result.map": "Map"
+  "result.map": "Map",
+  "result.worstEvent": "💥 What hurt the base most: {event}"
 }

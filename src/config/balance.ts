@@ -93,6 +93,16 @@ export const SHIELD_WALL_BALANCE = {
   snapDistance: 40,
 } as const;
 
+/** Spec 14 — How many real events hit each run, and when. */
+export const EVENT_BALANCE = {
+  minEventsPerRun: 2,
+  maxEventsPerRun: 3,
+  /** Sol 1 is calm so the player can learn the base first. */
+  firstEventSol: 2,
+  /** Events land in the middle of their sol. */
+  hitAtSolFraction: 0.5,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,

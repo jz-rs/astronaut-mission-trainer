@@ -9,6 +9,7 @@ import { PALETTE } from '../ui/palette';
 import { drawStar } from '../ui/star';
 import { addScanlines, drawStarfield } from '../ui/techFrame';
 import { addText } from '../ui/text';
+import { eventKey } from './base/EventAnnouncer';
 import { describeLostStar } from './resultText';
 import { SCENE_KEYS } from './sceneKeys';
 
@@ -25,6 +26,7 @@ export interface ResultSceneData {
   samples: number;
   samplesGoal: number;
   locationId: string;
+  worstEventId: string | null;
 }
 
 const STAR_Y = 64;
@@ -61,6 +63,7 @@ export class ResultScene extends Phaser.Scene {
       color: PALETTE.cyan,
       wrapWidth: 520,
     });
+    if (data.worstEventId) this.showWorstEvent(data.worstEventId);
     this.createButtons();
     addScanlines(this);
   }
@@ -85,6 +88,14 @@ export class ResultScene extends Phaser.Scene {
         duration: 400,
         ease: 'Back.Out',
       });
+    });
+  }
+
+  /** Cause → effect: which real event hurt the base the most (spec 14). */
+  private showWorstEvent(eventId: string): void {
+    addText(this, CENTER_X, 254, t('result.worstEvent', { event: t(eventKey(eventId, 'name')) }), {
+      size: FONT_SIZE.small,
+      color: PALETTE.alert,
     });
   }
 

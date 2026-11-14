@@ -1,13 +1,18 @@
 import { CREW_BALANCE, RUN_BALANCE } from '../config/balance';
 import { applyAction, type GameAction } from './actions';
+import { updateEvents } from './events';
 import { applyDecay, createStartingStats, findEmptyStat, updateLowestStats } from './stats';
 import { getBotEfficiency } from './training';
-import type { CrewMember, LocationConfig, RunState, TrainingLevels } from './types';
+import type { CrewMember, LocationConfig, RunState, ScheduledEvent, TrainingLevels } from './types';
 
 export const PLAYER_ID = 'player';
 export const BOT_IDS = ['bot-red', 'bot-green', 'bot-yellow'] as const;
 
-export function createRun(location: LocationConfig, training: TrainingLevels): RunState {
+export function createRun(
+  location: LocationConfig,
+  training: TrainingLevels,
+  events: ScheduledEvent[] = [],
+): RunState {
   return {
     location,
     training,
@@ -18,6 +23,8 @@ export function createRun(location: LocationConfig, training: TrainingLevels): R
     crew: createCrew(),
     samples: 0,
     status: 'playing',
+    events,
+    eventNews: [],
   };
 }
 
@@ -40,6 +47,7 @@ export function updateRun(state: RunState, deltaMs: number): void {
   advanceBotTasks(state, deltaMs);
   updateLowestStats(state.lowestStats, state.stats);
   advanceClock(state, deltaMs);
+  updateEvents(state);
   checkEvacuation(state);
 }
 
