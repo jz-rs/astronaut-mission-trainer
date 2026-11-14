@@ -1,4 +1,5 @@
 import type { TaskId } from '../core/types';
+import { GreenhouseMinigame } from './greenhouse/GreenhouseMinigame';
 import type { MinigameScene } from './MinigameScene';
 import { OxygenFactoryMinigame } from './oxygen-factory/OxygenFactoryMinigame';
 import { PlaceholderMinigame } from './placeholder/PlaceholderMinigame';
@@ -16,7 +17,7 @@ export interface MinigameEntry {
 export const MINIGAME_REGISTRY: Record<TaskId, MinigameEntry> = {
   'solar-panels': { key: SolarPanelsMinigame.KEY, scene: SolarPanelsMinigame },
   'oxygen-factory': { key: OxygenFactoryMinigame.KEY, scene: OxygenFactoryMinigame },
-  greenhouse: { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },
+  greenhouse: { key: GreenhouseMinigame.KEY, scene: GreenhouseMinigame },
   'shield-wall': { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },
 };
 

@@ -42,5 +42,6 @@
   "hud.noEnergy": "¡Sin energía!",
   "hud.pickRoom": "¿A qué sala va?",
   "minigame.oxygen-factory.instruction": "¡Llevá el CO₂ a la máquina!",
-  "minigame.oxygen-factory.machine": "MOXIE"
+  "minigame.oxygen-factory.machine": "MOXIE",
+  "minigame.greenhouse.instruction": "¡Regá las plantas con sed!"
 }

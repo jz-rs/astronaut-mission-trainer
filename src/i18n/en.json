@@ -42,5 +42,6 @@
   "hud.noEnergy": "No energy!",
   "hud.pickRoom": "Which room?",
   "minigame.oxygen-factory.instruction": "Drag the CO₂ into the machine!",
-  "minigame.oxygen-factory.machine": "MOXIE"
+  "minigame.oxygen-factory.machine": "MOXIE",
+  "minigame.greenhouse.instruction": "Water the thirsty plants!"
 }
