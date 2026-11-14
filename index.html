@@ -68,9 +68,14 @@
         border-radius: 8px;
         font-family: 'Press Start 2P', monospace;
       }
+      /*
+        Middle of the left edge: the only spot free in every scene (HUD and bot faces on top,
+        buttons at the bottom, rooms from x=72). On wide phones it falls on the black side band.
+      */
       #fullscreen-button {
-        top: calc(8px + env(safe-area-inset-top));
-        right: calc(8px + env(safe-area-inset-right));
+        top: 50%;
+        left: calc(8px + env(safe-area-inset-left));
+        transform: translateY(-50%);
         width: 48px;
         height: 48px;
         padding: 10px;

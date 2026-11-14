@@ -91,7 +91,8 @@ function refreshFullscreenButton(): void {
   const button = document.getElementById('fullscreen-button');
   if (!button) return;
   const canGoFullscreen = isTouchDevice() && document.fullscreenEnabled;
-  button.hidden = !canGoFullscreen || document.fullscreenElement !== null;
+  const isAlreadyFullscreen = document.fullscreenElement !== null || isOpenedFromHomeScreen();
+  button.hidden = !canGoFullscreen || isAlreadyFullscreen;
 }
 
 /** A phone that cannot use the fullscreen API (iPhone) and was not opened from the home screen. */
@@ -99,9 +100,13 @@ function needsHomeScreenHint(): boolean {
   return isTouchDevice() && !document.fullscreenEnabled && !isOpenedFromHomeScreen();
 }
 
+/** Installed apps open as "fullscreen" (our manifest on Android) or "standalone" (iPhone). */
 function isOpenedFromHomeScreen(): boolean {
   const isSafariHomeScreenApp = (navigator as HomeScreenNavigator).standalone === true;
-  return isSafariHomeScreenApp || window.matchMedia('(display-mode: standalone)').matches;
+  const isInstalledApp = ['fullscreen', 'standalone'].some(
+    (mode) => window.matchMedia(`(display-mode: ${mode})`).matches,
+  );
+  return isSafariHomeScreenApp || isInstalledApp;
 }
 
 function closeHomeScreenHint(): void {

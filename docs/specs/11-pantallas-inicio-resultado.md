@@ -19,7 +19,7 @@ Es justo donde fallan los otros proyectos del track: mucho texto y curva de apre
 
 **Celu:**
 - Al tocar JUGAR: pedir pantalla completa y bloquear horizontal (donde el navegador lo permita).
-- Botón de pantalla completa en la esquina de arriba a la derecha, para volver si se sale (Android y compañía). Solo se ve si el navegador lo soporta y no estás ya en pantalla completa.
+- Botón de pantalla completa a media altura del borde izquierdo, para volver si se sale (Android y compañía). Solo se ve si el navegador lo soporta y no estás ya en pantalla completa ni con la app instalada.
 - iPhone no permite pantalla completa en ningún navegador (ni Safari ni Chrome): en la pantalla de inicio se muestra "📲 Pantalla completa: Compartir → Agregar a inicio", con ✕ para cerrarlo. No aparece si el juego ya se abrió desde la pantalla de inicio.
 - Instalable: `public/manifest.webmanifest` + íconos en `public/assets/icons/` (astronauta violeta), para que desde la pantalla de inicio se abra como app, sin barras.
 - Si el celu está vertical: pantalla "📱↻ Girá el celu" (necesario en iPhone, que no permite bloquear).

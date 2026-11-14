@@ -18,14 +18,14 @@ Formato:
 ## 2026-11-14 — Botón de pantalla completa, aviso para iPhone y juego instalable
 - Quién: con Claude, a pedido de quien probó el juego en un iPhone con Chrome
 - Qué se decidió:
-  - Antes, la pantalla completa se pedía solo al tocar JUGAR. Si la jugadora salía, no podía volver. Ahora hay un **botón fijo arriba a la derecha** (HTML encima del juego, en `index.html` y `src/ui/screen.ts`). Se ve solo en celu, si el navegador lo soporta y si no estás ya en pantalla completa. En celus más anchos que 16:9 cae en la franja negra del costado. Si no, tapa un poco la esquina de la barra de arriba de la Base, pero solo mientras no estás en pantalla completa.
+  - Antes, la pantalla completa se pedía solo al tocar JUGAR. Si la jugadora salía, no podía volver. Ahora hay un **botón fijo a media altura del borde izquierdo** (HTML encima del juego, en `index.html` y `src/ui/screen.ts`). Es el único lugar libre en todas las pantallas: arriba están el HUD y las caras de los bots, abajo los botones, y las salas de la Base arrancan en x=72. En celus más anchos que 16:9 cae en la franja negra del costado. Se ve solo en celu, si el navegador lo soporta y si no estás ya en pantalla completa ni con la app instalada.
   - **iPhone no permite pantalla completa en ningún navegador** (Chrome en iPhone usa el motor de Safari). Por eso la pantalla de inicio muestra "📲 Pantalla completa: Compartir → Agregar a inicio", con ✕. No aparece si se abrió desde la pantalla de inicio.
   - **Juego instalable**: `public/manifest.webmanifest` (fullscreen, horizontal) y la carpeta nueva `public/assets/icons/` con el astronauta violeta sobre `night`. Desde la pantalla de inicio se abre como app, sin barras.
   - Excepción a "colores solo en `palette.ts`": el manifest es un JSON estático y repite `night` (`#1a1423`). Si cambia la paleta, hay que cambiarlo ahí y regenerar los íconos.
   - `MenuScene` conecta los controles (`setUpPhoneControls`) para no tocar `main.ts`.
 - Por qué: en el celu se perdía la pantalla completa y en iPhone nunca funcionaba.
-- A quién afecta: spec 11 (dueña de estos archivos), spec 04 (esquina de arriba a la derecha de la Base, mientras no hay pantalla completa), spec 01 (íconos de la app), spec 17 (el deploy ahora publica el manifest).
-- ¿Avisado al equipo?: pendiente (avisar en el PR).
+- A quién afecta: spec 11 (dueña de estos archivos), spec 04 (borde izquierdo de la Base, mientras no hay pantalla completa), spec 01 (íconos de la app), spec 17 (el deploy ahora publica el manifest).
+- ¿Avisado al equipo?: sí (PR #23).
 
 ## 2026-11-14 — Se saca la action de CI hasta resolver la facturación
 - Quién: C (dueña del repo)
