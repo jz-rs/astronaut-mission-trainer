@@ -15,6 +15,13 @@ Formato:
 
 ---
 
+## 2026-11-14 — X para salir de la partida
+- Quién: C, con Claude (pedido de memocayar)
+- Qué se decidió: la base tiene una X roja arriba a la izquierda (`scenes/base/ExitRunView.ts`). Al tocarla, la partida se pausa y pregunta "¿Salir de la partida?" con SALIR (vuelve al mapa, sin guardar el resultado de esa partida) y SEGUIR. No se puede abrir mientras hay un minijuego o el rover encima.
+- Por qué: no había forma de abandonar una partida; la pregunta evita que un toque sin querer la termine.
+- A quién afecta: A (spec 04 `BaseScene`, spec 11 navegación).
+- ¿Avisado al equipo?: sí (pedido en el chat). Si alguien ya tenía una X de salida sin subir, juntar con esta.
+
 ## 2026-11-14 — Rover de un solo gesto y tarjeta del lugar más clara
 - Quién: C, con Claude (pedido de memocayar)
 - Qué se decidió:

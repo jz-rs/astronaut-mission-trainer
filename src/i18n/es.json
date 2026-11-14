@@ -115,5 +115,8 @@
   "collab.meetingWhy": "📡 ¡Viene {event}! ¿Qué hacemos primero?",
   "rover.garageWithCost": "Rover -{cost}⚡",
   "rover.busy": "¡Primero terminá tu tarea!",
-  "photo.realNasa": "📷 Foto real NASA"
+  "photo.realNasa": "📷 Foto real NASA",
+  "exitRun.question": "¿Salir de la partida?",
+  "exitRun.leave": "SALIR",
+  "exitRun.stay": "SEGUIR"
 }
