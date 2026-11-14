@@ -15,6 +15,18 @@ Formato:
 
 ---
 
+## 2026-11-14 — Biomas por nivel: cada lugar de Marte se ve distinto
+- Quién: maviflora, con Claude (propuesta aprobada: https://claude.ai/artifact/3BGsLZqDjkVsasTe6a8dpG)
+- Qué se decidió:
+  - **Mapa de la base por nivel** (`public/assets/sprites/biomas/mapa-base-*.png`): suelo, detalles y colores de la base para Gale, Olympus Mons, Casquete polar y Valles Marineris. Jezero sigue usando el mapa del kit. Las salas y el pasillo quedan en el mismo lugar, así que no cambian las zonas táctiles ni los recorridos, y los colores de cada sala no se tocan.
+  - **Fotos NASA en las ventanas**: cada sala de minijuego (`sala-*-<lugar>.png`) muestra por la ventana una foto real del lugar. Olympus Mons y Valles Marineris usan fotos **desde órbita** (PIA00300, PIA00425), porque nunca aterrizó nada ahí. Créditos en `DATA_SOURCES.md`.
+  - **Clima** (`src/scenes/base/WeatherView.ts`): nieve en el polo y polvo en Gale, más escarcha en las esquinas del polo encima de la UI. Se hace con rectángulos y tweens (no con el emisor de partículas de Phaser, que dejaba la pantalla en negro al reiniciar la base).
+  - **Carga por nivel** (`src/ui/biomes.ts`): las imágenes de un nivel (~1,8 MB) se cargan en el `preload()` de `BaseScene` al entrar, no al arrancar el juego. Las ya cargadas no se vuelven a pedir.
+  - **Contrato `MinigameStartData`** (`src/minigames/MinigameScene.ts`): se agrega `locationId?` **opcional**, para que el minijuego dibuje la sala del lugar. Sin `locationId` usa la sala del kit. No rompe nada.
+- Por qué: que cada nivel se sienta un lugar distinto y real de Marte, y que la foto NASA llegue como premio visual sin texto extra.
+- A quién afecta: A (spec 04 `BaseScene`, `baseMap.ts`), B (spec 06 `MinigameScene`: contrato ampliado, minijuegos 07–10 heredan la sala nueva), C (spec 12/13: fotos y `DATA_SOURCES.md`).
+- ¿Avisado al equipo?: sí, con la propuesta y el PR #27.
+
 ## 2026-11-14 — X para salir de la partida
 - Quién: C, con Claude (pedido de memocayar)
 - Qué se decidió: la base tiene una X roja arriba a la izquierda (`scenes/base/ExitRunView.ts`). Al tocarla, la partida se pausa y pregunta "¿Salir de la partida?" con SALIR (vuelve al mapa, sin guardar el resultado de esa partida) y SEGUIR. No se puede abrir mientras hay un minijuego o el rover encima.
