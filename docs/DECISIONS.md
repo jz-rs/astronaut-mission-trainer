@@ -15,6 +15,13 @@ Formato:
 
 ---
 
+## 2026-11-14 — Solo la dueña del repo mergea a main
+- Quién: memocayar
+- Qué se decidió: una regla de GitHub ("Solo la dueña mergea a main") hace que solo la admin del repo (memocayar) pueda actualizar `main`. Las demás siguen abriendo, revisando y aprobando PRs, pero no los mergean. También bloquea borrar `main` y hacerle `push --force`.
+- Por qué: Vercel bloquea los deploys de commits hechos por quien no es miembro del proyecto en Vercel, y los merges de las demás quedaban bloqueados. Además, GitHub Actions está trabado en la cuenta (se pidió ayuda a GitHub Support), así que el deploy a GitHub Pages (PR #19) todavía no anda.
+- A quién afecta: todas. Sigue valiendo que todo PR lo revise otra integrante (§6 de `AGENTS.md`): cuando esté aprobado, se le avisa a memocayar para que lo mergee.
+- ¿Avisado al equipo?: pendiente (avisar a maviflora y jz-rs).
+
 ## 2026-11-14 — Segunda tanda de PRs: specs 13, 12, 14, 15 y 16 (más 03 y 17 aparte)
 - Quién: C, con Claude
 - Qué se decidió: seguir la cadena del front con un PR por spec: 13 → 12 → 14 → 15 → 16, encima del PR del spec 10. El 03 (tests del núcleo) y el 17 (deploy) van aparte, contra `main`.
