@@ -4,17 +4,19 @@ import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
+import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
 import { TASK_IDS, type TaskId } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
 import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
+import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene';
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
-import { CORRIDOR, FONT_SIZE, PLAYER_IDLE_SPOT } from '../../ui/layout';
+import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
 import { CREW_COLORS, PALETTE } from '../../ui/palette';
+import { floatText } from '../../ui/floatingText';
 import { addScanlines } from '../../ui/techFrame';
-import { addText } from '../../ui/text';
 import { finishRun } from '../runEnd';
 import { SCENE_KEYS } from '../sceneKeys';
 import { AstronautSprite, type WalkTarget } from './AstronautSprite';
@@ -22,6 +24,9 @@ import { drawBaseMap } from './baseMap';
 import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
+import { GarageView } from './GarageView';
+import { createPickRoomHint } from './pickRoomHint';
+import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
 import { RoomView } from './RoomView';
 
@@ -35,9 +40,6 @@ const DEFAULT_LOCATION_ID = 'jezero';
 export interface BaseSceneData {
   locationId?: string;
 }
-const FLOATING_TEXT_RISE_PX = 24;
-const FLOATING_TEXT_MS = 900;
-const HINT_OFFSET_Y = 10;
 
 export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
@@ -47,6 +49,7 @@ export class BaseScene extends Phaser.Scene {
   private bots!: BotsView;
   private botFaces!: BotFaces;
   private eventAnnouncer!: EventAnnouncer;
+  private garage!: GarageView;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -82,17 +85,9 @@ export class BaseScene extends Phaser.Scene {
     );
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
-    this.pickRoomHint = addText(
-      this,
-      PLAYER_IDLE_SPOT.x,
-      CORRIDOR.y - HINT_OFFSET_Y,
-      t('hud.pickRoom'),
-      {
-        size: FONT_SIZE.small,
-        color: PALETTE.sun,
-      },
-    ).setVisible(false);
+    this.pickRoomHint = createPickRoomHint(this);
     this.eventAnnouncer = new EventAnnouncer(this);
+    this.garage = new GarageView(this, () => this.sendRover());
     addScanlines(this);
   }
 
@@ -112,6 +107,7 @@ export class BaseScene extends Phaser.Scene {
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
+    this.garage.update(state);
     for (const room of this.rooms.values()) {
       const value = state.stats[TASK_BALANCE[room.taskId].stat];
       room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);
@@ -196,19 +192,31 @@ export class BaseScene extends Phaser.Scene {
     const room = this.rooms.get(taskId);
     if (!room) return;
     const { x, y, width, height } = room.rect;
-    const text = addText(this, x + width / 2, y + height / 2, message, { color });
-    this.tweens.add({
-      targets: text,
-      y: text.y - FLOATING_TEXT_RISE_PX,
-      alpha: 0,
-      duration: FLOATING_TEXT_MS,
-      onComplete: () => text.destroy(),
+    floatText(this, x + width / 2, y + height / 2, message, color);
+  }
+
+  /** Spec 15 — The player drives the rover out; the base keeps running meanwhile. */
+  private sendRover(): void {
+    if (this.minigameOpen || this.runEnded || this.playerBusy) return;
+    if (!canStartExpedition(this.session.state)) {
+      const message = this.session.state.roverOut ? t('rover.away') : t('hud.noEnergy');
+      floatText(this, GARAGE_SPOT.x, GARAGE_SPOT.y - 24, message, PALETTE.alert);
+      return;
+    }
+    this.playerBusy = true;
+    this.player.walkTo({ spot: GARAGE_SPOT, doorX: null }, () => {
+      if (this.runEnded) return;
+      this.minigameOpen = true;
+      launchRoverTrip(this, this.session, this.locationId, () => {
+        this.minigameOpen = false;
+        this.playerBusy = false;
+      });
     });
   }
 
   private endRun(): void {
     this.runEnded = true;
-    MINIGAME_KEYS.forEach((key) => this.scene.stop(key));
+    [...MINIGAME_KEYS, RoverExpeditionScene.KEY].forEach((key) => this.scene.stop(key));
     finishRun(this, this.session);
   }
 }

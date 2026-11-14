@@ -81,3 +81,7 @@ export const MARS_MAP_POINTS: Record<string, Point> = {
 };
 
 export const LOCATION_CARD: Rect = { x: 120, y: 40, width: 400, height: 290 };
+
+/** Rover garage at the left end of the corridor (spec 15). */
+export const GARAGE_RECT: Rect = { x: 20, y: 186, width: 72, height: 36 };
+export const GARAGE_SPOT: Point = { x: 110, y: 204 };
