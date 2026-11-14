@@ -74,8 +74,7 @@ export class BaseScene extends Phaser.Scene {
 
   init(data: BaseSceneData = {}): void {
     this.locationId = data.locationId ?? DEFAULT_LOCATION_ID;
-    this.playerBusy = false;
-    this.minigameOpen = false;
+    this.freePlayer();
     this.selectedBotId = null;
     this.runEnded = false;
     this.rooms = new Map();
@@ -101,8 +100,8 @@ export class BaseScene extends Phaser.Scene {
     this.eventAnnouncer = new EventAnnouncer(this);
     this.garage = new GarageView(this, () => this.sendRover());
     this.teamwork = new TeamworkViews(this, this.session, OVERLAY_KEYS);
-    this.taskEffects = new TaskEffectsView(this, this.hud);
-    this.tutorial = new TutorialGuide(this);
+    this.taskEffects = new TaskEffectsView(this, this.rooms);
+    this.tutorial = new TutorialGuide(this, this.rooms);
     addScanlines(this);
   }
 
@@ -119,7 +118,7 @@ export class BaseScene extends Phaser.Scene {
     if (!this.tutorial.pausesGame) this.session.update(deltaMs);
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
-    this.hud.update(state, time);
+    this.hud.update(state);
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -158,13 +157,18 @@ export class BaseScene extends Phaser.Scene {
       taskId,
       difficulty: this.session.state.location.decayMultiplier[stat] ?? 1,
       onFinish: (result) => this.handleMinigameFinished(result),
+      onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
     };
     this.scene.launch(MINIGAME_REGISTRY[taskId].key, data);
   }
 
-  private handleMinigameFinished({ taskId, performance }: MinigameResult): void {
+  private freePlayer(): void {
     this.minigameOpen = false;
     this.playerBusy = false;
+  }
+
+  private handleMinigameFinished({ taskId, performance }: MinigameResult): void {
+    this.freePlayer();
     if (this.runEnded) return;
     this.session.dispatch({ type: 'completeTask', crewId: PLAYER_ID, taskId, performance });
     recordMinigameResult(taskId, performance);
@@ -230,10 +234,7 @@ export class BaseScene extends Phaser.Scene {
     this.player.walkTo({ spot: GARAGE_SPOT, door: null }, () => {
       if (this.runEnded) return;
       this.minigameOpen = true;
-      launchRoverTrip(this, this.session, this.locationId, () => {
-        this.minigameOpen = false;
-        this.playerBusy = false;
-      });
+      launchRoverTrip(this, this.session, this.locationId, () => this.freePlayer());
     });
   }
 

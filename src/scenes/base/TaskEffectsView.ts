@@ -1,15 +1,17 @@
 import Phaser from 'phaser';
 import { TASK_BALANCE } from '../../config/balance';
-import type { RunState, StatId, TaskNews } from '../../core/types';
+import { taskForStat } from '../../core/collab';
+import type { RunState, StatId, TaskId, TaskNews } from '../../core/types';
 import { FONT_SIZE, ROOM_LAYOUTS, type Point } from '../../ui/layout';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import { addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import { addText } from '../../ui/text';
-import { statBarCenter, type Hud } from './Hud';
+import type { RoomView } from './RoomView';
 
 /**
  * The heart of the lesson: every decision changes the bars. When anyone finishes a task,
- * "+30 💨" flies from the room to its bar and "−10 ⚡" to the energy bar, and both bars glow.
+ * "+30 💨" flies from the room to its bar and "−10 ⚡" to the energy bar (on the solar panels
+ * card), and both bars glow.
  * It only reads `state.taskNews`.
  */
 const ICON_SIZE = 14;
@@ -23,7 +25,7 @@ export class TaskEffectsView {
 
   constructor(
     private readonly scene: Phaser.Scene,
-    private readonly hud: Hud,
+    private readonly rooms: ReadonlyMap<TaskId, RoomView>,
   ) {}
 
   /** Calls `onShown` for every new task effect, after it started flying. */
@@ -54,7 +56,8 @@ export class TaskEffectsView {
     const icon = addSpriteSized(this.scene, 0, 0, STAT_ICON_SPRITES[stat], ICON_SIZE);
     icon.setX(text.width / 2 + ICON_GAP);
     const badge = this.scene.add.container(from.x, from.y, [text, icon]).setDepth(DEPTH);
-    const target = statBarCenter(stat);
+    const room = this.rooms.get(taskForStat(stat));
+    const target = room?.barCenter ?? from;
     this.scene.tweens.chain({
       targets: badge,
       tweens: [
@@ -63,7 +66,7 @@ export class TaskEffectsView {
       ],
       onComplete: () => {
         badge.destroy();
-        this.hud.flash(this.scene, stat);
+        room?.flashBar();
       },
     });
   }

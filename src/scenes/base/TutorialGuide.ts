@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { TUTORIAL_BALANCE } from '../../config/balance';
+import { taskForStat } from '../../core/collab';
 import { STAT_IDS, type StatId, type TaskId } from '../../core/types';
 import { t } from '../../i18n';
 import { loadProgress, saveProgress } from '../../services/progressStorage';
@@ -17,7 +18,7 @@ import { addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
 import { BOT_FACES_CENTER } from './BotFaces';
-import { statBarCenter } from './Hud';
+import type { RoomView } from './RoomView';
 import { addTutorialPointer } from './tutorialPointer';
 
 /**
@@ -34,8 +35,8 @@ const DEPTH = 60;
 const FIRST_ROOM: TaskId = 'oxygen-factory';
 const ICON_SIZE = 28;
 const ICON_SPACING = 56;
-/** The arrow under a HUD bar starts a bit below it. */
-const BELOW_HUD_PX = 10;
+/** The arrow under a bar or the bot faces starts a bit below it. */
+const BELOW_TARGET_PX = 10;
 /** Point a bit under the room center, so the line above the arrow doesn't cover the room's sign. */
 const ROOM_POINTER_DROP = 24;
 
@@ -44,7 +45,10 @@ export class TutorialGuide {
   private card: Phaser.GameObjects.Container | null = null;
   private pointer: Phaser.GameObjects.Container | null = null;
 
-  constructor(private readonly scene: Phaser.Scene) {
+  constructor(
+    private readonly scene: Phaser.Scene,
+    private readonly rooms: ReadonlyMap<TaskId, RoomView>,
+  ) {
     this.step = loadProgress().tutorialDone ? 'done' : 'intro';
     if (this.step === 'intro') this.card = this.createIntroCard();
   }
@@ -64,9 +68,10 @@ export class TutorialGuide {
   playerTaskDone(stat: StatId): void {
     if (this.step !== 'playing') return;
     this.step = 'explaining';
-    this.showPointer(this.belowHud(statBarCenter(stat).x), t('tutorial.barRose'));
+    const bar = this.rooms.get(taskForStat(stat))?.barCenter ?? BOT_FACES_CENTER;
+    this.showPointer(below(bar), t('tutorial.barRose'));
     this.scene.time.delayedCall(TUTORIAL_BALANCE.explainStepMs, () => {
-      this.showPointer(this.belowHud(BOT_FACES_CENTER.x), t('tutorial.bots'));
+      this.showPointer(below(BOT_FACES_CENTER), t('tutorial.bots'));
       this.scene.time.delayedCall(TUTORIAL_BALANCE.explainStepMs, () => this.finish());
     });
   }
@@ -84,10 +89,6 @@ export class TutorialGuide {
     this.clearPointer();
     this.step = 'done';
     saveProgress({ ...loadProgress(), tutorialDone: true });
-  }
-
-  private belowHud(x: number): Point {
-    return { x, y: statBarCenter('oxygen').y + BELOW_HUD_PX };
   }
 
   private showPointer(target: Point, message: string): void {
@@ -148,4 +149,8 @@ export class TutorialGuide {
       ),
     );
   }
+}
+
+function below({ x, y }: Point): Point {
+  return { x, y: y + BELOW_TARGET_PX };
 }

@@ -10,11 +10,16 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 /**
  * Spec 05 — Draws the 3 bots. It only READS the run state: when a bot's task changes,
  * its sprite walks to the room (or back to the corridor) and shows a progress bar while working.
- * Tapping a bot on MANUAL selects it so the next tapped room becomes its order.
+ * Tapping a bot on MANUAL that waits in the corridor selects it, so the next tapped room
+ * becomes its order. A bot on AUTO or inside a room lets the tap through to the room, so a kid
+ * tapping a busy room always goes in to play instead of selecting the bot by accident.
  */
 const PROGRESS_WIDTH = 28;
-/** Above the helmet: astronauts are drawn from their feet up. */
-const PROGRESS_OFFSET_Y = 48;
+/**
+ * Under the feet (astronauts are drawn from their feet up): above the helmet it ran into
+ * the room cards and their bars.
+ */
+const PROGRESS_OFFSET_Y = 4;
 
 interface BotSprite {
   astronaut: AstronautSprite;
@@ -46,8 +51,9 @@ export class BotsView {
       if (!bot) continue;
       const { image } = bot.astronaut;
       bot.ring.setVisible(member.id === selectedBotId).setPosition(image.x, image.y);
-      // Bots on AUTO decide alone: they are not tappable, so a tap on their room reaches the room.
-      if (image.input) image.input.enabled = !member.autoMode;
+      // Bots on AUTO decide alone and bots at work are in a room: neither is tappable,
+      // so a tap there reaches the room.
+      if (image.input) image.input.enabled = !member.autoMode && member.task === null;
       this.followTask(member, bot);
       this.drawProgress(member, bot);
     }
@@ -68,7 +74,7 @@ export class BotsView {
     if (!member.task || bot.astronaut.isWalking) return;
     const done = 1 - member.task.remainingMs / CREW_BALANCE.botTaskDurationMs;
     const x = bot.astronaut.image.x - PROGRESS_WIDTH / 2;
-    const y = bot.astronaut.image.y - PROGRESS_OFFSET_Y;
+    const y = bot.astronaut.image.y + PROGRESS_OFFSET_Y;
     bot.progress.fillStyle(PALETTE.night, 1).fillRect(x - 1, y - 1, PROGRESS_WIDTH + 2, 6);
     bot.progress.fillStyle(PALETTE.cyan, 1).fillRect(x, y, PROGRESS_WIDTH * done, 4);
   }
