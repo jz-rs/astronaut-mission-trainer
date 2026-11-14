@@ -51,10 +51,11 @@ Armada con la [guía oficial de entrega de proyectos](https://www.spaceappschall
 - [ ] Capturas y un video corto de una partida para la demo.
 
 ## Estado del deploy (2026-11-14)
-- En los PRs del repo aparece un check de **Vercel**: alguien del equipo ya conectó Vercel. Falta confirmar en el panel de Vercel que publica `main` y anotar acá el link público.
-- **GitHub Pages** no es opción mientras el repo sea privado en una cuenta gratis (Pages en repos privados requiere un plan pago).
-- `vite.config.ts` ya usa `base: './'`, así que el build funciona en cualquier hosting estático.
-- El CI de GitHub Actions (PR "Spec 02 — CI") todavía no arranca: falla antes de empezar, probablemente por la configuración o los minutos de Actions de la cuenta dueña del repo.
+- **Publicamos con GitHub Pages**: `.github/workflows/deploy-pages.yml` corre `npm run check`, hace el build y lo publica en cada push a `main`.
+- Link público: https://memocayar.github.io/astronaut-mission-trainer/
+- **Vercel quedó descartado**: el plan gratis bloquea los deploys de commits hechos por integrantes que no son miembros del proyecto en Vercel (pasó con los merges de `main`).
+- El repo ahora es público, así que Pages funciona en la cuenta gratis.
+- `vite.config.ts` ya usa `base: './'`, así que el build funciona en la subruta de Pages.
 
 ## Aprobación
 - [ ] A — _(nombre)_
