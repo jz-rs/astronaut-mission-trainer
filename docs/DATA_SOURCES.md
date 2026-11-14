@@ -46,4 +46,8 @@ Claves de texto en `src/i18n/*.json`. "Verificado" = el dato se chequeó contra 
 
 | Archivo | Qué muestra | Crédito | Licencia | URL original |
 |---|---|---|---|---|
-| _(vacío)_ | | | | |
+| `public/assets/nasa/jezero.jpg` | Jezero desde el suelo: primera panorámica en alta resolución de Perseverance (recortada) | NASA/JPL-Caltech/ASU/MSSS | Dominio público (NASA/JPL) | [PIA23727](https://photojournal.jpl.nasa.gov/catalog/PIA23727) |
+| `public/assets/nasa/gale.jpg` | Monte Sharp, dentro del cráter Gale, visto por Curiosity (recortada) | NASA/JPL-Caltech/MSSS | Dominio público (NASA/JPL) | [PIA16099](https://photojournal.jpl.nasa.gov/catalog/PIA16099) |
+| `public/assets/nasa/olympus-mons.jpg` | Olympus Mons visto desde arriba, mosaico de los Viking (recortada) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
+| `public/assets/nasa/north-pole.jpg` | Casquete polar norte en verano, Mars Global Surveyor (recortada) | NASA/JPL/MSSS | Dominio público (NASA/JPL) | [PIA02800](https://photojournal.jpl.nasa.gov/catalog/PIA02800) |
+| `public/assets/nasa/valles-marineris.jpg` | Valles Marineris, mosaico de los Viking (recortada) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00422](https://photojournal.jpl.nasa.gov/catalog/PIA00422) |

@@ -15,6 +15,20 @@ Formato:
 
 ---
 
+## 2026-11-14 — Todos los lugares de Marte desbloqueados desde el inicio
+- Quién: C, con Claude (pedido de la dueña del repo)
+- Qué se decidió: los 5 lugares de `data/locations.json` pasan a `starsToUnlock: 0`, así se pueden jugar todos desde la primera partida. Las estrellas y el récord por lugar se siguen guardando y mostrando. La lógica de candados (`core/progression.ts`) y su dibujo en el mapa quedan, por si se quiere volver a bloquear: alcanza con poner otra vez los números (antes: 0, 2, 4, 6, 8).
+- Por qué: que todos los lugares se puedan probar y mostrar ya (playtests, balance, demo).
+- A quién afecta: spec 12 (progresión por estrellas), ROADMAP H4 ("¿intenta conseguir la 3ª estrella?").
+- ¿Avisado al equipo?: pendiente (avisar con el PR).
+
+## 2026-11-14 — Fotos reales de la NASA para los 5 lugares
+- Quién: C, con Claude
+- Qué se decidió: una foto real por lugar en `public/assets/nasa/` (640 × 360, recortada al monitor del marco), registrada en `src/content/locationPhotos.ts` y en `docs/DATA_SOURCES.md`. Se ven en la tarjeta del mapa y al volver del rover. Son de NASA/JPL Photojournal (dominio público); se evitaron las que incluyen créditos de ESA.
+- Por qué: el spec 13 y AGENTS.md §5 piden imágenes reales de la NASA enmarcadas y con crédito.
+- A quién afecta: specs 12, 13, 15 (solo contenido; no cambia código de escenas).
+- ¿Avisado al equipo?: pendiente (avisar con el PR).
+
 ## 2026-11-14 — Minijuegos más claros, rover que explica y balance para chicos que recién aprenden
 - Quién: C, con Claude (pedido de memocayar)
 - Qué se decidió:

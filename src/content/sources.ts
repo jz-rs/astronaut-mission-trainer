@@ -42,4 +42,5 @@ export const SOURCE_LINKS: readonly SourceLink[] = [
   },
   { label: 'Clima espacial DONKI — NASA', url: 'https://ccmc.gsfc.nasa.gov/tools/DONKI/' },
   { label: 'Mars Trek — NASA', url: 'https://trek.nasa.gov/mars/' },
+  { label: 'Fotos de los lugares — NASA Photojournal', url: 'https://photojournal.jpl.nasa.gov/' },
 ];
