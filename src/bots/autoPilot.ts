@@ -1,4 +1,5 @@
 import type { GameAction } from '../core/actions';
+import { planTeamworkActions } from './teamwork';
 import { canAffordTask } from '../core/stats';
 import { TASK_BALANCE } from '../config/balance';
 import { TASK_IDS, type RunState, type TaskId } from '../core/types';
@@ -9,6 +10,10 @@ import { TASK_IDS, type RunState, type TaskId } from '../core/types';
  * It returns actions instead of changing state, exactly like a human player would.
  */
 export function planAutoBotActions(state: RunState): GameAction[] {
+  return [...planTeamworkActions(state), ...planTaskActions(state)];
+}
+
+function planTaskActions(state: RunState): GameAction[] {
   const actions: GameAction[] = [];
   const takenTasks = new Set(
     state.crew.flatMap((member) => (member.task ? [member.task.taskId] : [])),
@@ -30,6 +35,10 @@ function pickMostUrgentTask(state: RunState, takenTasks: Set<TaskId>): TaskId | 
   const candidates = TASK_IDS.filter(
     (taskId) => !takenTasks.has(taskId) && canAffordTask(state.stats, taskId),
   );
+  const priority = state.priority;
+  if (priority && state.sol <= priority.untilSol && candidates.includes(priority.taskId)) {
+    return priority.taskId; // the crew voted this in the crisis meeting (spec 16)
+  }
   const statValue = (taskId: TaskId) => state.stats[TASK_BALANCE[taskId].stat];
   return candidates.sort((a, b) => statValue(a) - statValue(b))[0];
 }

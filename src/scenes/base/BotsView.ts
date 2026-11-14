@@ -1,0 +1,102 @@
+import Phaser from 'phaser';
+import { CREW_BALANCE } from '../../config/balance';
+import { BOT_IDS } from '../../core/run';
+import type { CrewMember, RunState, TaskId } from '../../core/types';
+import { ASTRONAUT_SCALE, BOT_IDLE_SPOTS, MIN_TOUCH_SIZE, type Point } from '../../ui/layout';
+import { CREW_COLORS, PALETTE } from '../../ui/palette';
+import { AstronautSprite, type WalkTarget } from './AstronautSprite';
+
+/**
+ * Spec 05 — Draws the 3 bots. It only READS the run state: when a bot's task changes,
+ * its sprite walks to the room (or back to the corridor) and shows a progress bar while working.
+ * Tapping a bot selects it so the next tapped room becomes its order.
+ */
+const PROGRESS_WIDTH = 28;
+const PROGRESS_OFFSET_Y = 30;
+
+interface BotSprite {
+  astronaut: AstronautSprite;
+  ring: Phaser.GameObjects.Graphics;
+  progress: Phaser.GameObjects.Graphics;
+  shownTask: TaskId | null;
+}
+
+export class BotsView {
+  private readonly bots = new Map<string, BotSprite>();
+
+  constructor(
+    private readonly scene: Phaser.Scene,
+    crew: CrewMember[],
+    private readonly getWorkSpot: (taskId: TaskId, crewId: string) => WalkTarget,
+    onBotTap: (botId: string) => void,
+  ) {
+    for (const member of crew) {
+      if (!member.isBot) continue;
+      const bot = this.createBot(member.id);
+      bot.astronaut.image.on('pointerup', () => onBotTap(member.id));
+      this.bots.set(member.id, bot);
+    }
+  }
+
+  update(state: RunState, selectedBotId: string | null): void {
+    for (const member of state.crew) {
+      const bot = this.bots.get(member.id);
+      if (!bot) continue;
+      const { image } = bot.astronaut;
+      bot.ring.setVisible(member.id === selectedBotId).setPosition(image.x, image.y);
+      this.followTask(member, bot);
+      this.drawProgress(member, bot);
+    }
+  }
+
+  private followTask(member: CrewMember, bot: BotSprite): void {
+    const taskId = member.task?.taskId ?? null;
+    if (taskId === bot.shownTask) return;
+    bot.shownTask = taskId;
+    const target = taskId
+      ? this.getWorkSpot(taskId, member.id)
+      : { spot: this.idleSpot(member.id), doorX: null };
+    bot.astronaut.walkTo(target);
+  }
+
+  private drawProgress(member: CrewMember, bot: BotSprite): void {
+    bot.progress.clear();
+    if (!member.task || bot.astronaut.isWalking) return;
+    const done = 1 - member.task.remainingMs / CREW_BALANCE.botTaskDurationMs;
+    const x = bot.astronaut.image.x - PROGRESS_WIDTH / 2;
+    const y = bot.astronaut.image.y - PROGRESS_OFFSET_Y;
+    bot.progress.fillStyle(PALETTE.night, 1).fillRect(x - 1, y - 1, PROGRESS_WIDTH + 2, 6);
+    bot.progress.fillStyle(PALETTE.cyan, 1).fillRect(x, y, PROGRESS_WIDTH * done, 4);
+  }
+
+  private idleSpot(botId: string): Point {
+    const index = (BOT_IDS as readonly string[]).indexOf(botId);
+    return BOT_IDLE_SPOTS[Math.max(0, index)] ?? BOT_IDLE_SPOTS[0];
+  }
+
+  private createBot(botId: string): BotSprite {
+    const ring = this.scene.add.graphics().setVisible(false);
+    ring.lineStyle(2, PALETTE.white, 1).strokeEllipse(0, 18, 34, 12);
+    const color = CREW_COLORS[botId] ?? PALETTE.white;
+    const astronaut = new AstronautSprite(this.scene, this.idleSpot(botId), color);
+    makeFingerSized(astronaut.image);
+    const progress = this.scene.add.graphics().setDepth(1);
+    return { astronaut, ring, progress, shownTask: null };
+  }
+}
+
+/** Bots are small: the touch area is enlarged to the minimum finger size. */
+function makeFingerSized(image: Phaser.GameObjects.Image): void {
+  const hitSize = MIN_TOUCH_SIZE / ASTRONAUT_SCALE;
+  const hitArea = new Phaser.Geom.Rectangle(
+    image.width / 2 - hitSize / 2,
+    image.height / 2 - hitSize / 2,
+    hitSize,
+    hitSize,
+  );
+  image.setInteractive({
+    hitArea,
+    hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+    useHandCursor: true,
+  });
+}

@@ -1,4 +1,6 @@
 import { CREW_BALANCE } from '../config/balance';
+import { castVote, holdLever } from './collab';
+import { completeExpedition, startExpedition } from './expedition';
 import { applyTaskResult, canAffordTask } from './stats';
 import { clampPerformance } from './training';
 import type { CrewMember, RunState, TaskId } from './types';
@@ -10,7 +12,11 @@ import type { CrewMember, RunState, TaskId } from './types';
 export type GameAction =
   | { type: 'assignTask'; crewId: string; taskId: TaskId }
   | { type: 'completeTask'; crewId: string; taskId: TaskId; performance: number }
-  | { type: 'setAutoMode'; crewId: string; enabled: boolean };
+  | { type: 'setAutoMode'; crewId: string; enabled: boolean }
+  | { type: 'startExpedition'; crewId: string }
+  | { type: 'completeExpedition'; crewId: string; samples: number }
+  | { type: 'holdLever'; crewId: string; holding: boolean }
+  | { type: 'castVote'; crewId: string; taskId: TaskId };
 
 export function applyAction(state: RunState, action: GameAction): void {
   if (state.status !== 'playing') return;
@@ -25,6 +31,18 @@ export function applyAction(state: RunState, action: GameAction): void {
       break;
     case 'setAutoMode':
       member.autoMode = action.enabled;
+      break;
+    case 'startExpedition':
+      startExpedition(state);
+      break;
+    case 'completeExpedition':
+      completeExpedition(state, action.samples);
+      break;
+    case 'holdLever':
+      holdLever(state, member.id, action.holding);
+      break;
+    case 'castVote':
+      castVote(state, member.id, action.taskId);
       break;
   }
 }

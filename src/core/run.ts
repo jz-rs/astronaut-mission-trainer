@@ -1,13 +1,19 @@
 import { CREW_BALANCE, RUN_BALANCE } from '../config/balance';
 import { applyAction, type GameAction } from './actions';
+import { updateCollab } from './collab';
+import { updateEvents } from './events';
 import { applyDecay, createStartingStats, findEmptyStat, updateLowestStats } from './stats';
 import { getBotEfficiency } from './training';
-import type { CrewMember, LocationConfig, RunState, TrainingLevels } from './types';
+import type { CrewMember, LocationConfig, RunState, ScheduledEvent, TrainingLevels } from './types';
 
 export const PLAYER_ID = 'player';
 export const BOT_IDS = ['bot-red', 'bot-green', 'bot-yellow'] as const;
 
-export function createRun(location: LocationConfig, training: TrainingLevels): RunState {
+export function createRun(
+  location: LocationConfig,
+  training: TrainingLevels,
+  events: ScheduledEvent[] = [],
+): RunState {
   return {
     location,
     training,
@@ -18,6 +24,12 @@ export function createRun(location: LocationConfig, training: TrainingLevels): R
     crew: createCrew(),
     samples: 0,
     status: 'playing',
+    events,
+    eventNews: [],
+    roverOut: false,
+    emergency: null,
+    meeting: null,
+    priority: null,
   };
 }
 
@@ -35,11 +47,14 @@ function createCrew(): CrewMember[] {
 /** Advances the simulation. Called every frame by the scene, or by a server in the future. */
 export function updateRun(state: RunState, deltaMs: number): void {
   if (state.status !== 'playing') return;
+  updateCollab(state, deltaMs);
+  if (state.meeting) return; // the crisis meeting pauses the base while everyone votes
 
   applyDecay(state.stats, state.location, deltaMs);
   advanceBotTasks(state, deltaMs);
   updateLowestStats(state.lowestStats, state.stats);
   advanceClock(state, deltaMs);
+  updateEvents(state);
   checkEvacuation(state);
 }
 

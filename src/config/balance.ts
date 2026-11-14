@@ -49,6 +49,86 @@ export const MINIGAME_BALANCE = {
   resultDisplayMs: 1_800,
   perfectThreshold: 1.1,
   goodThreshold: 0.7,
+  /** Finishing a minigame early adds up to this bonus over 1.0 ... */
+  speedBonusMax: 0.2,
+  /** ... and the full bonus needs this fraction of the time still left. */
+  fullBonusTimeLeftFraction: 0.5,
+} as const;
+
+export const PLACEHOLDER_MINIGAME_BALANCE = {
+  tapsGoal: 5,
+} as const;
+
+/** A bar below this value blinks red, and so does its room (spec 04). */
+export const ALERT_BALANCE = {
+  lowStatThreshold: 30,
+} as const;
+
+export const SOLAR_PANELS_BALANCE = {
+  dustCellSize: 10,
+  brushRadius: 16,
+  /** Dust cells that fall back per second for each point of difficulty above 1. */
+  dustReturnPerSecond: 8,
+} as const;
+
+export const OXYGEN_FACTORY_BALANCE = {
+  bubblesGoal: 6,
+  bubblesOnScreen: 3,
+  bubbleSpeed: 35,
+  bubbleRadius: 22,
+} as const;
+
+export const GREENHOUSE_BALANCE = {
+  columns: 3,
+  rows: 2,
+  thirstEveryMs: 1_300,
+  thirstyForMs: 2_800,
+  noWitheredBonus: 0.2,
+} as const;
+
+export const SHIELD_WALL_BALANCE = {
+  wallSlots: 10,
+  holes: 4,
+  maxHoles: 6,
+  snapDistance: 40,
+} as const;
+
+/** Spec 14 — How many real events hit each run, and when. */
+export const EVENT_BALANCE = {
+  minEventsPerRun: 2,
+  maxEventsPerRun: 3,
+  /** Sol 1 is calm so the player can learn the base first. */
+  firstEventSol: 2,
+  /** Events land in the middle of their sol. */
+  hitAtSolFraction: 0.5,
+} as const;
+
+/** Spec 15 — The rover trip: costly in energy, the only way to get samples. */
+export const ROVER_BALANCE = {
+  energyCost: 25,
+  durationMs: 15_000,
+  resultDisplayMs: 3_000,
+  lanes: 3,
+  scrollSpeedPxPerSecond: 90,
+  spawnEveryMs: 800,
+  /** Share of spawned things that are shiny samples instead of rocks. */
+  sampleChance: 0.45,
+  samplesLostPerRock: 1,
+  rockStunMs: 600,
+} as const;
+
+/** Spec 16 — Teamwork moments. Set the flags to false to turn them off if they are not polished. */
+export const COLLAB_BALANCE = {
+  leverEnabled: true,
+  meetingEnabled: true,
+  leverHoldersNeeded: 2,
+  leverHoldMs: 3_000,
+  leverWindowMs: 12_000,
+  /** Time a bot takes to walk to the lever before it can hold it. */
+  botLeverDelayMs: 2_500,
+  /** Holding the lever together leaves only this share of the storm damage. */
+  leverSavedDamageFactor: 0.25,
+  meetingVoteMs: 10_000,
 } as const;
 
 export const SCORING = {
