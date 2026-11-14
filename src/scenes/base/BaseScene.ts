@@ -200,13 +200,17 @@ export class BaseScene extends Phaser.Scene {
     if (news.crewId === PLAYER_ID) this.tutorial.playerTaskDone(TASK_BALANCE[news.taskId].stat);
   }
 
+  /** Tapping the bot again keeps it chosen: the next room tap is still its order. */
   private selectBot(botId: string): void {
     if (this.minigameOpen) return;
-    this.setSelectedBot(this.selectedBotId === botId ? null : botId);
+    this.setSelectedBot(botId);
   }
 
   private orderBot(botId: string, taskId: TaskId): void {
-    if (canAffordTask(this.session.state.stats, taskId)) {
+    const bot = this.session.state.crew.find((member) => member.id === botId);
+    if (bot?.task?.taskId === taskId) {
+      this.showFloatingText(taskId, t('hud.botAlreadyThere'), PALETTE.sun); // why it doesn't move
+    } else if (canAffordTask(this.session.state.stats, taskId)) {
       this.session.dispatch({ type: 'assignTask', crewId: botId, taskId });
     } else {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);

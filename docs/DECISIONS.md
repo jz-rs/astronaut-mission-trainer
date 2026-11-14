@@ -27,6 +27,20 @@ Formato:
 - A quién afecta: A (spec 04 `BaseScene`, `baseMap.ts`), B (spec 06 `MinigameScene`: contrato ampliado, minijuegos 07–10 heredan la sala nueva), C (spec 12/13: fotos y `DATA_SOURCES.md`).
 - ¿Avisado al equipo?: sí, con la propuesta y el PR #27.
 
+## 2026-11-14 — Tarjetas de los bots más claras (AUTO / MANUAL)
+- Quién: C, con Claude (pedido de C)
+- Qué se decidió: las caritas de los bots en la barra de arriba pasan a ser tarjetas más grandes (`BotFaces.ts`), pensadas para chicos de 7 años:
+  - el astronauta del bot, con el mismo color de traje que en el mapa;
+  - el modo en letra más grande y con color: **AUTO** (verde: elige y trabaja solo) o **MANUAL** (amarillo: espera tu orden). Se probó "SOLO" / "VOS", pero C prefirió AUTO / MANUAL;
+  - el ícono de la sala donde trabaja, o "?" mientras espera tu orden;
+  - al tocarla: si pasa a AUTO aparece "¡Trabaja solo!" (clave nueva `hud.botNowAlone`); si pasa a MANUAL la tarjeta titila en blanco y aparece "¿A qué sala va?" (como antes).
+  - `floatText` ahora devuelve el texto, para poder ubicarlo y ponerlo adelante, y todos los mensajes flotantes ("¡Sin energía!", etc.) llevan contorno oscuro para leerse sobre el mapa.
+  - **Mandar a un bot en MANUAL** (corrige la regla del PR #24): un bot en MANUAL se puede tocar en el mapa aunque esté trabajando en una sala, porque es lo que hace un chico para "agarrarlo". Solo responde el cuerpo del astronauta (antes, un cuadrado agrandado de 48 px), así el resto de la sala sigue abriendo el minijuego. Los bots en AUTO siguen sin poder tocarse. Tocar un bot ya elegido lo deja elegido (antes lo soltaba y el siguiente toque te mandaba a vos). Si se lo manda a la sala donde ya está, aparece "¡Ya está ahí!" (clave nueva `hud.botAlreadyThere`).
+- Por qué (lo de mandar bots): al probarlo, se pasaba un bot a MANUAL, se tocaba al robot y después una sala, y el robot no se movía.
+- Por qué: probándolo, las caritas chicas con "AUTO" / "MANUAL" en letra de 6 px no se entendían: no se veía cuál robot era ni qué estaba haciendo.
+- A quién afecta: A (spec 05: `BotFaces.ts`, `BotsView.ts`; spec 04: `BaseScene.ts`), todas (`floatingText.ts`, i18n con claves nuevas).
+- ¿Avisado al equipo?: pendiente (se avisa con el PR).
+
 ## 2026-11-14 — X para salir de la partida
 - Quién: C, con Claude (pedido de memocayar)
 - Qué se decidió: la base tiene una X roja arriba a la izquierda (`scenes/base/ExitRunView.ts`). Al tocarla, la partida se pausa y pregunta "¿Salir de la partida?" con SALIR (vuelve al mapa, sin guardar el resultado de esa partida) y SEGUIR. No se puede abrir mientras hay un minijuego o el rover encima.

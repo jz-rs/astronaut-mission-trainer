@@ -22,6 +22,9 @@ import { SCENE_KEYS } from './sceneKeys';
  */
 const LANGUAGES: readonly Language[] = ['es', 'en'];
 const TITLE_BAND = { y: 46, height: 96, alpha: 0.75 } as const;
+/** The 2-line title and the subtitle sit inside the band, with air above and below. */
+const TITLE_Y = TITLE_BAND.y + 36;
+const SUBTITLE_Y = TITLE_BAND.y + TITLE_BAND.height - 16;
 const CENTER_X = GAME_WIDTH / 2;
 
 export class MenuScene extends Phaser.Scene {
@@ -32,8 +35,8 @@ export class MenuScene extends Phaser.Scene {
   create(): void {
     this.drawBackground();
     this.drawFloatingAstronaut();
-    addText(this, CENTER_X, 70, t('menu.title'), { size: FONT_SIZE.large, color: PALETTE.white });
-    addText(this, CENTER_X, 122, t('menu.subtitle'), {
+    addText(this, CENTER_X, TITLE_Y, t('menu.title'), { size: FONT_SIZE.large, color: PALETTE.white });
+    addText(this, CENTER_X, SUBTITLE_Y, t('menu.subtitle'), {
       size: FONT_SIZE.small,
       color: PALETTE.cyan,
     });

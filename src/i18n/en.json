@@ -8,6 +8,8 @@
   "hud.sol": "Sol {current}/{total}",
   "hud.auto": "AUTO",
   "hud.manual": "MANUAL",
+  "hud.botNowAlone": "It works alone!",
+  "hud.botAlreadyThere": "Already there!",
   "stat.oxygen": "Oxygen",
   "stat.food": "Food",
   "stat.shield": "Shield",
