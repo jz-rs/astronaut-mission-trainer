@@ -1,0 +1,44 @@
+import type { StatId } from '../core/types';
+
+/**
+ * Sizes and positions shared by every scene, in game pixels (the canvas is scaled to the screen).
+ * Values follow docs/STYLE_GUIDE.md. Each spec appends its own section below.
+ */
+export const GAME_WIDTH = 640;
+export const GAME_HEIGHT = 360;
+
+export const FONT_FAMILY = '"Press Start 2P", monospace';
+export const FONT_SIZE = { small: 8, medium: 12, large: 20, title: 28 } as const;
+
+/** Smallest touch area for a finger on a phone (AGENTS.md §4). */
+export const MIN_TOUCH_SIZE = 48;
+
+export interface Rect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export function rectCenter(rect: Rect): Point {
+  return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+}
+
+/** Top band of the base screen with the 4 bars. */
+export const HUD_HEIGHT = 44;
+
+/** Placeholder astronauts are drawn at 14×20 and shown at this scale. */
+export const ASTRONAUT_SCALE = 2;
+
+/** Icons stay emoji until the pixel-art set from spec 01 arrives. */
+export const STAT_ICONS: Record<StatId, string> = {
+  oxygen: '💨',
+  food: '🥬',
+  shield: '☢️',
+  energy: '⚡',
+};
