@@ -1,6 +1,7 @@
 import type { TaskId } from '../core/types';
 import type { MinigameScene } from './MinigameScene';
 import { PlaceholderMinigame } from './placeholder/PlaceholderMinigame';
+import { SolarPanelsMinigame } from './solar-panels/SolarPanelsMinigame';
 
 /**
  * Which minigame opens in each room. Adding a minigame = one line here.
@@ -12,7 +13,7 @@ export interface MinigameEntry {
 }
 
 export const MINIGAME_REGISTRY: Record<TaskId, MinigameEntry> = {
-  'solar-panels': { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },
+  'solar-panels': { key: SolarPanelsMinigame.KEY, scene: SolarPanelsMinigame },
   'oxygen-factory': { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },
   greenhouse: { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },
   'shield-wall': { key: PlaceholderMinigame.KEY, scene: PlaceholderMinigame },

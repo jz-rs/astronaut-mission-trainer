@@ -64,6 +64,13 @@ export const ALERT_BALANCE = {
   lowStatThreshold: 30,
 } as const;
 
+export const SOLAR_PANELS_BALANCE = {
+  dustCellSize: 10,
+  brushRadius: 16,
+  /** Dust cells that fall back per second for each point of difficulty above 1. */
+  dustReturnPerSecond: 8,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,
