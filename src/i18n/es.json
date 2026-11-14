@@ -93,9 +93,8 @@
   "map.photoPending": "Foto real: pronto",
   "result.map": "Mapa",
   "result.worstEvent": "💥 Lo que más dañó la base: {event}",
-  "rover.instruction": "¡Esquivá rocas y tocá las piedras que brillan!",
+  "rover.instruction": "¡Atrapá las piedras que brillan y esquivá las rocas!",
   "rover.samples": "🧪 +{samples} muestras",
-  "rover.garage": "Rover",
   "rover.away": "🚙 El rover está afuera",
   "collab.leverButton": "✋ MANTENÉ",
   "collab.lever": "¡Mantené apretado junto a un compañero!",
@@ -113,5 +112,11 @@
   "tutorial.tapRoom": "¡Tocá esta sala!",
   "tutorial.barRose": "¡Subió! Pero cada tarea gasta ⚡",
   "tutorial.bots": "Tus robots también ayudan solos",
-  "collab.meetingWhy": "📡 ¡Viene {event}! ¿Qué hacemos primero?"
+  "collab.meetingWhy": "📡 ¡Viene {event}! ¿Qué hacemos primero?",
+  "rover.garageWithCost": "Rover -{cost}⚡",
+  "rover.busy": "¡Primero terminá tu tarea!",
+  "photo.realNasa": "📷 Foto real NASA",
+  "exitRun.question": "¿Salir de la partida?",
+  "exitRun.leave": "SALIR",
+  "exitRun.stay": "SEGUIR"
 }

@@ -7,7 +7,8 @@ import { NASA_MONITOR_FRAME, NASA_MONITOR_SCREEN } from './sprites';
 import { addText } from './text';
 
 /**
- * Real NASA photos always go inside a frame, with their credit (AGENTS.md §5).
+ * Real NASA photos always go inside a frame, labelled "📷 Real NASA photo" so kids can tell
+ * what is real (GDD §12). Each photo's credit is in locationPhotos.ts and docs/DATA_SOURCES.md.
  * The frame is the monitor of the kit's console (`ui/marco-foto-nasa.png`), fitted inside `rect`;
  * the photo shows through its transparent screen.
  * Used by the Mars map card (spec 12) and the rover trip (spec 15).
@@ -35,11 +36,17 @@ export function drawFramedPhoto(
     const image = scene.add.image(screen.x, screen.y, photoTextureKey(locationId));
     image.setOrigin(0).setDisplaySize(screen.width, screen.height);
     const frame = addFrame();
-    const credit = addText(scene, rect.x + rect.width / 2, rect.y + rect.height + 8, photo.credit, {
-      size: FONT_SIZE.small,
-      color: PALETTE.metalLight,
-    });
-    return [image, frame, credit];
+    const label = addText(
+      scene,
+      rect.x + rect.width / 2,
+      rect.y + rect.height + 8,
+      t('photo.realNasa'),
+      {
+        size: FONT_SIZE.small,
+        color: PALETTE.sand,
+      },
+    );
+    return [image, frame, label];
   }
   return drawPendingPhoto(scene, screen, addFrame);
 }

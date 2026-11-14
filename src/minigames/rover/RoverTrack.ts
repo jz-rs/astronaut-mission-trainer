@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import { ROVER_BALANCE } from '../../config/balance';
-import { MINIGAME_AREA, MIN_TOUCH_SIZE } from '../../ui/layout';
+import { MINIGAME_AREA } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addSprite, addSpriteSized } from '../../ui/sprites';
 
 /**
  * Spec 15 — The road the rover drives on: 3 lanes, rocks to dodge and shiny stones
- * (samples) to tap. Only movement and collisions live here; the scene keeps the score.
+ * (samples) to catch by driving over them. Only movement and collisions live here;
+ * the scene keeps the score.
  */
 const ROAD_WIDTH = 240;
 const LANE_WIDTH = ROAD_WIDTH / ROVER_BALANCE.lanes;
@@ -16,13 +17,18 @@ const ROVER_Y = MINIGAME_AREA.y + MINIGAME_AREA.height - 28;
 const HIT_DISTANCE_Y = 18;
 const ROCK_SIZE = 40;
 const SAMPLE_SIZE = 36;
+/** A collected stone grows this much (relative to its size) while it fades out. */
+const COLLECT_GROWTH = 1.5;
+const SAMPLE_GLOW_RADIUS = 24;
 
-export type TrackHit = 'rock' | 'none';
+/** What the rover drove into this frame. */
+export type TrackHit = 'rock' | 'sample';
 
 interface TrackObject {
   kind: 'rock' | 'sample';
   lane: number;
-  sprite: Phaser.GameObjects.Image;
+  /** A rock image, or a sample container (stone + glow). */
+  sprite: Phaser.GameObjects.Image | Phaser.GameObjects.Container;
 }
 
 export function laneCenterX(lane: number): number {
@@ -49,39 +55,44 @@ export class RoverTrack {
     this.scene.tweens.add({ targets: this.rover, x: laneCenterX(this.lane), duration: 120 });
   }
 
-  /** Moves everything down and reports if a rock reached the rover. */
-  update(deltaMs: number): TrackHit {
+  /** Moves everything down and reports what reached the rover in its lane. */
+  update(deltaMs: number): TrackHit[] {
     this.sinceSpawnMs += deltaMs;
     if (this.sinceSpawnMs >= ROVER_BALANCE.spawnEveryMs) {
       this.sinceSpawnMs = 0;
       this.spawn();
     }
     const step = (ROVER_BALANCE.scrollSpeedPxPerSecond * deltaMs) / 1000;
-    let hit: TrackHit = 'none';
+    const hits: TrackHit[] = [];
     for (const object of [...this.objects]) {
       object.sprite.y += step;
       const reachedRover = Math.abs(object.sprite.y - ROVER_Y) < HIT_DISTANCE_Y;
-      if (object.kind === 'rock' && reachedRover && object.lane === this.lane) {
-        hit = 'rock';
-        this.remove(object);
+      if (reachedRover && object.lane === this.lane) {
+        hits.push(object.kind);
+        if (object.kind === 'sample') this.collect(object);
+        else this.remove(object);
       } else if (object.sprite.y > MINIGAME_AREA.y + MINIGAME_AREA.height) {
         this.remove(object);
       }
     }
-    return hit;
+    return hits;
   }
 
-  /** Returns true if a shiny stone was under the finger (and collects it). */
-  collectSampleAt(x: number, y: number): boolean {
-    const sample = this.objects.find(
-      (object) =>
-        object.kind === 'sample' &&
-        Phaser.Math.Distance.Between(x, y, object.sprite.x, object.sprite.y) < MIN_TOUCH_SIZE / 2,
-    );
-    if (!sample) return false;
-    this.scene.tweens.add({ targets: sample.sprite, scale: 2, alpha: 0, duration: 200 });
+  /** A caught stone pops into the rover: it grows a little, fades and is gone. */
+  private collect(sample: TrackObject): void {
+    // Stop the glow pulse first, so nothing keeps animating a stone that is gone.
+    this.scene.tweens.killTweensOf(sample.sprite);
+    if (sample.sprite instanceof Phaser.GameObjects.Container) {
+      this.scene.tweens.killTweensOf(sample.sprite.list);
+    }
     this.objects = this.objects.filter((object) => object !== sample);
-    return true;
+    this.scene.tweens.add({
+      targets: sample.sprite,
+      scale: sample.sprite.scale * COLLECT_GROWTH,
+      alpha: 0,
+      duration: 200,
+      onComplete: () => sample.sprite.destroy(),
+    });
   }
 
   private spawn(): void {
@@ -94,20 +105,25 @@ export class RoverTrack {
     this.objects.push({ kind, lane, sprite });
   }
 
-  /** Shiny stones twinkle so a kid sees they are different from rocks. */
-  private addSample(lane: number): Phaser.GameObjects.Image {
-    const sample = addSpriteSized(
-      this.scene,
-      laneCenterX(lane),
-      SPAWN_Y,
-      'shinySample',
-      SAMPLE_SIZE,
-    );
-    this.scene.tweens.add({ targets: sample, alpha: 0.6, yoyo: true, repeat: -1, duration: 250 });
-    return sample;
+  /** Shiny stones sit on a pulsing cyan glow, so a kid tells them from rocks at a glance. */
+  private addSample(lane: number): Phaser.GameObjects.Container {
+    const glow = this.scene.add.circle(0, 0, SAMPLE_GLOW_RADIUS, PALETTE.cyan, 0.45);
+    const stone = addSpriteSized(this.scene, 0, 0, 'shinySample', SAMPLE_SIZE);
+    this.scene.tweens.add({
+      targets: glow,
+      scale: 1.3,
+      alpha: 0.2,
+      yoyo: true,
+      repeat: -1,
+      duration: 300,
+    });
+    return this.scene.add.container(laneCenterX(lane), SPAWN_Y, [glow, stone]);
   }
 
   private remove(object: TrackObject): void {
+    if (object.sprite instanceof Phaser.GameObjects.Container) {
+      this.scene.tweens.killTweensOf(object.sprite.list);
+    }
     object.sprite.destroy();
     this.objects = this.objects.filter((candidate) => candidate !== object);
   }

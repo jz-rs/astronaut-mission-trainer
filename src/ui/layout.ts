@@ -139,5 +139,5 @@ export const MARS_MAP_POINTS: Record<string, Point> = {
 export const LOCATION_CARD: Rect = { x: 120, y: 40, width: 400, height: 290 };
 
 /** Rover garage outside the airlock of the corridor (spec 15); the player waits at the airlock. */
-export const GARAGE_RECT: Rect = { x: 262, y: 318, width: 72, height: 30 };
+export const GARAGE_RECT: Rect = { x: 242, y: 318, width: 112, height: 30 };
 export const GARAGE_SPOT: Point = { x: 360, y: 212 };

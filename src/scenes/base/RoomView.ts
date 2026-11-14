@@ -130,7 +130,10 @@ export class RoomView {
     const height = rowHeight + BAR_GAP + BAR_HEIGHT + LABEL_PADDING * 2;
     // The name row stays on the layout point; the card grows down to hold the bar.
     const top = label.y - rowHeight / 2 - LABEL_PADDING;
-    plate.setSize(width, height).setY(top + height / 2).setStrokeStyle(1, STAT_COLORS[stat]);
+    plate
+      .setSize(width, height)
+      .setY(top + height / 2)
+      .setStrokeStyle(1, STAT_COLORS[stat]);
     return plate;
   }
 }

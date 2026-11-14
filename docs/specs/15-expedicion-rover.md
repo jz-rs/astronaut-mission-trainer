@@ -16,7 +16,7 @@ Que la jugadora pueda **arriesgar energía para salir con el rover a juntar mues
 **Incluye:**
 - Un botón/sala "garaje del rover" en la base (coordinar el lugar con A, spec 04).
 - Solo se puede salir si hay energía suficiente (costo alto, en `balance.ts`).
-- Minijuego (~15 s): el rover avanza sobre un fondo de Marte; tocar izquierda/derecha para esquivar rocas; tocar piedras brillantes para juntar muestras.
+- Minijuego (~15 s): el rover avanza sobre un fondo de Marte; tocar a la izquierda/derecha del rover para cambiar de carril: se esquivan las rocas y las piedras brillantes (muestras) se atrapan pasando por encima. *(Cambiado el 2026-11-14: antes había que tocar las piedras; ver `docs/DECISIONS.md`.)*
 - Al terminar: suma muestras a la partida y muestra **la foto real del lugar en un marco** + dato.
 
 **No incluye:** varios destinos por lugar, inclinar el celu (puede ser P2).

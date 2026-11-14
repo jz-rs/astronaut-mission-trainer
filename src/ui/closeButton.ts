@@ -1,9 +1,10 @@
 import type Phaser from 'phaser';
-import { MIN_TOUCH_SIZE, MINIGAME_PANEL } from './layout';
+import { MIN_TOUCH_SIZE, MINIGAME_PANEL, type Point } from './layout';
 import { PALETTE } from './palette';
 
 /**
- * The red X in the top-right corner of a minigame panel: lets a kid leave without playing.
+ * The red X in the top-right corner of a minigame panel (or of any card, passing its corner):
+ * lets a kid leave without playing.
  * The X is drawn (not a text glyph) so it looks the same in every font and language.
  * The visible square is small, but the touch area is the 48 px minimum.
  */
@@ -21,10 +22,9 @@ export const CLOSE_BUTTON_CENTER = {
 export function addCloseButton(
   scene: Phaser.Scene,
   onClose: () => void,
+  center: Point = CLOSE_BUTTON_CENTER,
 ): Phaser.GameObjects.Container {
-  const button = scene.add.container(CLOSE_BUTTON_CENTER.x, CLOSE_BUTTON_CENTER.y, [
-    drawCross(scene),
-  ]);
+  const button = scene.add.container(center.x, center.y, [drawCross(scene)]);
   button.setSize(MIN_TOUCH_SIZE, MIN_TOUCH_SIZE).setInteractive({ useHandCursor: true });
   let isPressed = false;
   button.on('pointerdown', () => {

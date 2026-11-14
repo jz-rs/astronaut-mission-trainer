@@ -24,6 +24,7 @@ import { drawBaseMap } from './baseMap';
 import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
+import { ExitRunView } from './ExitRunView';
 import { GarageView } from './GarageView';
 import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
@@ -61,6 +62,7 @@ export class BaseScene extends Phaser.Scene {
   private teamwork!: TeamworkViews;
   private taskEffects!: TaskEffectsView;
   private tutorial!: TutorialGuide;
+  private exitRun!: ExitRunView;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -102,6 +104,11 @@ export class BaseScene extends Phaser.Scene {
     this.teamwork = new TeamworkViews(this, this.session, OVERLAY_KEYS);
     this.taskEffects = new TaskEffectsView(this, this.rooms);
     this.tutorial = new TutorialGuide(this, this.rooms);
+    this.exitRun = new ExitRunView(
+      this,
+      () => !this.minigameOpen && !this.runEnded,
+      () => this.leaveRun(),
+    );
     addScanlines(this);
   }
 
@@ -115,7 +122,7 @@ export class BaseScene extends Phaser.Scene {
 
   update(time: number, deltaMs: number): void {
     if (this.runEnded) return;
-    if (!this.tutorial.pausesGame) this.session.update(deltaMs);
+    if (!this.tutorial.pausesGame && !this.exitRun.isAsking) this.session.update(deltaMs);
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
@@ -224,7 +231,11 @@ export class BaseScene extends Phaser.Scene {
 
   /** Spec 15 — The player drives the rover out; the base keeps running meanwhile. */
   private sendRover(): void {
-    if (this.minigameOpen || this.runEnded || this.playerBusy) return;
+    if (this.runEnded) return;
+    if (this.minigameOpen || this.playerBusy) {
+      floatText(this, GARAGE_SPOT.x, GARAGE_SPOT.y - 24, t('rover.busy'), PALETTE.alert);
+      return;
+    }
     if (!canStartExpedition(this.session.state)) {
       const message = this.session.state.roverOut ? t('rover.away') : t('hud.noEnergy');
       floatText(this, GARAGE_SPOT.x, GARAGE_SPOT.y - 24, message, PALETTE.alert);
@@ -236,6 +247,13 @@ export class BaseScene extends Phaser.Scene {
       this.minigameOpen = true;
       launchRoverTrip(this, this.session, this.locationId, () => this.freePlayer());
     });
+  }
+
+  /** The X of the base: back to the map, without saving this run's result. */
+  private leaveRun(): void {
+    this.runEnded = true;
+    OVERLAY_KEYS.forEach((key) => this.scene.stop(key));
+    this.scene.start(SCENE_KEYS.map);
   }
 
   private endRun(): void {
