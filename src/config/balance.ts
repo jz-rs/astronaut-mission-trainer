@@ -71,6 +71,13 @@ export const SOLAR_PANELS_BALANCE = {
   dustReturnPerSecond: 8,
 } as const;
 
+export const OXYGEN_FACTORY_BALANCE = {
+  bubblesGoal: 6,
+  bubblesOnScreen: 3,
+  bubbleSpeed: 35,
+  bubbleRadius: 22,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,

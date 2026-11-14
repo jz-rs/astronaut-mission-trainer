@@ -40,5 +40,7 @@
   "result.reason.samples": "Not enough rover samples ({samples}/{goal})",
   "minigame.placeholder.button": "TAP",
   "hud.noEnergy": "No energy!",
-  "hud.pickRoom": "Which room?"
+  "hud.pickRoom": "Which room?",
+  "minigame.oxygen-factory.instruction": "Drag the CO₂ into the machine!",
+  "minigame.oxygen-factory.machine": "MOXIE"
 }

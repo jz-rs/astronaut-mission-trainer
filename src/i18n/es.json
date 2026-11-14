@@ -40,5 +40,7 @@
   "result.reason.samples": "Faltaron muestras del rover ({samples}/{goal})",
   "minigame.placeholder.button": "TOCÁ",
   "hud.noEnergy": "¡Sin energía!",
-  "hud.pickRoom": "¿A qué sala va?"
+  "hud.pickRoom": "¿A qué sala va?",
+  "minigame.oxygen-factory.instruction": "¡Llevá el CO₂ a la máquina!",
+  "minigame.oxygen-factory.machine": "MOXIE"
 }
