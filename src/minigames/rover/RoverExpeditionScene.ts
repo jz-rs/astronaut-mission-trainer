@@ -16,11 +16,13 @@ import {
 import { PALETTE } from '../../ui/palette';
 import { addScanlines, drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
+import { showGestureHint } from '../gestureHint';
 import { RoverTrack } from './RoverTrack';
 
 /**
  * Spec 15 — Rover trip (~15 s) over the base, which keeps running meanwhile (real risk).
- * Tap left/right to dodge rocks, tap shiny stones to collect samples. At the end it shows
+ * One gesture only: tap left/right of the rover to change lane, to catch shiny stones (samples)
+ * by driving over them and to dodge rocks. At the end it shows
  * the real photo of the place, framed, and reports how many samples came back.
  * The X brings the rover back at once with the samples it already has (the energy was paid).
  */
@@ -33,6 +35,8 @@ const RESULT_DEPTH = 100;
 const PHOTO: Rect = { x: MINIGAME_AREA.x + 30, y: MINIGAME_AREA.y + 30, width: 200, height: 140 };
 const TIME_BAR_HEIGHT = 6;
 const ICON_SIZE = 20;
+/** The hand shows a tap beside the rover: that is how it changes lane. */
+const HINT_OFFSET_X = 70;
 
 export class RoverExpeditionScene extends Phaser.Scene {
   static readonly KEY = 'RoverExpeditionScene';
@@ -86,10 +90,11 @@ export class RoverExpeditionScene extends Phaser.Scene {
       { color: PALETTE.sun },
     );
     this.listenToTaps();
+    showGestureHint(this, { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y });
     addScanlines(this);
   }
 
-  /** Taps anywhere steer or collect, except on the X, which only closes. */
+  /** Taps anywhere steer, except on the X, which only closes. */
   private listenToTaps(): void {
     const closeButton = addCloseButton(this, () => this.exit());
     this.input.on(
@@ -109,16 +114,14 @@ export class RoverExpeditionScene extends Phaser.Scene {
       return;
     }
     this.stunnedMs = Math.max(0, this.stunnedMs - deltaMs);
-    if (this.track.update(deltaMs) === 'rock') this.hitRock();
+    for (const hit of this.track.update(deltaMs)) {
+      if (hit === 'rock') this.hitRock();
+      else this.setSamples(this.samples + 1);
+    }
   }
 
   private handleTap(pointer: Phaser.Input.Pointer): void {
-    if (this.finished) return;
-    if (this.track.collectSampleAt(pointer.x, pointer.y)) {
-      this.setSamples(this.samples + 1);
-      return;
-    }
-    if (this.stunnedMs > 0) return;
+    if (this.finished || this.stunnedMs > 0) return;
     this.track.moveRover(pointer.x < this.track.roverX ? -1 : 1);
   }
 
