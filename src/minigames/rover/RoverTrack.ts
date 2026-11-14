@@ -16,6 +16,8 @@ const ROVER_Y = MINIGAME_AREA.y + MINIGAME_AREA.height - 28;
 const HIT_DISTANCE_Y = 18;
 const ROCK_SIZE = 40;
 const SAMPLE_SIZE = 36;
+/** A collected stone grows this much (relative to its size) while it fades out. */
+const COLLECT_GROWTH = 1.5;
 
 export type TrackHit = 'rock' | 'none';
 
@@ -79,7 +81,15 @@ export class RoverTrack {
         Phaser.Math.Distance.Between(x, y, object.sprite.x, object.sprite.y) < MIN_TOUCH_SIZE / 2,
     );
     if (!sample) return false;
-    this.scene.tweens.add({ targets: sample.sprite, scale: 2, alpha: 0, duration: 200 });
+    // Stop the twinkle first: it would keep bringing the alpha back and the stone would stay on screen.
+    this.scene.tweens.killTweensOf(sample.sprite);
+    this.scene.tweens.add({
+      targets: sample.sprite,
+      scale: sample.sprite.scale * COLLECT_GROWTH,
+      alpha: 0,
+      duration: 200,
+      onComplete: () => sample.sprite.destroy(),
+    });
     this.objects = this.objects.filter((object) => object !== sample);
     return true;
   }
