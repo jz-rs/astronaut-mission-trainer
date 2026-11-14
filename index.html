@@ -8,6 +8,11 @@
     />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- Added to the home screen, the game draws under the iPhone status bar (uses the whole screen). -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Mission Trainer" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
     <title>Astronaut Mission Trainer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,6 +59,52 @@
       #rotate-overlay .rotate-icon {
         font-size: 56px;
       }
+      /* Phone controls over the canvas (src/ui/screen.ts shows/hides them). Below the rotate overlay. */
+      #fullscreen-button,
+      #home-screen-hint {
+        position: fixed;
+        z-index: 5;
+        border: 2px solid;
+        border-radius: 8px;
+        font-family: 'Press Start 2P', monospace;
+      }
+      #fullscreen-button {
+        top: calc(8px + env(safe-area-inset-top));
+        right: calc(8px + env(safe-area-inset-right));
+        width: 48px;
+        height: 48px;
+        padding: 10px;
+        opacity: 0.85;
+      }
+      #home-screen-hint {
+        bottom: calc(8px + env(safe-area-inset-bottom));
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: min(60vw, 420px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 4px 4px 4px 12px;
+        font-size: 8px;
+        line-height: 1.6;
+      }
+      #home-screen-hint .hint-icon {
+        font-size: 20px;
+      }
+      #home-screen-hint-close {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        border: none;
+        background: none;
+        color: inherit;
+        font: inherit;
+        font-size: 14px;
+      }
+      #fullscreen-button[hidden],
+      #home-screen-hint[hidden] {
+        display: none;
+      }
       @media (orientation: portrait) and (pointer: coarse) {
         #rotate-overlay {
           display: flex;
@@ -63,6 +114,23 @@
   </head>
   <body>
     <div id="game"></div>
+    <button id="fullscreen-button" type="button" hidden>
+      <svg
+        viewBox="0 0 24 24"
+        width="100%"
+        height="100%"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="3"
+      >
+        <path d="M2 9V2h7M15 2h7v7M22 15v7h-7M9 22H2v-7" />
+      </svg>
+    </button>
+    <div id="home-screen-hint" hidden>
+      <span class="hint-icon">📲</span>
+      <span id="home-screen-hint-text"></span>
+      <button id="home-screen-hint-close" type="button">✕</button>
+    </div>
     <div id="rotate-overlay">
       <div class="rotate-icon">📱↻</div>
       <p id="rotate-message"></p>

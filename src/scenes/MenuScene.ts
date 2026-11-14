@@ -5,7 +5,12 @@ import { createButton } from '../ui/Button';
 import { astronautFrameKey } from '../ui/astronautFrames';
 import { ASTRONAUT_SCALE, FONT_SIZE, GAME_WIDTH } from '../ui/layout';
 import { PALETTE } from '../ui/palette';
-import { enterFullscreenLandscape, updateRotateMessage } from '../ui/screen';
+import {
+  enterFullscreenLandscape,
+  setUpPhoneControls,
+  showHomeScreenHint,
+  updateRotateMessage,
+} from '../ui/screen';
 import { SPRITE_SCALE } from '../ui/sprites';
 import { addScanlines } from '../ui/techFrame';
 import { addText } from '../ui/text';
@@ -46,6 +51,14 @@ export class MenuScene extends Phaser.Scene {
     this.createLanguageButtons();
     this.createSourcesButton();
     addScanlines(this);
+    this.showPhoneControls();
+  }
+
+  /** The first screen wires the fullscreen button; the iPhone hint lives only on this screen. */
+  private showPhoneControls(): void {
+    setUpPhoneControls();
+    showHomeScreenHint(true);
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => showHomeScreenHint(false));
   }
 
   private startGame(): void {
