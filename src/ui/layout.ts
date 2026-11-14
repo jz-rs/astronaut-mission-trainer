@@ -32,10 +32,10 @@ export function rectCenter(rect: Rect): Point {
 /** Top band of the base screen with the 4 bars. */
 export const HUD_HEIGHT = 44;
 
-/** Placeholder astronauts are drawn at 14×20 and shown at this scale. */
-export const ASTRONAUT_SCALE = 2;
+/** Astronaut sprites are 54×80 files shown at half size (~27×40), like the rest of the kit. */
+export const ASTRONAUT_SCALE = 0.5;
 
-/** Icons stay emoji until the pixel-art set from spec 01 arrives. */
+/** Emoji version of the bar icons, for icons inside a line of text (the sprites are in ui/sprites.ts). */
 export const STAT_ICONS: Record<StatId, string> = {
   oxygen: '💨',
   food: '🥬',

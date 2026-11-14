@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { ROVER_BALANCE } from '../../config/balance';
 import { MINIGAME_AREA, MIN_TOUCH_SIZE } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
+import { addSprite, addSpriteSized } from '../../ui/sprites';
 
 /**
  * Spec 15 — The road the rover drives on: 3 lanes, rocks to dodge and shiny stones
@@ -13,14 +14,15 @@ const ROAD_LEFT = MINIGAME_AREA.x + (MINIGAME_AREA.width - ROAD_WIDTH) / 2;
 const SPAWN_Y = MINIGAME_AREA.y + 12;
 const ROVER_Y = MINIGAME_AREA.y + MINIGAME_AREA.height - 28;
 const HIT_DISTANCE_Y = 18;
-const OBJECT_RADIUS = 11;
+const ROCK_SIZE = 40;
+const SAMPLE_SIZE = 36;
 
 export type TrackHit = 'rock' | 'none';
 
 interface TrackObject {
   kind: 'rock' | 'sample';
   lane: number;
-  graphics: Phaser.GameObjects.Graphics;
+  sprite: Phaser.GameObjects.Image;
 }
 
 export function laneCenterX(lane: number): number {
@@ -28,15 +30,14 @@ export function laneCenterX(lane: number): number {
 }
 
 export class RoverTrack {
-  readonly rover: Phaser.GameObjects.Graphics;
+  readonly rover: Phaser.GameObjects.Image;
   private lane = 1;
   private objects: TrackObject[] = [];
   private sinceSpawnMs = 0;
 
   constructor(private readonly scene: Phaser.Scene) {
     this.drawRoad();
-    this.rover = scene.add.graphics({ x: laneCenterX(this.lane), y: ROVER_Y });
-    drawRover(this.rover);
+    this.rover = addSprite(scene, laneCenterX(this.lane), ROVER_Y, 'rover');
   }
 
   get roverX(): number {
@@ -58,12 +59,12 @@ export class RoverTrack {
     const step = (ROVER_BALANCE.scrollSpeedPxPerSecond * deltaMs) / 1000;
     let hit: TrackHit = 'none';
     for (const object of [...this.objects]) {
-      object.graphics.y += step;
-      const reachedRover = Math.abs(object.graphics.y - ROVER_Y) < HIT_DISTANCE_Y;
+      object.sprite.y += step;
+      const reachedRover = Math.abs(object.sprite.y - ROVER_Y) < HIT_DISTANCE_Y;
       if (object.kind === 'rock' && reachedRover && object.lane === this.lane) {
         hit = 'rock';
         this.remove(object);
-      } else if (object.graphics.y > MINIGAME_AREA.y + MINIGAME_AREA.height) {
+      } else if (object.sprite.y > MINIGAME_AREA.y + MINIGAME_AREA.height) {
         this.remove(object);
       }
     }
@@ -75,11 +76,10 @@ export class RoverTrack {
     const sample = this.objects.find(
       (object) =>
         object.kind === 'sample' &&
-        Phaser.Math.Distance.Between(x, y, object.graphics.x, object.graphics.y) <
-          MIN_TOUCH_SIZE / 2,
+        Phaser.Math.Distance.Between(x, y, object.sprite.x, object.sprite.y) < MIN_TOUCH_SIZE / 2,
     );
     if (!sample) return false;
-    this.scene.tweens.add({ targets: sample.graphics, scale: 2, alpha: 0, duration: 200 });
+    this.scene.tweens.add({ targets: sample.sprite, scale: 2, alpha: 0, duration: 200 });
     this.objects = this.objects.filter((object) => object !== sample);
     return true;
   }
@@ -87,14 +87,28 @@ export class RoverTrack {
   private spawn(): void {
     const kind = Math.random() < ROVER_BALANCE.sampleChance ? 'sample' : 'rock';
     const lane = Phaser.Math.Between(0, ROVER_BALANCE.lanes - 1);
-    const graphics = this.scene.add.graphics({ x: laneCenterX(lane), y: SPAWN_Y });
-    if (kind === 'rock') drawRock(graphics);
-    else drawSample(this.scene, graphics);
-    this.objects.push({ kind, lane, graphics });
+    const sprite =
+      kind === 'rock'
+        ? addSpriteSized(this.scene, laneCenterX(lane), SPAWN_Y, 'rock', ROCK_SIZE)
+        : this.addSample(lane);
+    this.objects.push({ kind, lane, sprite });
+  }
+
+  /** Shiny stones twinkle so a kid sees they are different from rocks. */
+  private addSample(lane: number): Phaser.GameObjects.Image {
+    const sample = addSpriteSized(
+      this.scene,
+      laneCenterX(lane),
+      SPAWN_Y,
+      'shinySample',
+      SAMPLE_SIZE,
+    );
+    this.scene.tweens.add({ targets: sample, alpha: 0.6, yoyo: true, repeat: -1, duration: 250 });
+    return sample;
   }
 
   private remove(object: TrackObject): void {
-    object.graphics.destroy();
+    object.sprite.destroy();
     this.objects = this.objects.filter((candidate) => candidate !== object);
   }
 
@@ -108,27 +122,4 @@ export class RoverTrack {
       road.lineBetween(ROAD_LEFT + lane * LANE_WIDTH, y, ROAD_LEFT + lane * LANE_WIDTH, y + height);
     }
   }
-}
-
-function drawRover(graphics: Phaser.GameObjects.Graphics): void {
-  graphics.fillStyle(PALETTE.white, 1).fillRect(-14, -10, 28, 18);
-  graphics.fillStyle(PALETTE.cyan, 1).fillRect(-8, -16, 16, 6);
-  graphics.fillStyle(PALETTE.night, 1);
-  for (const wheelX of [-16, 12]) {
-    graphics.fillRect(wheelX, -12, 4, 8);
-    graphics.fillRect(wheelX, 2, 4, 8);
-  }
-}
-
-function drawRock(graphics: Phaser.GameObjects.Graphics): void {
-  graphics.fillStyle(PALETTE.night, 1).fillCircle(2, 2, OBJECT_RADIUS);
-  graphics.fillStyle(PALETTE.metalDark, 1).fillCircle(0, 0, OBJECT_RADIUS);
-}
-
-function drawSample(scene: Phaser.Scene, graphics: Phaser.GameObjects.Graphics): void {
-  const size = OBJECT_RADIUS;
-  graphics.fillStyle(PALETTE.sun, 1);
-  graphics.fillTriangle(0, -size, size, 0, -size, 0).fillTriangle(0, size, size, 0, -size, 0);
-  graphics.lineStyle(2, PALETTE.white, 1).strokeCircle(0, 0, size + 3);
-  scene.tweens.add({ targets: graphics, alpha: 0.6, yoyo: true, repeat: -1, duration: 250 });
 }

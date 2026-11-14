@@ -1,54 +1,45 @@
 import type Phaser from 'phaser';
-import { PALETTE } from '../../ui/palette';
+import { addSpriteSized, type SpriteKey } from '../../ui/sprites';
 
-/** Placeholder drawings for the shield wall until the spec 01 sprites arrive. */
+/** Sprites of the shield wall: radiation rays, wall panels and the blocks that plug the holes. */
 export type BlockMaterial = 'water' | 'regolith';
 
-const ZIGZAG_STEP = 8;
-const ZIGZAG_WIDTH = 4;
+const RAY_THICKNESS = 20;
+const RAY_ANGLE = 90;
 
-/** A radiation ray: a vertical zigzag alternating yellow and violet. */
-export function drawRay(
-  graphics: Phaser.GameObjects.Graphics,
+const BLOCK_SPRITES: Record<BlockMaterial, SpriteKey> = {
+  water: 'shieldBlockWater',
+  regolith: 'shieldBlockRegolith',
+};
+
+/** A radiation ray falling straight down. The sprite is a horizontal zigzag, so it is turned. */
+export function addRay(
+  scene: Phaser.Scene,
   x: number,
   fromY: number,
   toY: number,
-): Phaser.GameObjects.Graphics {
-  let side = 1;
-  for (let y = fromY; y < toY; y += ZIGZAG_STEP) {
-    const color = side > 0 ? PALETTE.sun : PALETTE.violet;
-    graphics.lineStyle(3, color, 1);
-    graphics.lineBetween(
-      x - ZIGZAG_WIDTH * side,
-      y,
-      x + ZIGZAG_WIDTH * side,
-      Math.min(toY, y + ZIGZAG_STEP),
-    );
-    side *= -1;
-  }
-  return graphics;
+): Phaser.GameObjects.Image {
+  const ray = scene.add.image(x, (fromY + toY) / 2, 'radiationRay').setAngle(RAY_ANGLE);
+  return ray.setDisplaySize(toY - fromY, RAY_THICKNESS);
 }
 
-/** Block drawn around (0, 0): water is light blue with waves, regolith is Mars rock with spots. */
-export function drawShieldBlock(
-  graphics: Phaser.GameObjects.Graphics,
+/** Wall panel, whole or broken (a hole the rays go through), with its top-left corner at (x, y). */
+export function addWallPanel(
+  scene: Phaser.Scene,
+  x: number,
+  y: number,
+  size: number,
+  broken: boolean,
+): Phaser.GameObjects.Image {
+  const key = broken ? 'shieldPanelHole' : 'shieldPanel';
+  return addSpriteSized(scene, x + size / 2, y + size / 2, key, size);
+}
+
+/** Block centered on (0, 0), ready to go inside a draggable container. */
+export function addShieldBlock(
+  scene: Phaser.Scene,
   material: BlockMaterial,
-  width: number,
-  height: number,
-): Phaser.GameObjects.Graphics {
-  const left = -width / 2;
-  const top = -height / 2;
-  const isWater = material === 'water';
-  graphics.fillStyle(isWater ? PALETTE.cyan : PALETTE.mars, 1).fillRect(left, top, width, height);
-  graphics.fillStyle(isWater ? PALETTE.white : PALETTE.marsDark, isWater ? 0.6 : 1);
-  if (isWater) {
-    graphics.fillRect(left + 6, top + 8, 10, 2).fillRect(left + 18, top + 18, 10, 2);
-  } else {
-    graphics
-      .fillRect(left + 6, top + 6, 4, 4)
-      .fillRect(left + 22, top + 14, 6, 4)
-      .fillRect(left + 10, top + 20, 4, 4);
-  }
-  graphics.lineStyle(2, PALETTE.night, 1).strokeRect(left, top, width, height);
-  return graphics;
+  size: number,
+): Phaser.GameObjects.Image {
+  return addSpriteSized(scene, 0, 0, BLOCK_SPRITES[material], size);
 }

@@ -1,9 +1,9 @@
 import Phaser from 'phaser';
 import { GREENHOUSE_BALANCE } from '../../config/balance';
 import type { Rect } from '../../ui/layout';
-import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { TECH_GLOW } from '../../ui/palette';
+import { addSprite, type SpriteKey } from '../../ui/sprites';
 import { MinigameScene } from '../MinigameScene';
-import { drawPlant, type PlantState } from './plantDrawing';
 
 /**
  * Spec 09 — Tap the thirsty plants (yellow, with a water drop) before they wither. Whack-a-mole.
@@ -13,13 +13,25 @@ import { drawPlant, type PlantState } from './plantDrawing';
 const CELL_WIDTH = 140;
 const CELL_HEIGHT = 112;
 const DROP_BOUNCE_PX = 4;
+const DROP_Y = -48;
+/** Lettuces have different heights: they all stand on this line, so they grow upwards. */
+const PLANT_BASE_Y = 34;
+
+/** Color says everything (spec 09): green = fine, yellow and drooping = thirsty, brown = withered. */
+type PlantState = 'healthy' | 'thirsty' | 'withered';
+
+const PLANT_SPRITES: Record<PlantState, SpriteKey> = {
+  healthy: 'lettuceHealthy',
+  thirsty: 'lettuceThirsty',
+  withered: 'lettuceWithered',
+};
 
 interface Plant {
   state: PlantState;
   thirstyMs: number;
   body: Phaser.GameObjects.Container;
-  graphics: Phaser.GameObjects.Graphics;
-  drop: Phaser.GameObjects.Graphics;
+  sprite: Phaser.GameObjects.Image;
+  drop: Phaser.GameObjects.Image;
 }
 
 export class GreenhouseMinigame extends MinigameScene {
@@ -88,20 +100,15 @@ export class GreenhouseMinigame extends MinigameScene {
         CELL_WIDTH - 12,
         CELL_HEIGHT - 8,
       );
-    const graphics = this.add.graphics();
-    const drop = this.add.graphics().setVisible(false);
-    drop.fillStyle(PALETTE.cyan, 1).fillTriangle(0, -10, -6, 0, 6, 0).fillCircle(0, 2, 6);
-    drop.setPosition(0, -40);
-    const body = this.add
-      .container(x, y, [graphics, drop])
-      .setSize(CELL_WIDTH - 12, CELL_HEIGHT - 8);
+    const sprite = addSprite(this, 0, PLANT_BASE_Y, PLANT_SPRITES.healthy).setOrigin(0.5, 1);
+    const drop = addSprite(this, 0, DROP_Y, 'waterDrop').setVisible(false);
+    const body = this.add.container(x, y, [sprite, drop]).setSize(CELL_WIDTH - 12, CELL_HEIGHT - 8);
     body.setInteractive({ useHandCursor: true });
-    const plant: Plant = { state: 'healthy', thirstyMs: 0, body, graphics, drop };
+    const plant: Plant = { state: 'healthy', thirstyMs: 0, body, sprite, drop };
     body.on('pointerdown', () => this.water(plant));
-    drawPlant(graphics, 'healthy');
     this.tweens.add({
       targets: drop,
-      y: -40 - DROP_BOUNCE_PX,
+      y: DROP_Y - DROP_BOUNCE_PX,
       yoyo: true,
       repeat: -1,
       duration: 250,
@@ -129,6 +136,6 @@ export class GreenhouseMinigame extends MinigameScene {
   private setState(plant: Plant, state: PlantState): void {
     plant.state = state;
     plant.drop.setVisible(state === 'thirsty');
-    drawPlant(plant.graphics, state);
+    plant.sprite.setTexture(PLANT_SPRITES[state]);
   }
 }

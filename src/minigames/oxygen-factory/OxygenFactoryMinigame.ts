@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 import { OXYGEN_FACTORY_BALANCE } from '../../config/balance';
 import { t } from '../../i18n';
 import { FONT_SIZE, type Rect } from '../../ui/layout';
-import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { PALETTE } from '../../ui/palette';
+import { sparkleAt } from '../../ui/sparkle';
+import { addSprite, addSpriteSized } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 import { MinigameScene } from '../MinigameScene';
 
@@ -10,10 +12,13 @@ import { MinigameScene } from '../MinigameScene';
  * Spec 08 — Drag floating CO₂ bubbles into MOXIE; each one pops out an O₂ bubble.
  * Performance = bubbles converted / goal, with a speed bonus. Harsher locations = faster bubbles.
  */
-const MACHINE_WIDTH = 96;
-const MACHINE_HEIGHT = 170;
-const MACHINE_MARGIN = 16;
+const MACHINE_MARGIN = 24;
 const METER_DOT_SIZE = 8;
+const METER_DOT_SPACING = 14;
+const METER_OFFSET_Y = 14;
+const LABEL_OFFSET_Y = 12;
+const PLATE_PADDING = 4;
+const PLATE_ALPHA = 0.8;
 
 interface Bubble {
   body: Phaser.GameObjects.Container;
@@ -30,6 +35,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
   private machine = new Phaser.Geom.Rectangle();
   private playArea = new Phaser.Geom.Rectangle();
   private meter: Phaser.GameObjects.Graphics | null = null;
+  private machineImage: Phaser.GameObjects.Image | null = null;
 
   constructor() {
     super(OxygenFactoryMinigame.KEY);
@@ -39,11 +45,9 @@ export class OxygenFactoryMinigame extends MinigameScene {
     this.bubbles = [];
     this.converted = 0;
     this.spawned = 0;
-    const machineX = area.x + area.width - MACHINE_WIDTH - MACHINE_MARGIN;
-    const machineY = area.y + (area.height - MACHINE_HEIGHT) / 2;
-    this.machine.setTo(machineX, machineY, MACHINE_WIDTH, MACHINE_HEIGHT);
-    this.playArea.setTo(area.x, area.y, machineX - area.x - MACHINE_MARGIN, area.height);
-    this.drawMachine();
+    this.drawMachine(area);
+    const playWidth = this.machine.x - area.x - MACHINE_MARGIN;
+    this.playArea.setTo(area.x, area.y, playWidth, area.height);
     for (let index = 0; index < OXYGEN_FACTORY_BALANCE.bubblesOnScreen; index += 1) {
       this.spawnCarbonBubble();
     }
@@ -74,36 +78,61 @@ export class OxygenFactoryMinigame extends MinigameScene {
     }
   }
 
-  private drawMachine(): void {
-    const { x, y, width, height } = this.machine;
-    const graphics = this.add.graphics();
-    graphics.fillStyle(PALETTE.metal, 1).fillRect(x, y, width, height);
-    graphics.fillStyle(PALETTE.metalDark, 1).fillRect(x + 8, y + 8, width - 16, height - 16);
-    graphics.fillStyle(TECH_GLOW, 1).fillRect(x - 6, y + height / 2 - 24, 10, 48); // intake
-    graphics.lineStyle(2, TECH_GLOW, 1).strokeRect(x, y, width, height);
-    addText(this, x + width / 2, y + 22, t('minigame.oxygen-factory.machine'), {
-      size: FONT_SIZE.small,
-      color: PALETTE.cyan,
-    });
-    this.meter = this.add.graphics();
+  /** MOXIE stands on the right, switched off until the first CO₂ goes in. */
+  private drawMachine(area: Rect): void {
+    const image = addSprite(this, 0, 0, 'oxygenMachineOff');
+    const { displayWidth: width, displayHeight: height } = image;
+    const x = area.x + area.width - width - MACHINE_MARGIN;
+    const y = area.y + (area.height - height) / 2;
+    image.setPosition(x + width / 2, y + height / 2);
+    this.machine.setTo(x, y, width, height);
+    this.machineImage = image;
+    const label = addText(
+      this,
+      x + width / 2,
+      y - LABEL_OFFSET_Y,
+      t('minigame.oxygen-factory.machine'),
+      {
+        size: FONT_SIZE.small,
+        color: PALETTE.cyan,
+      },
+    );
+    this.addPlateBehind(label.x, label.y, label.width, label.height);
+    label.setDepth(1);
+    const meterWidth = OXYGEN_FACTORY_BALANCE.bubblesGoal * METER_DOT_SPACING;
+    const meterCenterY = this.machine.bottom + METER_OFFSET_Y + METER_DOT_SIZE / 2;
+    this.addPlateBehind(this.machine.centerX, meterCenterY, meterWidth, METER_DOT_SIZE);
+    this.meter = this.add.graphics().setDepth(1);
     this.drawMeter();
+  }
+
+  /** Dark plate so a label stays readable over the busy room picture (drawn under depth 1). */
+  private addPlateBehind(centerX: number, centerY: number, width: number, height: number): void {
+    const plate = this.add.rectangle(
+      centerX,
+      centerY,
+      width + PLATE_PADDING * 2,
+      height + PLATE_PADDING * 2,
+      PALETTE.night,
+    );
+    plate.setAlpha(PLATE_ALPHA);
   }
 
   /** One dot per bubble of the goal, lit as O₂ is produced. */
   private drawMeter(): void {
     if (!this.meter) return;
     const { bubblesGoal } = OXYGEN_FACTORY_BALANCE;
-    const startY = this.machine.y + 44;
+    const y = this.machine.bottom + METER_OFFSET_Y;
+    const startX = this.machine.centerX - ((bubblesGoal - 1) * METER_DOT_SPACING) / 2;
     this.meter.clear();
     for (let index = 0; index < bubblesGoal; index += 1) {
       const lit = index < this.converted;
-      this.meter.fillStyle(lit ? PALETTE.cyan : PALETTE.space, 1);
-      this.meter.fillRect(
-        this.machine.centerX - METER_DOT_SIZE / 2,
-        startY + index * 18,
-        METER_DOT_SIZE,
-        METER_DOT_SIZE,
-      );
+      const x = startX + index * METER_DOT_SPACING - METER_DOT_SIZE / 2;
+      this.meter
+        .fillStyle(PALETTE.night, 1)
+        .fillRect(x - 1, y - 1, METER_DOT_SIZE + 2, METER_DOT_SIZE + 2);
+      this.meter.fillStyle(lit ? PALETTE.cyan : PALETTE.metalDark, 1);
+      this.meter.fillRect(x, y, METER_DOT_SIZE, METER_DOT_SIZE);
     }
   }
 
@@ -113,11 +142,9 @@ export class OxygenFactoryMinigame extends MinigameScene {
     const radius = OXYGEN_FACTORY_BALANCE.bubbleRadius;
     const x = Phaser.Math.Between(this.playArea.left + radius, this.playArea.right - radius);
     const y = Phaser.Math.Between(this.playArea.top + radius, this.playArea.bottom - radius);
-    const circle = this.add
-      .circle(0, 0, radius, PALETTE.metalDark)
-      .setStrokeStyle(2, PALETTE.metal);
-    const label = addText(this, 0, 0, 'CO₂', { size: FONT_SIZE.small, color: PALETTE.metalLight });
-    const body = this.add.container(x, y, [circle, label]).setSize(radius * 2, radius * 2);
+    const sprite = addSpriteSized(this, 0, 0, 'bubbleCarbon', radius * 2);
+    const label = addText(this, 0, 0, 'CO₂', { size: FONT_SIZE.small, color: PALETTE.white });
+    const body = this.add.container(x, y, [sprite, label]).setSize(radius * 2, radius * 2);
     body.setInteractive({ draggable: true, useHandCursor: true });
     const speed = OXYGEN_FACTORY_BALANCE.bubbleSpeed * this.difficulty;
     const velocity = new Phaser.Math.Vector2(speed, 0).rotate(
@@ -160,6 +187,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
     this.bubbles = this.bubbles.filter((candidate) => candidate !== bubble);
     bubble.body.destroy();
     this.converted += 1;
+    this.machineImage?.setTexture('oxygenMachineOn');
     this.drawMeter();
     this.popOxygen();
     if (this.converted >= OXYGEN_FACTORY_BALANCE.bubblesGoal) {
@@ -171,9 +199,10 @@ export class OxygenFactoryMinigame extends MinigameScene {
 
   private popOxygen(): void {
     const radius = OXYGEN_FACTORY_BALANCE.bubbleRadius * 0.8;
-    const circle = this.add.circle(0, 0, radius, PALETTE.cyan).setStrokeStyle(2, PALETTE.white);
+    const sprite = addSpriteSized(this, 0, 0, 'bubbleOxygen', radius * 2);
     const label = addText(this, 0, 0, 'O₂', { size: FONT_SIZE.small, color: PALETTE.night });
-    const bubble = this.add.container(this.machine.centerX, this.machine.top, [circle, label]);
+    const bubble = this.add.container(this.machine.centerX, this.machine.top, [sprite, label]);
+    sparkleAt(this, this.machine.centerX, this.machine.top, 'popFlash');
     bubble.setScale(0.2);
     this.tweens.add({ targets: bubble, scale: 1, duration: 150, ease: 'Back.Out' });
     this.tweens.add({

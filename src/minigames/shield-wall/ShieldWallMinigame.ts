@@ -3,7 +3,7 @@ import { SHIELD_WALL_BALANCE } from '../../config/balance';
 import type { Point, Rect } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
 import { MinigameScene } from '../MinigameScene';
-import { drawRay, drawShieldBlock, type BlockMaterial } from './shieldDrawing';
+import { addRay, addShieldBlock, addWallPanel, type BlockMaterial } from './shieldDrawing';
 
 /**
  * Spec 10 — Drag water and regolith blocks into the holes of the wall to stop radiation rays.
@@ -11,7 +11,9 @@ import { drawRay, drawShieldBlock, type BlockMaterial } from './shieldDrawing';
  * Harsher locations (Olympus Mons) = more holes.
  */
 const SLOT_WIDTH = 40;
-const WALL_HEIGHT = 36;
+/** Wall panels are square. */
+const WALL_HEIGHT = SLOT_WIDTH;
+const BLOCK_SIZE = SLOT_WIDTH - 4;
 const WALL_OFFSET_Y = 56;
 const HABITAT_OFFSET_Y = 150;
 const TRAY_OFFSET_FROM_BOTTOM = 30;
@@ -20,7 +22,7 @@ const TRAY_SPACING = 64;
 interface Hole {
   center: Point;
   filled: boolean;
-  rayBelow: Phaser.GameObjects.Graphics;
+  rayBelow: Phaser.GameObjects.Image;
 }
 
 interface Block {
@@ -74,25 +76,14 @@ export class ShieldWallMinigame extends MinigameScene {
   }
 
   private drawWallSlot(x: number, y: number): void {
-    const graphics = this.add.graphics();
-    graphics.fillStyle(PALETTE.metal, 1).fillRect(x, y, SLOT_WIDTH, WALL_HEIGHT);
-    graphics.lineStyle(2, PALETTE.metalDark, 1).strokeRect(x, y, SLOT_WIDTH, WALL_HEIGHT);
-    graphics.fillStyle(TECH_GLOW, 1).fillRect(x + 4, y + WALL_HEIGHT - 6, SLOT_WIDTH - 8, 2);
+    addWallPanel(this, x, y, SLOT_WIDTH, false);
   }
 
   private createHole(x: number, y: number, area: Rect): Hole {
     const center = { x: x + SLOT_WIDTH / 2, y: y + WALL_HEIGHT / 2 };
-    const outline = this.add.graphics();
-    outline
-      .lineStyle(2, PALETTE.alert, 0.8)
-      .strokeRect(x + 2, y + 2, SLOT_WIDTH - 4, WALL_HEIGHT - 4);
-    const rayAbove = drawRay(this.add.graphics(), center.x, area.y, y);
-    const rayBelow = drawRay(
-      this.add.graphics(),
-      center.x,
-      y + WALL_HEIGHT,
-      area.y + HABITAT_OFFSET_Y - 16,
-    );
+    addWallPanel(this, x, y, SLOT_WIDTH, true);
+    const rayAbove = addRay(this, center.x, area.y, y);
+    const rayBelow = addRay(this, center.x, y + WALL_HEIGHT, area.y + HABITAT_OFFSET_Y - 16);
     this.tweens.add({
       targets: [rayAbove, rayBelow],
       alpha: 0.4,
@@ -109,14 +100,9 @@ export class ShieldWallMinigame extends MinigameScene {
     for (let index = 0; index < blockCount; index += 1) {
       const material: BlockMaterial = index % 2 === 0 ? 'water' : 'regolith';
       const home = { x: startX + index * TRAY_SPACING, y };
-      const graphics = drawShieldBlock(
-        this.add.graphics(),
-        material,
-        SLOT_WIDTH - 4,
-        WALL_HEIGHT - 4,
-      );
+      const sprite = addShieldBlock(this, material, BLOCK_SIZE);
       const body = this.add
-        .container(home.x, home.y, [graphics])
+        .container(home.x, home.y, [sprite])
         .setSize(SLOT_WIDTH + 8, WALL_HEIGHT + 8);
       body.setInteractive({ draggable: true, useHandCursor: true });
       this.blocks.push({ body, home });

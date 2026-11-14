@@ -2,15 +2,9 @@ import Phaser from 'phaser';
 import { TASK_BALANCE } from '../../config/balance';
 import type { TaskId } from '../../core/types';
 import { t } from '../../i18n';
-import {
-  CORRIDOR,
-  FONT_SIZE,
-  ROOM_RECTS,
-  STAT_ICONS,
-  type Point,
-  type Rect,
-} from '../../ui/layout';
+import { CORRIDOR, FONT_SIZE, ROOM_RECTS, type Point, type Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
+import { addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 import { drawFurniture } from './roomFurniture';
 
@@ -28,6 +22,7 @@ const WORK_ROW_INSET = 30;
 const WORK_SPOTS_START_X = 168;
 const WORK_SPOT_SPACING = 26;
 const LABEL_ICON_X = 22;
+const LABEL_ICON_SIZE = 28;
 const LABEL_NAME_X = 84;
 const LABEL_NAME_WRAP = 100;
 
@@ -120,7 +115,13 @@ export class RoomView {
   private drawLabel(scene: Phaser.Scene): void {
     const stat = TASK_BALANCE[this.taskId].stat;
     const labelY = this.workRowY();
-    addText(scene, this.rect.x + LABEL_ICON_X, labelY, STAT_ICONS[stat], { size: FONT_SIZE.large });
+    addSpriteSized(
+      scene,
+      this.rect.x + LABEL_ICON_X,
+      labelY,
+      STAT_ICON_SPRITES[stat],
+      LABEL_ICON_SIZE,
+    );
     addText(scene, this.rect.x + LABEL_NAME_X, labelY, t(`task.${this.taskId}.name` as const), {
       size: FONT_SIZE.small,
       color: STAT_COLORS[stat],

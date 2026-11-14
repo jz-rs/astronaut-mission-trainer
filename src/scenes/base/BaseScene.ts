@@ -14,7 +14,7 @@ import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
 import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
-import { CREW_COLORS, PALETTE } from '../../ui/palette';
+import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { addScanlines } from '../../ui/techFrame';
 import { finishRun } from '../runEnd';
@@ -80,7 +80,7 @@ export class BaseScene extends Phaser.Scene {
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
-    this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, CREW_COLORS.player ?? PALETTE.violet);
+    this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, 'violet');
     this.bots = new BotsView(
       this,
       this.session.state.crew,

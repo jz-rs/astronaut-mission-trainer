@@ -1,5 +1,10 @@
 import Phaser from 'phaser';
-import { ensureAstronautTexture } from '../../ui/astronautTexture';
+import {
+  astronautFrameKey,
+  walkAnimationKey,
+  type Facing,
+  type SuitColor,
+} from '../../ui/astronautFrames';
 import { ASTRONAUT_SCALE, CORRIDOR, WALK_SPEED_PX_PER_SECOND, type Point } from '../../ui/layout';
 
 /** A place to walk to. `doorX` is set when the place is inside a room. */
@@ -8,35 +13,26 @@ export interface WalkTarget {
   doorX: number | null;
 }
 
-const STEP_BOB_PX = 2;
-const STEP_DURATION_MS = 120;
-
 /**
  * One astronaut drawn on the base. It walks out through its room door, along the corridor
- * and in through the target door, so it never crosses a wall.
+ * and in through the target door, so it never crosses a wall. It shows its back when walking up
+ * and is mirrored when walking left (the sprites look to the right).
  */
 export class AstronautSprite {
-  readonly image: Phaser.GameObjects.Image;
-  private readonly bob: Phaser.Tweens.Tween;
+  readonly image: Phaser.GameObjects.Sprite;
   private walk: Phaser.Tweens.TweenChain | null = null;
   /** Door of the room it is in, or null when it is in the corridor. */
   private doorX: number | null = null;
+  private facing: Facing = 'front';
 
   constructor(
     private readonly scene: Phaser.Scene,
     spot: Point,
-    visorColor: number,
+    private readonly suitColor: SuitColor,
   ) {
-    const texture = ensureAstronautTexture(scene, visorColor);
-    this.image = scene.add.image(spot.x, spot.y, texture).setScale(ASTRONAUT_SCALE);
-    this.bob = scene.tweens.add({
-      targets: this.image,
-      displayOriginY: this.image.displayOriginY + STEP_BOB_PX / ASTRONAUT_SCALE,
-      yoyo: true,
-      repeat: -1,
-      duration: STEP_DURATION_MS,
-      paused: true,
-    });
+    this.image = scene.add
+      .sprite(spot.x, spot.y, astronautFrameKey(suitColor, 'front'))
+      .setScale(ASTRONAUT_SCALE);
   }
 
   get isWalking(): boolean {
@@ -47,12 +43,11 @@ export class AstronautSprite {
     this.walk?.stop();
     const steps = this.buildSteps(this.planPath(target));
     this.doorX = target.doorX;
-    this.bob.resume();
     this.walk = this.scene.tweens.chain({
       targets: this.image,
       tweens: steps,
       onComplete: () => {
-        this.bob.pause();
+        this.image.stop().setTexture(astronautFrameKey(this.suitColor, this.facing));
         this.walk = null;
         onArrive?.();
       },
@@ -74,18 +69,24 @@ export class AstronautSprite {
   }
 
   private buildSteps(path: Point[]) {
-    const image = this.image;
-    let from: Point = { x: image.x, y: image.y };
+    let from: Point = { x: this.image.x, y: this.image.y };
     return path.map((point) => {
       const distance = Phaser.Math.Distance.BetweenPoints(from, point);
-      const flip = point.x === from.x ? image.flipX : point.x < from.x;
+      const start = from;
       from = point;
       return {
         x: point.x,
         y: point.y,
         duration: Math.max(1, (distance / WALK_SPEED_PX_PER_SECOND) * 1000),
-        onStart: () => image.setFlipX(flip),
+        onStart: () => this.faceTowards(start, point),
       };
     });
+  }
+
+  private faceTowards(from: Point, to: Point): void {
+    if (from.x === to.x && from.y === to.y) return;
+    if (to.x !== from.x) this.image.setFlipX(to.x < from.x);
+    this.facing = to.y < from.y ? 'back' : 'front';
+    this.image.play(walkAnimationKey(this.suitColor, this.facing), true);
   }
 }
