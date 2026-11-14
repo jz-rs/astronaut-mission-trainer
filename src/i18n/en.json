@@ -39,5 +39,6 @@
   "result.reason.challenge": "{stat} dropped below {minimum}%",
   "result.reason.samples": "Not enough rover samples ({samples}/{goal})",
   "minigame.placeholder.button": "TAP",
-  "hud.noEnergy": "No energy!"
+  "hud.noEnergy": "No energy!",
+  "hud.pickRoom": "Which room?"
 }
