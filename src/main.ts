@@ -6,10 +6,13 @@ import { ResultScene } from './scenes/ResultScene';
 import { loadProgress } from './services/progressStorage';
 import { FONT_FAMILY, FONT_SIZE, GAME_HEIGHT, GAME_WIDTH } from './ui/layout';
 import { cssColor, PALETTE } from './ui/palette';
+import { applyPageColors, updateRotateMessage } from './ui/screen';
 
 /** Game entry point: 640×360 pixel art, scaled to fill the phone screen in landscape. */
 async function startGame(): Promise<void> {
   setLanguage(loadProgress().language);
+  applyPageColors();
+  updateRotateMessage();
   await waitForPixelFont();
 
   const game = new Phaser.Game({
