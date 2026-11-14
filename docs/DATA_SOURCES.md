@@ -20,6 +20,10 @@ Claves de texto en `src/i18n/*.json`. "Verificado" = el dato se chequeó contra 
 
 | Dónde aparece | Dato | Fuente | Verificado |
 |---|---|---|---|
+| Minijuego oxígeno (`task.oxygen-factory.why`) | MOXIE le saca el oxígeno al CO₂ del aire | ídem MOXIE | ✅ |
+| Minijuego paneles (`why`) | El polvo tapa los paneles y deja sin energía | ídem fin de Opportunity | ✅ |
+| Minijuego invernadero (`why`) | En la ISS los astronautas riegan las plantas de Veggie | ídem Veggie fact sheet | ✅ |
+| Minijuego escudo (`why`) | El agua y el regolito frenan la radiación | Falta fuente NASA (blindaje con agua/regolito) | ⚠️ falta link |
 | Minijuego oxígeno (`task.oxygen-factory.fact`) | MOXIE fabricó oxígeno con el aire de Marte | [NASA/JPL — MOXIE completes Mars mission](https://www.jpl.nasa.gov/news/nasas-oxygen-generating-experiment-moxie-completes-mars-mission/) | ✅ |
 | Minijuego oxígeno (`fact2`) | 122 g de oxígeno ≈ lo que respira un perrito en 10 horas | ídem | ✅ |
 | Minijuego oxígeno (`fact3`) | El aire de Marte es casi todo CO₂ | ídem (MOXIE separa el oxígeno del CO₂ del aire) | ✅ |

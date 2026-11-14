@@ -13,6 +13,8 @@ export interface PlayerProgress {
   starsByLocation: Record<string, number>;
   /** Locations whose unlock party the Mars map already played (spec 12). */
   celebratedUnlocks: string[];
+  /** The guided first sol (TutorialGuide) is shown until it is finished once. */
+  tutorialDone: boolean;
 }
 
 const STORAGE_KEY = 'astronaut-mission-trainer/progress/v1';
@@ -23,6 +25,7 @@ const EMPTY_PROGRESS: PlayerProgress = {
   bestScoreByLocation: {},
   starsByLocation: {},
   celebratedUnlocks: [],
+  tutorialDone: false,
 };
 
 let cachedProgress: PlayerProgress | null = null;

@@ -26,6 +26,7 @@ export function createRun(
     status: 'playing',
     events,
     eventNews: [],
+    taskNews: [],
     roverOut: false,
     emergency: null,
     meeting: null,
