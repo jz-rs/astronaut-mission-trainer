@@ -86,6 +86,13 @@ export const GREENHOUSE_BALANCE = {
   noWitheredBonus: 0.2,
 } as const;
 
+export const SHIELD_WALL_BALANCE = {
+  wallSlots: 10,
+  holes: 4,
+  maxHoles: 6,
+  snapDistance: 40,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,

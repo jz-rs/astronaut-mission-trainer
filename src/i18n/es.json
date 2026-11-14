@@ -43,5 +43,6 @@
   "hud.pickRoom": "¿A qué sala va?",
   "minigame.oxygen-factory.instruction": "¡Llevá el CO₂ a la máquina!",
   "minigame.oxygen-factory.machine": "MOXIE",
-  "minigame.greenhouse.instruction": "¡Regá las plantas con sed!"
+  "minigame.greenhouse.instruction": "¡Regá las plantas con sed!",
+  "minigame.shield-wall.instruction": "¡Tapá los huecos del muro!"
 }
