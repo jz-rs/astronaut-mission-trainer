@@ -15,6 +15,15 @@ Formato:
 
 ---
 
+## 2026-11-14 — Rover de un solo gesto y tarjeta del lugar más clara
+- Quién: C, con Claude (pedido de memocayar)
+- Qué se decidió:
+  - **Rover**: un solo gesto. Tocar a la izquierda o derecha del rover cambia de carril; las piedras que brillan se atrapan pasando por encima (ya no se tocan) y tienen un halo celeste para distinguirlas de las rocas. Se actualizó el spec 15.
+  - **Tarjeta del lugar** (spec 12): X roja para cerrar, la frase celeste ("por qué es difícil") justo debajo del nombre, el mapa de atrás oscurecido, y debajo de la foto la etiqueta "📷 Foto real NASA" en vez del crédito suelto (el crédito sigue en `locationPhotos.ts`, `DATA_SOURCES.md` y la pantalla de Fuentes). `addCloseButton` acepta una posición para usarse fuera de los minijuegos.
+- Por qué: mezclar moverse y tocar en el rover era raro; en la tarjeta no había cómo cerrar, el crédito parecía texto de la foto y el mapa se veía a través.
+- A quién afecta: B (spec 15), C (specs 12 y 13), `ui/closeButton.ts` (PR #24) y `ui/framedPhoto.ts`.
+- ¿Avisado al equipo?: sí (pedido en el chat).
+
 ## 2026-11-14 — Todos los lugares de Marte desbloqueados desde el inicio
 - Quién: C, con Claude (pedido de la dueña del repo)
 - Qué se decidió: los 5 lugares de `data/locations.json` pasan a `starsToUnlock: 0`, así se pueden jugar todos desde la primera partida. Las estrellas y el récord por lugar se siguen guardando y mostrando. La lógica de candados (`core/progression.ts`) y su dibujo en el mapa quedan, por si se quiere volver a bloquear: alcanza con poner otra vez los números (antes: 0, 2, 4, 6, 8).

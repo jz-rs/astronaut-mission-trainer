@@ -114,5 +114,6 @@
   "tutorial.bots": "Your robots help on their own too",
   "collab.meetingWhy": "📡 {event} is coming! What do we do first?",
   "rover.garageWithCost": "Rover -{cost}⚡",
-  "rover.busy": "Finish your task first!"
+  "rover.busy": "Finish your task first!",
+  "photo.realNasa": "📷 Real NASA photo"
 }
