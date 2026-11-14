@@ -50,7 +50,7 @@ export class MenuScene extends Phaser.Scene {
 
   private startGame(): void {
     void enterFullscreenLandscape();
-    this.scene.start(SCENE_KEYS.base);
+    this.scene.start(SCENE_KEYS.map);
   }
 
   private drawMars(): void {

@@ -78,5 +78,15 @@
   "menu.sources": "Sources",
   "sources.title": "Sources: real NASA data",
   "sources.back": "Back",
-  "sources.hint": "Tap a source to open it"
+  "sources.hint": "Tap a source to open it",
+  "map.title": "Choose where to land",
+  "map.land": "LAND",
+  "map.locked": "🔒 {stars} to go",
+  "map.best": "Best: {score}",
+  "map.newPlace": "New place unlocked!",
+  "map.goal.survive": "Survive {sols} sols",
+  "map.goal.samples": "Collect {goal} samples",
+  "map.goal.challenge": "{stat} always ≥ {minimum}",
+  "map.photoPending": "Real photo: soon",
+  "result.map": "Map"
 }

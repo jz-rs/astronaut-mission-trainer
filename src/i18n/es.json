@@ -78,5 +78,15 @@
   "menu.sources": "Fuentes",
   "sources.title": "Fuentes: datos reales de NASA",
   "sources.back": "Volver",
-  "sources.hint": "Tocá una fuente para abrirla"
+  "sources.hint": "Tocá una fuente para abrirla",
+  "map.title": "Elegí dónde aterrizar",
+  "map.land": "ATERRIZAR",
+  "map.locked": "🔒 faltan {stars}",
+  "map.best": "Récord: {score}",
+  "map.newPlace": "¡Nuevo lugar desbloqueado!",
+  "map.goal.survive": "Sobreviví {sols} soles",
+  "map.goal.samples": "Juntá {goal} muestras",
+  "map.goal.challenge": "{stat} siempre ≥ {minimum}",
+  "map.photoPending": "Foto real: pronto",
+  "result.map": "Mapa"
 }
