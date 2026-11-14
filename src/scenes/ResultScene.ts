@@ -24,6 +24,7 @@ export interface ResultSceneData {
   challenge: LocationChallenge;
   samples: number;
   samplesGoal: number;
+  locationId: string;
 }
 
 const STAR_Y = 64;
@@ -33,11 +34,14 @@ const STAR_DELAY_MS = 350;
 const CENTER_X = GAME_WIDTH / 2;
 
 export class ResultScene extends Phaser.Scene {
+  private locationId = '';
+
   constructor() {
     super(SCENE_KEYS.result);
   }
 
   create(data: ResultSceneData): void {
+    this.locationId = data.locationId;
     drawStarfield(this, 80);
     this.showStars(data.result);
     const titleKey = data.survived ? 'result.survived' : 'result.evacuated';
@@ -101,17 +105,17 @@ export class ResultScene extends Phaser.Scene {
       label: `↻ ${t('result.retry')}`,
       fontSize: FONT_SIZE.large,
       color: PALETTE.green,
-      onPress: () => this.scene.start(SCENE_KEYS.base),
+      onPress: () => this.scene.start(SCENE_KEYS.base, { locationId: this.locationId }),
     });
     createButton(this, {
       x: 72,
       y: 328,
       width: 112,
       height: 40,
-      label: t('result.menu'),
+      label: `🗺️ ${t('result.map')}`,
       fontSize: FONT_SIZE.small,
       color: PALETTE.metalLight,
-      onPress: () => this.scene.start(SCENE_KEYS.menu),
+      onPress: () => this.scene.start(SCENE_KEYS.map),
     });
   }
 }

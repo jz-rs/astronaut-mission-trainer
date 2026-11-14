@@ -68,3 +68,16 @@ export const BOT_IDLE_SPOTS: readonly Point[] = [
   { x: 390, y: 204 },
   { x: 460, y: 204 },
 ];
+
+/** Mars map (spec 12): a flat map, longitude → x and latitude → y. */
+export const MARS_MAP_RECT: Rect = { x: 40, y: 56, width: 560, height: 236 };
+
+export const MARS_MAP_POINTS: Record<string, Point> = {
+  jezero: { x: 440, y: 150 },
+  gale: { x: 534, y: 184 },
+  'olympus-mons': { x: 112, y: 150 },
+  'north-pole': { x: 320, y: 84 },
+  'valles-marineris': { x: 228, y: 196 },
+};
+
+export const LOCATION_CARD: Rect = { x: 120, y: 40, width: 400, height: 290 };

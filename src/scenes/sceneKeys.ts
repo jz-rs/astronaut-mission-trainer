@@ -4,4 +4,5 @@ export const SCENE_KEYS = {
   base: 'BaseScene',
   result: 'ResultScene',
   sources: 'SourcesScene',
+  map: 'MarsMapScene',
 } as const;

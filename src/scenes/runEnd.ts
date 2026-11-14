@@ -23,6 +23,7 @@ export function finishRun(scene: Phaser.Scene, session: GameSession): void {
     challenge: state.location.challenge,
     samples: state.samples,
     samplesGoal: state.location.samplesGoal,
+    locationId: state.location.id,
   };
   scene.scene.start(SCENE_KEYS.result, data);
 }

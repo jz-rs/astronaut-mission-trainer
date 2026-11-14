@@ -27,7 +27,12 @@ import { RoomView } from './RoomView';
  * Spec 04 (+ bots from spec 05) — The base during a run. It never calculates game rules:
  * it reads `session.state` to draw and sends GameActions through the session.
  */
-const DEFAULT_LOCATION_ID = 'jezero'; // the Mars map (spec 12) will choose this
+const DEFAULT_LOCATION_ID = 'jezero';
+
+/** The Mars map (spec 12) and the result screen's Retry say where to land. */
+export interface BaseSceneData {
+  locationId?: string;
+}
 const FLOATING_TEXT_RISE_PX = 24;
 const FLOATING_TEXT_MS = 900;
 const HINT_OFFSET_Y = 10;
@@ -44,12 +49,14 @@ export class BaseScene extends Phaser.Scene {
   private minigameOpen = false;
   private selectedBotId: string | null = null;
   private runEnded = false;
+  private locationId = DEFAULT_LOCATION_ID;
 
   constructor() {
     super(SCENE_KEYS.base);
   }
 
-  init(): void {
+  init(data: BaseSceneData = {}): void {
+    this.locationId = data.locationId ?? DEFAULT_LOCATION_ID;
     this.playerBusy = false;
     this.minigameOpen = false;
     this.selectedBotId = null;
@@ -58,7 +65,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.session = new GameSession(getLocation(DEFAULT_LOCATION_ID), loadProgress().training);
+    this.session = new GameSession(getLocation(this.locationId), loadProgress().training);
     drawBaseMap(this);
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));

@@ -11,6 +11,8 @@ export interface PlayerProgress {
   training: TrainingLevels;
   bestScoreByLocation: Record<string, number>;
   starsByLocation: Record<string, number>;
+  /** Locations whose unlock party the Mars map already played (spec 12). */
+  celebratedUnlocks: string[];
 }
 
 const STORAGE_KEY = 'astronaut-mission-trainer/progress/v1';
@@ -20,6 +22,7 @@ const EMPTY_PROGRESS: PlayerProgress = {
   training: {},
   bestScoreByLocation: {},
   starsByLocation: {},
+  celebratedUnlocks: [],
 };
 
 let cachedProgress: PlayerProgress | null = null;
