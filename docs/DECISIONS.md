@@ -15,6 +15,15 @@ Formato:
 
 ---
 
+## 2026-11-14 — Se saca la action de CI hasta resolver la facturación
+- Quién: C (dueña del repo)
+- Qué se decidió: se borra `.github/workflows/ci.yml`. GitHub no arranca ningún job porque la cuenta dueña del repo está bloqueada por un problema de facturación, y cada PR quedaba con el check en rojo.
+- Por qué: el check fallaba siempre sin correr nada, así que no protegía y confundía.
+- Mientras tanto: antes de abrir o aprobar un PR, correr `npm run check` (lint + tipos + tests) en la compu, como ya pide `AGENTS.md` §2.
+- Para volver: cuando soporte desbloquee la cuenta, restaurar el archivo desde el historial (`git show 9ab1fad:.github/workflows/ci.yml`).
+- A quién afecta: todas (spec 02 era la dueña del archivo; spec 17 lo mencionaba).
+- ¿Avisado al equipo?: sí (este documento, PR #21).
+
 ## 2026-11-14 — El juego usa el kit de imágenes en vez de los dibujos provisorios
 - Quién: C, con Claude (aprobado por el equipo)
 - Qué se decidió:
