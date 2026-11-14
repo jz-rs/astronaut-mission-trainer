@@ -43,7 +43,7 @@ Completar `docs/STYLE_GUIDE.md` con lo que ganó: paleta final, tamaños (tile, 
 **No incluye:** animaciones complejas, sonido, programar escenas (solo entregar imágenes).
 
 ## Criterios de aceptación
-- [ ] 3 propuestas generadas con las 4 piezas cada una, guardadas en `public/assets/reference/propuesta-1|2|3/`.
+- [ ] 3 propuestas generadas con las 4 piezas cada una, guardadas en `docs/arte/propuesta-1|2|3/` (afuera de `public/` para que no se publiquen).
 - [ ] Votación hecha; resultado anotado en `docs/DECISIONS.md`.
 - [ ] `docs/STYLE_GUIDE.md` sin ningún 🔲 pendiente.
 - [ ] La plantilla de prompt está escrita y probada: otra integrante la usa y obtiene algo del mismo estilo.

@@ -3,7 +3,7 @@
 > Estado: **completada con el resultado de la votación** del spec [01 Dirección de arte](specs/01-direccion-de-arte.md) (ver `docs/DECISIONS.md`, 2026-11-14). Lo marcado con ❓ queda abierto y hay que decidirlo con quien hace el spec 02.
 
 ## Principios
-1. **Dibujo retro, objetos de hoy.** Pixel art de consola de 16 bits, pero todo lo que se ve es tecnología actual: pantallas planas, botones táctiles, luces LED. Nada de tubos, agujas ni palancas.
+1. **Dibujo retro, objetos de hoy.** Pixel art de consola de 16 bits, pero todo lo que se ve es tecnología actual: pantallas planas, botones táctiles, luces LED. Nada de tubos ni agujas. Las palancas sí se permiten (las usa el spec 16), con aspecto moderno: mango con luz LED y carcasa blanca o grafito.
 2. **Pixel art legible en un celu.** Siluetas claras, contorno oscuro, mucho contraste.
 3. **Mezcla de dos mundos**: todo lo generado es pixel art; **las fotos reales de la NASA van siempre enmarcadas** (marco `sprites/ui/marco-foto-nasa.png`, con la pantalla transparente) con la etiqueta "📷 Foto real NASA".
 4. **Color con significado**: cada barra/sala tiene su color y se usa siempre igual.
@@ -16,10 +16,10 @@
 ## Colores de las variables (fijos)
 | Variable | Color | Ícono (sprite) |
 |---|---|---|
-| Oxígeno | celeste `#5ec8e5` | `oxigeno/burbuja-o2.png` |
-| Comida | verde `#6cc24a` | `invernadero/lechuga-grande.png` |
-| Escudo | violeta `#9b6bdf` | `escudo/emblema-escudo.png` |
-| Energía | amarillo `#f7d94c` | `energia/rayo-energia.png` |
+| Oxígeno | celeste `#5ec8e5` | `ui/icono-oxigeno.png` |
+| Comida | verde `#6cc24a` | `ui/icono-comida.png` |
+| Escudo | violeta `#9b6bdf` | `ui/icono-escudo.png` |
+| Energía | amarillo `#f7d94c` | `ui/icono-energia.png` |
 | Peligro / barra baja | rojo `#e5484d` | — |
 
 ## Paleta
@@ -37,21 +37,25 @@ Igual a la propuesta inicial (se pasa a código en `src/ui/palette.ts`, spec 02)
 ## Tamaños
 - Resolución base del juego: **640 × 360** (escala para llenar la pantalla del celu).
 - Botones: mínimo 48 × 48 px de juego.
-- Los assets se dibujaron **en alta resolución** (cada "pixel" del dibujo ocupa varios pixels reales), así que el juego los escala hacia abajo:
+- **Regla: cada archivo está al doble (2×) de su tamaño en pantalla**, en PNG (nunca JPEG: ensucia los bordes del pixel art). El juego lo muestra a escala 0,5. Así no se escala ~10× en tiempo real, que con `pixelArt: true` queda serruchado y titila.
 
-| Asset | Tamaño del archivo |
-|---|---|
-| Fondo del menú (`sprites/fondos/fondo-menu.jpeg`) | 2752 × 1536 |
-| Mapa de la base (`sprites/fondos/mapa-base.jpeg`) | 1376 × 768 |
-| Salas por dentro (`sprites/fondos/sala-*.jpeg`) | 2400 × 1792 (4:3) |
-| Marco de fotos NASA (`sprites/ui/marco-foto-nasa.png`) | 2752 × 1536, pantalla transparente en (830, 463) – (1922, 1073) |
-| Rover y rocas (`sprites/rover/`) | sprites sueltos |
-| Suelo de Marte (`tiles/suelo-marte.png`) | tile isométrico |
-| Astronauta (cada frame) | 265 × 390, pies alineados abajo |
-| Paneles solares (3 estados) | 354 × 328, alineados entre sí |
-| Sprites para el mapa (`sprites/mapa/`) | ya a escala del mapa (lechugas 34 px de alto) |
+| Asset | Archivo (2×) | En pantalla (640 × 360) |
+|---|---|---|
+| Fondo del menú y mapa de la base (`sprites/fondos/`) | 1280 × 720 | pantalla completa |
+| Salas por dentro (`sprites/fondos/sala-*.png`) | 964 × 720 (4:3) | 482 × 360 |
+| Marco de fotos NASA (`sprites/ui/marco-foto-nasa.png`) | 1280 × 720, pantalla transparente en (386, 217) – (894, 503) | pantalla completa |
+| Astronauta (cada frame, pies alineados abajo) | 54 × 80 | ~27 × 40 |
+| Íconos de las barras (`ui/icono-*.png`) | 32 × 32 | 16 × 16 |
+| Lechugas | lado mayor 140 | ~70 |
+| Paneles solares (3 estados, alineados entre sí) | 300 × 278 | 150 × 139 |
+| Máquina de oxígeno | lado mayor 240 | ~120 |
+| Muro del escudo / bloques | lado mayor 400 / 80 | ~200 / ~40 |
+| Botón / botón redondo / estrellas | 240 de ancho / 96 / 96 | 120 / 48 / 48 |
+| Rover / rocas / muestras | 120 / 96–120 / 64–72 | ~60 / ~50 / ~35 |
+| Suelo de Marte (`tiles/suelo-marte.png`) | 128 de ancho | 64 |
+| Sprites para el mapa (`sprites/mapa/`) | a escala de `mapa-base.png` | — |
 
-❓ Falta decidir con el spec 02 a qué tamaño final se muestra cada cosa en 640 × 360 (por ejemplo, el astronauta a ~40 px de alto en el mapa).
+Los tamaños en pantalla de los minijuegos son una estimación según `MINIGAME_AREA` (520 × 248). Si un spec necesita otro tamaño, se vuelve a recortar desde la hoja original en `docs/arte/hojas/`.
 
 ## Tipografía
 - Pixel font: **Press Start 2P** (Google Fonts). ❓ No se probó todavía junto al arte.
@@ -63,7 +67,7 @@ Igual a la propuesta inicial (se pasa a código en `src/ui/palette.ts`, spec 02)
 - Nombres: `astronauta-{color}-{frente|espalda}-{quieto|paso1|paso2}.png`.
 
 ## Cómo se arma la base: capas
-- El **mapa** es un fondo vacío (`mapa-base.jpeg`) + sprites de estado encima (`sprites/mapa/`): plantas sanas/sedientas/secas en las camas, máquina de oxígeno funcionando/rota, paneles limpios/sucios. Así, si las plantas se marchitan en el juego, también se marchitan en el mapa.
+- El **mapa** es un fondo vacío (`sprites/fondos/mapa-base.png`) + sprites de estado encima (`sprites/mapa/`): plantas sanas/sedientas/secas en las camas, máquina de oxígeno funcionando/rota, paneles limpios/sucios. Así, si las plantas se marchitan en el juego, también se marchitan en el mapa.
 - Las **salas por dentro** son fondos vacíos + los sprites del minijuego encima.
 - Las salas por dentro son el **original**: el mapa se adapta a ellas, no al revés.
 
@@ -83,10 +87,10 @@ no shadows on the background.
  "row2":["objeto 4","objeto 5","objeto 6"]}
 ```
 
-Escena o sala nueva: adjuntar una sala del kit (por ejemplo `sprites/fondos/sala-invernadero.jpeg`) y pedir **"edit this image: …"** cambiando solo lo necesario, en vez de pedir una imagen desde cero.
+Escena o sala nueva: adjuntar una sala del kit (por ejemplo `sprites/fondos/sala-invernadero.png`) y pedir **"edit this image: …"** cambiando solo lo necesario, en vez de pedir una imagen desde cero.
 
 ## Recorte de sprites
-Las hojas en magenta (`reference/hojas/hoja-*.png`) se recortan con un script de Python (Pillow + numpy + scipy): detecta el fondo magenta, borra el borde rosado, separa cada objeto y lo guarda como PNG transparente.
+Las hojas en magenta (`docs/arte/hojas/hoja-*.png`) se recortan con un script de Python (Pillow + numpy + scipy): detecta el fondo magenta, borra el borde rosado, separa cada objeto y lo guarda como PNG transparente.
 ❓ El script está en la compu de la autora; falta decidir dónde se sube en el repo (agregar una carpeta `tools/` cambia la estructura de carpetas).
 
 ## Imágenes reales de la NASA
