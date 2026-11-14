@@ -61,3 +61,10 @@ export const ROOM_RECTS: Record<TaskId, Rect> = {
 export const PLAYER_IDLE_SPOT: Point = { x: 320, y: 204 };
 
 export const WALK_SPEED_PX_PER_SECOND = 150;
+
+/** Where idle bots wait in the corridor (spec 05). */
+export const BOT_IDLE_SPOTS: readonly Point[] = [
+  { x: 250, y: 204 },
+  { x: 390, y: 204 },
+  { x: 460, y: 204 },
+];

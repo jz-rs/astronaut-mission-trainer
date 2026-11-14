@@ -10,7 +10,7 @@ import type { MinigameResult, MinigameStartData } from '../../minigames/Minigame
 import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
-import { PLAYER_IDLE_SPOT } from '../../ui/layout';
+import { CORRIDOR, FONT_SIZE, PLAYER_IDLE_SPOT } from '../../ui/layout';
 import { CREW_COLORS, PALETTE } from '../../ui/palette';
 import { addScanlines } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
@@ -18,25 +18,31 @@ import { finishRun } from '../runEnd';
 import { SCENE_KEYS } from '../sceneKeys';
 import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
+import { BotFaces } from './BotFaces';
+import { BotsView } from './BotsView';
 import { Hud } from './Hud';
 import { RoomView } from './RoomView';
 
 /**
- * Spec 04 — The base during a run. It never calculates game rules:
+ * Spec 04 (+ bots from spec 05) — The base during a run. It never calculates game rules:
  * it reads `session.state` to draw and sends GameActions through the session.
- * Bots already work in AUTO inside the session; drawing them is spec 05.
  */
 const DEFAULT_LOCATION_ID = 'jezero'; // the Mars map (spec 12) will choose this
 const FLOATING_TEXT_RISE_PX = 24;
 const FLOATING_TEXT_MS = 900;
+const HINT_OFFSET_Y = 10;
 
 export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
   private player!: AstronautSprite;
+  private bots!: BotsView;
+  private botFaces!: BotFaces;
+  private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
+  private selectedBotId: string | null = null;
   private runEnded = false;
 
   constructor() {
@@ -46,6 +52,7 @@ export class BaseScene extends Phaser.Scene {
   init(): void {
     this.playerBusy = false;
     this.minigameOpen = false;
+    this.selectedBotId = null;
     this.runEnded = false;
     this.rooms = new Map();
   }
@@ -57,7 +64,24 @@ export class BaseScene extends Phaser.Scene {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
     this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, CREW_COLORS.player ?? PALETTE.violet);
+    this.bots = new BotsView(
+      this,
+      this.session.state.crew,
+      (taskId, crewId) => this.workSpot(taskId, crewId),
+      (botId) => this.selectBot(botId),
+    );
     this.hud = new Hud(this);
+    this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
+    this.pickRoomHint = addText(
+      this,
+      PLAYER_IDLE_SPOT.x,
+      CORRIDOR.y - HINT_OFFSET_Y,
+      t('hud.pickRoom'),
+      {
+        size: FONT_SIZE.small,
+        color: PALETTE.sun,
+      },
+    ).setVisible(false);
     addScanlines(this);
   }
 
@@ -66,6 +90,8 @@ export class BaseScene extends Phaser.Scene {
     this.session.update(deltaMs);
     const { state } = this.session;
     this.hud.update(state, time);
+    this.botFaces.update(state);
+    this.bots.update(state, this.selectedBotId);
     for (const room of this.rooms.values()) {
       const value = state.stats[TASK_BALANCE[room.taskId].stat];
       room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);
@@ -74,7 +100,16 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private handleRoomTap(taskId: TaskId): void {
-    if (this.minigameOpen || this.runEnded || this.playerBusy) return;
+    if (this.minigameOpen || this.runEnded) return;
+    if (this.selectedBotId) {
+      this.orderBot(this.selectedBotId, taskId);
+      return;
+    }
+    this.sendPlayer(taskId);
+  }
+
+  private sendPlayer(taskId: TaskId): void {
+    if (this.playerBusy) return;
     if (!canAffordTask(this.session.state.stats, taskId)) {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
       return;
@@ -101,6 +136,32 @@ export class BaseScene extends Phaser.Scene {
     if (this.runEnded) return;
     this.session.dispatch({ type: 'completeTask', crewId: PLAYER_ID, taskId, performance });
     recordMinigameResult(taskId, performance);
+  }
+
+  private selectBot(botId: string): void {
+    if (this.minigameOpen) return;
+    this.setSelectedBot(this.selectedBotId === botId ? null : botId);
+  }
+
+  private orderBot(botId: string, taskId: TaskId): void {
+    if (canAffordTask(this.session.state.stats, taskId)) {
+      this.session.dispatch({ type: 'assignTask', crewId: botId, taskId });
+    } else {
+      this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
+    }
+    this.setSelectedBot(null);
+  }
+
+  private setSelectedBot(botId: string | null): void {
+    this.selectedBotId = botId;
+    this.botFaces.highlight(botId);
+    this.pickRoomHint.setVisible(botId !== null);
+  }
+
+  private toggleAuto(botId: string): void {
+    const bot = this.session.state.crew.find((member) => member.id === botId);
+    if (!bot) return;
+    this.session.dispatch({ type: 'setAutoMode', crewId: botId, enabled: !bot.autoMode });
   }
 
   /** Each crew member has its own spot in a room so they never overlap. */

@@ -39,5 +39,6 @@
   "result.reason.challenge": "{stat} bajó del {minimum}%",
   "result.reason.samples": "Faltaron muestras del rover ({samples}/{goal})",
   "minigame.placeholder.button": "TOCÁ",
-  "hud.noEnergy": "¡Sin energía!"
+  "hud.noEnergy": "¡Sin energía!",
+  "hud.pickRoom": "¿A qué sala va?"
 }
