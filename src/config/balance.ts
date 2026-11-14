@@ -78,6 +78,14 @@ export const OXYGEN_FACTORY_BALANCE = {
   bubbleRadius: 22,
 } as const;
 
+export const GREENHOUSE_BALANCE = {
+  columns: 3,
+  rows: 2,
+  thirstEveryMs: 1_300,
+  thirstyForMs: 2_800,
+  noWitheredBonus: 0.2,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,
