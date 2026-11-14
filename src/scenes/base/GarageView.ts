@@ -14,17 +14,17 @@ import { addIconLabel } from '../../ui/iconLabel';
  * that it cannot leave yet.
  */
 const ICON_SIZE = 22;
+/** Air between the label and the frame, so the "⚡" is never cut off in any language. */
+const SIDE_PADDING = 10;
 
 export class GarageView {
   private readonly bay: Phaser.GameObjects.Container;
 
   constructor(scene: Phaser.Scene, onTap: () => void) {
-    const { x, y, width, height } = GARAGE_RECT;
-    const panel = scene.add.graphics();
-    drawTechPanel(panel, { x: 0, y: 0, width, height }, PALETTE.sun);
+    const { height } = GARAGE_RECT;
     const label = addIconLabel(
       scene,
-      width / 2,
+      0,
       height / 2,
       'rover',
       ICON_SIZE,
@@ -34,8 +34,21 @@ export class GarageView {
         color: PALETTE.sun,
       },
     );
-    this.bay = scene.add.container(x, y, [panel, label.icon, label.text]);
-    const zone = scene.add.zone(x + width / 2, y + height / 2, width, MIN_TOUCH_SIZE);
+    // The frame grows to fit the label and stays centered on the garage spot of the layout.
+    const labelWidth = label.text.getRightCenter().x - label.icon.getLeftCenter().x;
+    const width = Math.max(GARAGE_RECT.width, labelWidth + SIDE_PADDING * 2);
+    const centerX = GARAGE_RECT.x + GARAGE_RECT.width / 2;
+    label.setText(label.text.text); // re-centers the pair on x = 0
+    label.icon.x += width / 2;
+    label.text.x += width / 2;
+    const panel = scene.add.graphics();
+    drawTechPanel(panel, { x: 0, y: 0, width, height }, PALETTE.sun);
+    this.bay = scene.add.container(centerX - width / 2, GARAGE_RECT.y, [
+      panel,
+      label.icon,
+      label.text,
+    ]);
+    const zone = scene.add.zone(centerX, GARAGE_RECT.y + height / 2, width, MIN_TOUCH_SIZE);
     zone.setInteractive({ useHandCursor: true }).on('pointerup', onTap);
   }
 
