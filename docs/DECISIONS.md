@@ -26,6 +26,25 @@ Formato:
 - A quién afecta: A (spec 04 `BaseScene`/`GarageView`, `layout.ts` `GARAGE_RECT`), B (specs 08, 09, 10, 15), todas (`balance.ts`).
 - ¿Avisado al equipo?: sí (pedido en el chat).
 
+## 2026-11-14 — Tocar una sala siempre te lleva a vos; las barras pasan a las salas
+- Quién: C, con Claude (pedido de C)
+- Qué se decidió:
+  - Se suma a la regla de "bots en AUTO no se tocan" (entrada de abajo): un bot en MANUAL que está trabajando o yendo a una sala tampoco se puede tocar; el toque le llega a la sala y vas vos a jugar. Solo se eligen (para darles una orden) los bots que esperan en el pasillo. Antes, tocar una sala donde había un bot lo seleccionaba sin querer, y desde ahí cada toque mandaba al bot: parecía que las salas no respondían.
+  - Las 4 barras se sacan de la barra de arriba y pasan a las salas: cada cartel es una tarjeta con ícono + nombre y la barra de esa sala adentro. Cuando está baja, titilan en rojo el borde (más grueso) y la barra; la tarjeta queda oscura para que el nombre se siga leyendo. Arriba quedan solo el Sol (al centro) y las caritas de los bots.
+  - Los efectos de cada tarea ("+30" y "−10 ⚡") ahora vuelan a la barra de la sala (la energía, a la tarjeta de Paneles solares) y es esa barra la que brilla (`RoomView.barCenter` / `flashBar`, que reemplazan a `statBarCenter` / `Hud.flash`). La flecha del sol guiado "¡Subió!" apunta a la barra de la sala.
+  - La barrita de progreso de cada bot pasa de arriba del casco a debajo de los pies, para que no se pise con las tarjetas de las salas.
+- Por qué: en la compu las salas "no abrían" el minijuego; y así se ve cómo está cada sala donde está.
+- A quién afecta: A (spec 04: `Hud.ts`, `RoomView.ts`, `TaskEffectsView.ts`, `TutorialGuide.ts`; spec 05: `BotsView.ts`). Contradice el spec 04, que pedía las 4 barras arriba.
+- ¿Avisado al equipo?: pendiente (se avisa con el PR).
+
+## 2026-11-14 — X para salir de los minijuegos
+- Quién: C, con Claude (pedido de C)
+- Qué se decidió: cada minijuego tiene una X roja arriba a la derecha del panel (`src/ui/closeButton.ts`, zona táctil de 48 px). Salir no cuenta como tarea hecha: no hay resultado, no se gasta energía y la barra no sube. En el rover, la X lo trae de vuelta enseguida con las muestras que ya juntó (la energía ya se pagó al salir).
+- Contrato: `MinigameStartData` suma un campo **opcional** `onExit?: () => void` (`src/minigames/MinigameScene.ts`). La X la dibuja la clase base, así que ningún minijuego tiene que cambiar.
+- Por qué: un chico que entra sin querer, o que no quiere jugar ese minijuego, tenía que esperar los 15 s. La X se oculta cuando aparece la tarjeta de resultado (ahí se sale con SEGUIR).
+- A quién afecta: A (spec 04: `BaseScene` libera al astronauta con `onExit`), B (specs 06–10 y 15: contrato de minijuegos y rover).
+- ¿Avisado al equipo?: pendiente (se avisa con el PR).
+
 ## 2026-11-14 — Primer sol guiado y efectos visibles de cada decisión
 - Quién: C, con Claude (aprobado por el equipo)
 - Qué se decidió:

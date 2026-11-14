@@ -8,6 +8,7 @@
  * This base class does everything that is common, so a minigame only builds its little game:
  *   - dims the base and draws the panel, the one-line instruction and the time bar;
  *   - ends the game when time runs out (or when the minigame calls `finish()`);
+ *   - draws the X to leave early: no result, no reward and no energy spent (`onExit`);
  *   - shows "PERFECT! / Well done! / Almost!" plus what it teaches (resultCard.ts), and reports
  *     and closes when the kid taps GO ON.
  *
@@ -33,6 +34,7 @@ import {
   MINIGAME_PANEL,
   type Rect,
 } from '../ui/layout';
+import { addCloseButton } from '../ui/closeButton';
 import { addIconLabel } from '../ui/iconLabel';
 import { PALETTE, STAT_COLORS } from '../ui/palette';
 import { ROOM_BACKGROUNDS, STAT_ICON_SPRITES } from '../ui/sprites';
@@ -48,6 +50,8 @@ export interface MinigameStartData {
   /** 1 = normal. Comes from the location decay multiplier of this task's bar. */
   difficulty: number;
   onFinish: (result: MinigameResult) => void;
+  /** The kid tapped the X: the task was not done. */
+  onExit?: () => void;
 }
 
 const DIM_ALPHA = 0.55;
@@ -60,9 +64,11 @@ export abstract class MinigameScene extends Phaser.Scene {
   protected taskId: TaskId = 'solar-panels';
   protected difficulty = 1;
   private onFinish: MinigameStartData['onFinish'] = () => undefined;
+  private onExit: () => void = () => undefined;
   private elapsedMs = 0;
   private finished = false;
   private timeBar: Phaser.GameObjects.Graphics | null = null;
+  private closeButton: Phaser.GameObjects.Container | null = null;
 
   protected abstract readonly instructionKey: TranslationKey;
   protected abstract buildGame(area: Rect): void;
@@ -75,6 +81,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.taskId = data.taskId;
     this.difficulty = data.difficulty;
     this.onFinish = data.onFinish;
+    this.onExit = data.onExit ?? (() => undefined);
     this.elapsedMs = 0;
     this.finished = false;
   }
@@ -115,11 +122,20 @@ export abstract class MinigameScene extends Phaser.Scene {
   protected finish(): void {
     if (this.finished) return;
     this.finished = true;
+    this.closeButton?.setVisible(false); // the result card has its own GO ON button
     const performance = clampPerformance(this.calculatePerformance());
     showResultCard(this, this.taskId, performance, () => {
       this.onFinish({ taskId: this.taskId, performance });
       this.scene.stop();
     });
+  }
+
+  /** Leaving early closes at once: nothing is reported as done. */
+  private exit(): void {
+    if (this.finished) return;
+    this.finished = true;
+    this.onExit();
+    this.scene.stop();
   }
 
   private drawFrame(): void {
@@ -140,6 +156,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     );
     this.timeBar = this.add.graphics();
     this.drawTimeBar();
+    this.closeButton = addCloseButton(this, () => this.exit());
   }
 
   /** The empty room of this task fills the play area; the minigame sprites go on top. */
