@@ -10,7 +10,7 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 /**
  * Spec 05 — Draws the 3 bots. It only READS the run state: when a bot's task changes,
  * its sprite walks to the room (or back to the corridor) and shows a progress bar while working.
- * Tapping a bot selects it so the next tapped room becomes its order.
+ * Tapping a bot on MANUAL selects it so the next tapped room becomes its order.
  */
 const PROGRESS_WIDTH = 28;
 /** Above the helmet: astronauts are drawn from their feet up. */
@@ -46,6 +46,8 @@ export class BotsView {
       if (!bot) continue;
       const { image } = bot.astronaut;
       bot.ring.setVisible(member.id === selectedBotId).setPosition(image.x, image.y);
+      // Bots on AUTO decide alone: they are not tappable, so a tap on their room reaches the room.
+      if (image.input) image.input.enabled = !member.autoMode;
       this.followTask(member, bot);
       this.drawProgress(member, bot);
     }

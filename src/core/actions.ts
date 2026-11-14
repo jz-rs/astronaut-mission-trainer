@@ -66,6 +66,7 @@ function completeTask(
   performance: number,
 ): void {
   if (!canAffordTask(state.stats, taskId)) return;
-  applyTaskResult(state.stats, taskId, clampPerformance(performance));
+  const effect = applyTaskResult(state.stats, taskId, clampPerformance(performance));
+  state.taskNews.push({ crewId: member.id, taskId, ...effect });
   member.task = null;
 }

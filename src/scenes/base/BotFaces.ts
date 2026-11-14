@@ -11,6 +11,8 @@ import { addText } from '../../ui/text';
  * and a ring marks the bot that is waiting for an order.
  */
 const FACE_START_X = 524;
+/** Middle of the 3 faces, so the tutorial can point at them. */
+export const BOT_FACES_CENTER = { x: FACE_START_X + 40, y: 22 };
 const FACE_SPACING = 40;
 const FACE_RADIUS = 9;
 const FACE_Y = 14;

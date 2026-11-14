@@ -15,6 +15,19 @@ Formato:
 
 ---
 
+## 2026-11-14 — Primer sol guiado y efectos visibles de cada decisión
+- Quién: C, con Claude (aprobado por el equipo)
+- Qué se decidió:
+  - **Sol 1 guiado** (`scenes/base/TutorialGuide.ts`): tarjeta "¡Estás al mando de la base!" con las 4 barras y la meta → flecha "¡Tocá esta sala!" (la base espera quieta hasta el primer toque) → flecha a la barra que subió → flecha a los bots. Se muestra hasta completarlo una vez (`tutorialDone` en el progreso guardado).
+  - **Cada tarea muestra su efecto**: "+30" vuela desde la sala a su barra y "−10 ⚡" a la energía, para tareas de la jugadora y de los bots (`TaskEffectsView.ts`). El núcleo registra cada tarea terminada en `RunState.taskNews`; `applyTaskResult` ahora devuelve lo que cambió.
+  - **El dato del minijuego queda en pantalla** hasta tocar SEGUIR (máximo 12 s, porque la base sigue corriendo), con letra más grande (`minigames/resultCard.ts`). La primera vez de cada minijuego muestra el "por qué" (`task.*.why`), que conecta lo que hiciste con la ciencia; después rotan los 3 datos. Se reemplaza `resultDisplayMs` por `factMinDisplayMs` / `factMaxDisplayMs`.
+  - **La reunión de crisis dice qué crisis viene** (`collab.meetingWhy` reemplaza a `collab.meetingTitle`).
+  - **"VOS" sobre la astronauta de la jugadora.** Los bots en AUTO no se pueden tocar, así que tocar su sala manda a la jugadora. Tocar la carita de un bot lo pasa a MANUAL y ya pregunta "¿A qué sala va?".
+  - El desafío del lugar se lee "💨 nunca menos de 30" en vez de "siempre ≥ 30".
+- Por qué: al probarlo, después de JUGAR no se entendía qué hacer ni se notaba qué se aprendía. El pedido central del track es que se vea que cada decisión cambia las variables.
+- A quién afecta: A (specs 03, 04, 05, 16: `types.ts`, `stats.ts`, `actions.ts`, `run.ts`, `BaseScene`, `BotsView`, `MeetingView`), B (spec 06: `MinigameScene.ts`, el resultado pasa a `resultCard.ts`), C (specs 12, 13: textos, `progressStorage.ts`).
+- ¿Avisado al equipo?: sí (aprobado en el chat).
+
 ## 2026-11-14 — Se saca la action de CI hasta resolver la facturación
 - Quién: C (dueña del repo)
 - Qué se decidió: se borra `.github/workflows/ci.yml`. GitHub no arranca ningún job porque la cuenta dueña del repo está bloqueada por un problema de facturación, y cada PR quedaba con el check en rojo.
