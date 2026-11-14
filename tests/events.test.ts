@@ -17,10 +17,10 @@ function seededRandom(seed: number): () => number {
 
 const STORM: MarsEvent = {
   id: 'storm',
-  type: 'solar-storm',
+  type: 'dust-storm',
   locations: ['test'],
   warningSolsBefore: [1],
-  effect: { shield: -40 },
+  effect: { energy: -40 },
   source: 'https://example.org',
   realDate: null,
 };
@@ -62,16 +62,16 @@ describe('Mars events', () => {
     state.sol = 2;
     updateRun(state, 1);
     expect(state.eventNews).toEqual([{ kind: 'warning', eventId: 'storm' }]);
-    expect(state.stats.shield).toBeGreaterThan(RUN_BALANCE.startingStatValue - 1);
+    expect(state.stats.energy).toBeGreaterThan(RUN_BALANCE.startingStatValue - 1);
   });
 
   it('arrives without warning when the event has none, and applies its effect', () => {
     const state = runWith(SURPRISE, 2);
     state.sol = 2;
-    const before = state.stats.shield;
+    const before = state.stats.energy;
     updateRun(state, RUN_BALANCE.solDurationMs * EVENT_BALANCE.hitAtSolFraction);
     expect(state.eventNews).toEqual([{ kind: 'hit', eventId: 'surprise' }]);
-    expect(state.stats.shield).toBeLessThan(before - 39);
+    expect(state.stats.energy).toBeLessThan(before - 39);
     expect(findWorstEvent(state)).toBe('surprise');
   });
 });

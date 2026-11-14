@@ -49,3 +49,10 @@ export function averageStat(stats: Stats): number {
   const total = STAT_IDS.reduce((sum, statId) => sum + stats[statId], 0);
   return total / STAT_IDS.length;
 }
+
+/** Adds a change like { shield: -40 } to the stats (events, spec 14 and 16). */
+export function applyStatChanges(stats: Stats, changes: Partial<Stats>, factor = 1): void {
+  for (const statId of STAT_IDS) {
+    stats[statId] = clampStat(stats[statId] + (changes[statId] ?? 0) * factor);
+  }
+}

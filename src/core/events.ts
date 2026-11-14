@@ -1,5 +1,6 @@
 import { EVENT_BALANCE, RUN_BALANCE } from '../config/balance';
-import { clampStat } from './stats';
+import { shouldStartLever, shouldStartMeeting, startLever, startMeeting } from './collab';
+import { applyStatChanges } from './stats';
 import { STAT_IDS, type MarsEvent, type RunState, type ScheduledEvent } from './types';
 
 /**
@@ -47,10 +48,12 @@ export function updateEvents(state: RunState): void {
     if (event.status === 'pending' && event.warningSol !== null && state.sol >= event.warningSol) {
       event.status = 'warned';
       state.eventNews.push({ kind: 'warning', eventId: event.eventId });
+      if (shouldStartMeeting(event, state)) startMeeting(state, event);
     }
     if (event.status !== 'hit' && hasArrived(state, event)) {
       event.status = 'hit';
-      applyEventEffect(state, event);
+      if (shouldStartLever(event, state)) startLever(state, event);
+      else applyStatChanges(state.stats, event.effect);
       state.eventNews.push({ kind: 'hit', eventId: event.eventId });
     }
   }
@@ -61,17 +64,11 @@ function hasArrived(state: RunState, event: ScheduledEvent): boolean {
   return state.solElapsedMs >= RUN_BALANCE.solDurationMs * EVENT_BALANCE.hitAtSolFraction;
 }
 
-export function applyEventEffect(state: RunState, event: ScheduledEvent, factor = 1): void {
-  for (const statId of STAT_IDS) {
-    const change = event.effect[statId] ?? 0;
-    state.stats[statId] = clampStat(state.stats[statId] + change * factor);
-  }
-}
-
 /** For the result screen: "the solar storm hit you hardest". */
 export function findWorstEvent(state: RunState): string | null {
   const damage = (event: ScheduledEvent) =>
-    STAT_IDS.reduce((total, statId) => total + Math.min(0, event.effect[statId] ?? 0), 0);
+    STAT_IDS.reduce((total, statId) => total + Math.min(0, event.effect[statId] ?? 0), 0) *
+    (event.damageFactor ?? 1);
   const harmful = state.events.filter((event) => event.status === 'hit' && damage(event) < 0);
   harmful.sort((a, b) => damage(a) - damage(b));
   return harmful[0]?.eventId ?? null;
