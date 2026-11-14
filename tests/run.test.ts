@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CREW_BALANCE, RUN_BALANCE, TASK_BALANCE } from '../src/config/balance';
 import { applyAction } from '../src/core/actions';
+import { getLocation } from '../src/content/locations';
 import { createRun, PLAYER_ID, updateRun } from '../src/core/run';
 import { TEST_LOCATION } from './helpers';
 
@@ -55,5 +56,26 @@ describe('run simulation', () => {
     updateRun(state, CREW_BALANCE.botTaskDurationMs);
     expect(state.crew.find((member) => member.id === 'bot-red')?.task).toBeNull();
     expect(state.stats.oxygen).toBeGreaterThan(10);
+  });
+
+  it('does not let anyone do a task without enough energy', () => {
+    const state = createRun(TEST_LOCATION, {});
+    state.stats.energy = TASK_BALANCE.greenhouse.energyCost - 1;
+    const foodBefore = state.stats.food;
+    applyAction(state, {
+      type: 'completeTask',
+      crewId: PLAYER_ID,
+      taskId: 'greenhouse',
+      performance: 1,
+    });
+    expect(state.stats.food).toBe(foodBefore);
+  });
+
+  it('loses a run in Jezero before sol 3 if nobody does anything', () => {
+    const state = createRun(getLocation('jezero'), {});
+    const frameMs = 100;
+    while (state.status === 'playing') updateRun(state, frameMs);
+    expect(state.status).toBe('evacuated');
+    expect(state.sol).toBeLessThan(3);
   });
 });
