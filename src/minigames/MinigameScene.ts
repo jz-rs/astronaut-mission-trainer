@@ -8,7 +8,8 @@
  * This base class does everything that is common, so a minigame only builds its little game:
  *   - dims the base and draws the panel, the one-line instruction and the time bar;
  *   - ends the game when time runs out (or when the minigame calls `finish()`);
- *   - shows "PERFECT! / Well done! / Almost!" plus the real fact, then reports and closes.
+ *   - shows "PERFECT! / Well done! / Almost!" plus what it teaches (resultCard.ts), and reports
+ *     and closes when the kid taps GO ON.
  *
  * To write a new minigame:
  *   1. Create `src/minigames/<name>/<Name>Minigame.ts` extending MinigameScene.
@@ -19,10 +20,10 @@
  */
 import Phaser from 'phaser';
 import { MINIGAME_BALANCE, TASK_BALANCE } from '../config/balance';
-import { randomFactKey } from '../content/facts';
 import { clampPerformance } from '../core/training';
 import type { TaskId } from '../core/types';
 import { t, type TranslationKey } from '../i18n';
+import { showResultCard } from './resultCard';
 import {
   FONT_SIZE,
   GAME_HEIGHT,
@@ -30,12 +31,12 @@ import {
   HUD_HEIGHT,
   MINIGAME_AREA,
   MINIGAME_PANEL,
-  STAT_ICONS,
   type Rect,
 } from '../ui/layout';
+import { addIconLabel } from '../ui/iconLabel';
 import { PALETTE, STAT_COLORS } from '../ui/palette';
+import { ROOM_BACKGROUNDS, STAT_ICON_SPRITES } from '../ui/sprites';
 import { addScanlines, drawTechPanel } from '../ui/techFrame';
-import { addText } from '../ui/text';
 
 export interface MinigameResult {
   taskId: TaskId;
@@ -51,7 +52,9 @@ export interface MinigameStartData {
 
 const DIM_ALPHA = 0.55;
 const TIME_BAR_HEIGHT = 6;
-const RESULT_DEPTH = 100;
+const INSTRUCTION_ICON_SIZE = 16;
+/** The room picture is taller than the play area: skip this much of its top (texture pixels). */
+const ROOM_CROP_TOP = 130;
 
 export abstract class MinigameScene extends Phaser.Scene {
   protected taskId: TaskId = 'solar-panels';
@@ -113,8 +116,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     if (this.finished) return;
     this.finished = true;
     const performance = clampPerformance(this.calculatePerformance());
-    this.showResult(performance);
-    this.time.delayedCall(MINIGAME_BALANCE.resultDisplayMs, () => {
+    showResultCard(this, this.taskId, performance, () => {
       this.onFinish({ taskId: this.taskId, performance });
       this.scene.stop();
     });
@@ -125,12 +127,27 @@ export abstract class MinigameScene extends Phaser.Scene {
     dim.setOrigin(0).setAlpha(DIM_ALPHA).setInteractive(); // swallows taps meant for the base
     const statColor = STAT_COLORS[TASK_BALANCE[this.taskId].stat];
     drawTechPanel(this.add.graphics(), MINIGAME_PANEL, statColor);
-    const icon = STAT_ICONS[TASK_BALANCE[this.taskId].stat];
-    addText(this, GAME_WIDTH / 2, MINIGAME_PANEL.y + 18, `${icon} ${t(this.instructionKey)}`, {
-      size: FONT_SIZE.medium,
-    });
+    this.drawRoom();
+    const icon = STAT_ICON_SPRITES[TASK_BALANCE[this.taskId].stat];
+    addIconLabel(
+      this,
+      GAME_WIDTH / 2,
+      MINIGAME_PANEL.y + 18,
+      icon,
+      INSTRUCTION_ICON_SIZE,
+      t(this.instructionKey),
+      { size: FONT_SIZE.medium },
+    );
     this.timeBar = this.add.graphics();
     this.drawTimeBar();
+  }
+
+  /** The empty room of this task fills the play area; the minigame sprites go on top. */
+  private drawRoom(): void {
+    const room = this.add.image(MINIGAME_AREA.x, 0, ROOM_BACKGROUNDS[this.taskId]).setOrigin(0);
+    const scale = MINIGAME_AREA.width / room.width;
+    room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
+    room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);
   }
 
   private drawTimeBar(): void {
@@ -145,31 +162,5 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.timeBar
       .fillStyle(color, 1)
       .fillRect(MINIGAME_AREA.x, y, width * this.timeLeftFraction, TIME_BAR_HEIGHT);
-  }
-
-  private showResult(performance: number): void {
-    const { perfectThreshold, goodThreshold } = MINIGAME_BALANCE;
-    const [messageKey, color]: [TranslationKey, number] =
-      performance >= perfectThreshold
-        ? ['minigame.result.perfect', PALETTE.sun]
-        : performance >= goodThreshold
-          ? ['minigame.result.good', PALETTE.green]
-          : ['minigame.result.tryAgain', PALETTE.marsLight];
-
-    const cover = this.add.graphics().setDepth(RESULT_DEPTH);
-    drawTechPanel(cover, MINIGAME_AREA, color, PALETTE.space);
-    const centerX = MINIGAME_AREA.x + MINIGAME_AREA.width / 2;
-    const message = addText(this, centerX, MINIGAME_AREA.y + 80, t(messageKey), {
-      size: FONT_SIZE.large,
-      color,
-    });
-    message.setDepth(RESULT_DEPTH).setScale(0);
-    this.tweens.add({ targets: message, scale: 1, duration: 250, ease: 'Back.Out' });
-    const fact = t(randomFactKey(this.taskId));
-    addText(this, centerX, MINIGAME_AREA.y + 150, fact, {
-      size: FONT_SIZE.small,
-      color: PALETTE.cyan,
-      wrapWidth: MINIGAME_AREA.width - 60,
-    }).setDepth(RESULT_DEPTH);
   }
 }

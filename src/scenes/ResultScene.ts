@@ -6,7 +6,7 @@ import { t } from '../i18n';
 import { createButton } from '../ui/Button';
 import { FONT_SIZE, GAME_WIDTH } from '../ui/layout';
 import { PALETTE } from '../ui/palette';
-import { drawStar } from '../ui/star';
+import { addStar } from '../ui/star';
 import { addScanlines, drawStarfield } from '../ui/techFrame';
 import { addText } from '../ui/text';
 import { eventKey } from './base/EventAnnouncer';
@@ -31,7 +31,7 @@ export interface ResultSceneData {
 
 const STAR_Y = 64;
 const STAR_SPACING = 84;
-const STAR_RADIUS = 30;
+const STAR_SIZE = 64;
 const STAR_DELAY_MS = 350;
 const CENTER_X = GAME_WIDTH / 2;
 
@@ -77,12 +77,13 @@ export class ResultScene extends Phaser.Scene {
     // Earned stars first, so a kid reads "2 stars" at a glance.
     earned.sort((a, b) => Number(b) - Number(a));
     earned.forEach((isEarned, index) => {
-      const star = this.add.graphics({ x: CENTER_X + (index - 1) * STAR_SPACING, y: STAR_Y });
-      drawStar(star, STAR_RADIUS, isEarned);
+      const x = CENTER_X + (index - 1) * STAR_SPACING;
+      const star = addStar(this, x, STAR_Y, STAR_SIZE, isEarned);
+      const fullScale = star.scale;
       star.setScale(0);
       this.tweens.add({
         targets: star,
-        scale: 1,
+        scale: fullScale,
         angle: isEarned ? 360 : 0,
         delay: STAR_DELAY_MS * index,
         duration: 400,

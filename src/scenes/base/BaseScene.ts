@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import { ALERT_BALANCE, TASK_BALANCE } from '../../config/balance';
+import { TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
-import { TASK_IDS, type TaskId } from '../../core/types';
+import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
 import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
@@ -14,7 +14,7 @@ import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
 import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
-import { CREW_COLORS, PALETTE } from '../../ui/palette';
+import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { addScanlines } from '../../ui/techFrame';
 import { finishRun } from '../runEnd';
@@ -25,11 +25,15 @@ import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
 import { GarageView } from './GarageView';
+import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
 import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
 import { RoomView } from './RoomView';
+import { TaskEffectsView } from './TaskEffectsView';
+import { TutorialGuide } from './TutorialGuide';
+import { addYouTag } from './youTag';
 
 /**
  * Spec 04 (+ bots from spec 05) — The base during a run. It never calculates game rules:
@@ -48,12 +52,15 @@ export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
+  private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
   private botFaces!: BotFaces;
   private eventAnnouncer!: EventAnnouncer;
   private garage!: GarageView;
   private teamwork!: TeamworkViews;
+  private taskEffects!: TaskEffectsView;
+  private tutorial!: TutorialGuide;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -76,11 +83,12 @@ export class BaseScene extends Phaser.Scene {
 
   create(): void {
     this.session = this.createSession();
-    drawBaseMap(this);
+    this.mapStatus = drawBaseMap(this);
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
-    this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, CREW_COLORS.player ?? PALETTE.violet);
+    this.player = new AstronautSprite(this, PLAYER_IDLE_SPOT, 'violet');
+    addYouTag(this, this.player.image);
     this.bots = new BotsView(
       this,
       this.session.state.crew,
@@ -93,6 +101,8 @@ export class BaseScene extends Phaser.Scene {
     this.eventAnnouncer = new EventAnnouncer(this);
     this.garage = new GarageView(this, () => this.sendRover());
     this.teamwork = new TeamworkViews(this, this.session, OVERLAY_KEYS);
+    this.taskEffects = new TaskEffectsView(this, this.hud);
+    this.tutorial = new TutorialGuide(this);
     addScanlines(this);
   }
 
@@ -106,23 +116,23 @@ export class BaseScene extends Phaser.Scene {
 
   update(time: number, deltaMs: number): void {
     if (this.runEnded) return;
-    this.session.update(deltaMs);
+    if (!this.tutorial.pausesGame) this.session.update(deltaMs);
     const { state } = this.session;
+    this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state, time);
+    this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
     this.garage.update(state);
     this.teamwork.update(state, time);
-    for (const room of this.rooms.values()) {
-      const value = state.stats[TASK_BALANCE[room.taskId].stat];
-      room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);
-    }
+    for (const room of this.rooms.values()) room.update(state.stats, time);
     if (this.session.isOver()) this.endRun();
   }
 
   private handleRoomTap(taskId: TaskId): void {
     if (this.minigameOpen || this.runEnded) return;
+    this.tutorial.roomTapped();
     if (this.selectedBotId) {
       this.orderBot(this.selectedBotId, taskId);
       return;
@@ -160,6 +170,10 @@ export class BaseScene extends Phaser.Scene {
     recordMinigameResult(taskId, performance);
   }
 
+  private handleTaskEffectShown(news: TaskNews): void {
+    if (news.crewId === PLAYER_ID) this.tutorial.playerTaskDone(TASK_BALANCE[news.taskId].stat);
+  }
+
   private selectBot(botId: string): void {
     if (this.minigameOpen) return;
     this.setSelectedBot(this.selectedBotId === botId ? null : botId);
@@ -183,15 +197,18 @@ export class BaseScene extends Phaser.Scene {
   private toggleAuto(botId: string): void {
     const bot = this.session.state.crew.find((member) => member.id === botId);
     if (!bot) return;
-    this.session.dispatch({ type: 'setAutoMode', crewId: botId, enabled: !bot.autoMode });
+    const enableAuto = !bot.autoMode;
+    this.session.dispatch({ type: 'setAutoMode', crewId: botId, enabled: enableAuto });
+    // Switching a bot to MANUAL means "I want to give it an order": it waits for a room right away.
+    this.setSelectedBot(enableAuto ? null : botId);
   }
 
   /** Each crew member has its own spot in a room so they never overlap. */
   private workSpot(taskId: TaskId, crewId: string): WalkTarget {
     const slot = this.session.state.crew.findIndex((member) => member.id === crewId);
     const room = this.rooms.get(taskId);
-    if (!room) return { spot: PLAYER_IDLE_SPOT, doorX: null };
-    return { spot: room.workSpot(slot), doorX: room.doorX };
+    if (!room) return { spot: PLAYER_IDLE_SPOT, door: null };
+    return { spot: room.workSpot(slot), door: room.door };
   }
 
   private showFloatingText(taskId: TaskId, message: string, color: number): void {
@@ -210,7 +227,7 @@ export class BaseScene extends Phaser.Scene {
       return;
     }
     this.playerBusy = true;
-    this.player.walkTo({ spot: GARAGE_SPOT, doorX: null }, () => {
+    this.player.walkTo({ spot: GARAGE_SPOT, door: null }, () => {
       if (this.runEnded) return;
       this.minigameOpen = true;
       launchRoverTrip(this, this.session, this.locationId, () => {

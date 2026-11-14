@@ -8,9 +8,9 @@ import es from '../src/i18n/es.json';
 const keys = new Set(Object.keys(es));
 
 describe('educational content', () => {
-  it('has 3 facts for every minigame', () => {
+  it('explains every minigame and has 3 facts for it', () => {
     for (const taskId of TASK_IDS) {
-      for (const suffix of ['fact', 'fact2', 'fact3']) {
+      for (const suffix of ['why', 'fact', 'fact2', 'fact3']) {
         expect(keys.has(`task.${taskId}.${suffix}`)).toBe(true);
       }
     }

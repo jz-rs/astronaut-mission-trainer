@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { ROVER_BALANCE } from '../../config/balance';
 import { t, type TranslationKey } from '../../i18n';
 import { drawFramedPhoto } from '../../ui/framedPhoto';
+import { addIconLabel, type IconLabel } from '../../ui/iconLabel';
 import {
   FONT_SIZE,
   GAME_HEIGHT,
@@ -29,6 +30,7 @@ export interface RoverStartData {
 const RESULT_DEPTH = 100;
 const PHOTO: Rect = { x: MINIGAME_AREA.x + 30, y: MINIGAME_AREA.y + 30, width: 200, height: 140 };
 const TIME_BAR_HEIGHT = 6;
+const ICON_SIZE = 20;
 
 export class RoverExpeditionScene extends Phaser.Scene {
   static readonly KEY = 'RoverExpeditionScene';
@@ -39,7 +41,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private elapsedMs = 0;
   private stunnedMs = 0;
   private finished = false;
-  private counter!: Phaser.GameObjects.Text;
+  private counter!: IconLabel;
   private timeBar!: Phaser.GameObjects.Graphics;
 
   constructor() {
@@ -59,14 +61,28 @@ export class RoverExpeditionScene extends Phaser.Scene {
     const dim = this.add.rectangle(0, HUD_HEIGHT, GAME_WIDTH, GAME_HEIGHT, PALETTE.night);
     dim.setOrigin(0).setAlpha(0.55).setInteractive(); // swallows taps meant for the base
     drawTechPanel(this.add.graphics(), MINIGAME_PANEL, PALETTE.sun);
-    addText(this, GAME_WIDTH / 2, MINIGAME_PANEL.y + 18, `🚙 ${t('rover.instruction')}`, {
-      size: FONT_SIZE.small,
-    });
+    addIconLabel(
+      this,
+      GAME_WIDTH / 2,
+      MINIGAME_PANEL.y + 18,
+      'rover',
+      ICON_SIZE,
+      t('rover.instruction'),
+      {
+        size: FONT_SIZE.small,
+      },
+    );
     this.timeBar = this.add.graphics();
     this.track = new RoverTrack(this);
-    this.counter = addText(this, MINIGAME_AREA.x + 50, MINIGAME_AREA.y + 20, '🧪 0', {
-      color: PALETTE.sun,
-    });
+    this.counter = addIconLabel(
+      this,
+      MINIGAME_AREA.x + 50,
+      MINIGAME_AREA.y + 20,
+      'sampleTube',
+      ICON_SIZE,
+      '0',
+      { color: PALETTE.sun },
+    );
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.handleTap(pointer));
     addScanlines(this);
   }
@@ -101,7 +117,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
 
   private setSamples(samples: number): void {
     this.samples = samples;
-    this.counter.setText(`🧪 ${samples}`);
+    this.counter.setText(`${samples}`);
   }
 
   private drawTimeBar(): void {

@@ -56,6 +56,7 @@ Armada con la [guía oficial de entrega de proyectos](https://www.spaceappschall
 - **Vercel quedó descartado**: el plan gratis bloquea los deploys de commits hechos por integrantes que no son miembros del proyecto en Vercel (pasó con los merges de `main`).
 - El repo ahora es público, así que Pages funciona en la cuenta gratis.
 - `vite.config.ts` ya usa `base: './'`, así que el build funciona en la subruta de Pages.
+- Ojo: GitHub Actions sigue bloqueado por la facturación de la cuenta (ver `docs/DECISIONS.md`). Hasta que soporte lo resuelva, el workflow de Pages no corre.
 
 ## Aprobación
 - [ ] A — _(nombre)_

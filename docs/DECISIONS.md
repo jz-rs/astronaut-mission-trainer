@@ -15,6 +15,77 @@ Formato:
 
 ---
 
+## 2026-11-14 — Primer sol guiado y efectos visibles de cada decisión
+- Quién: C, con Claude (aprobado por el equipo)
+- Qué se decidió:
+  - **Sol 1 guiado** (`scenes/base/TutorialGuide.ts`): tarjeta "¡Estás al mando de la base!" con las 4 barras y la meta → flecha "¡Tocá esta sala!" (la base espera quieta hasta el primer toque) → flecha a la barra que subió → flecha a los bots. Se muestra hasta completarlo una vez (`tutorialDone` en el progreso guardado).
+  - **Cada tarea muestra su efecto**: "+30" vuela desde la sala a su barra y "−10 ⚡" a la energía, para tareas de la jugadora y de los bots (`TaskEffectsView.ts`). El núcleo registra cada tarea terminada en `RunState.taskNews`; `applyTaskResult` ahora devuelve lo que cambió.
+  - **El dato del minijuego queda en pantalla** hasta tocar SEGUIR (máximo 12 s, porque la base sigue corriendo), con letra más grande (`minigames/resultCard.ts`). La primera vez de cada minijuego muestra el "por qué" (`task.*.why`), que conecta lo que hiciste con la ciencia; después rotan los 3 datos. Se reemplaza `resultDisplayMs` por `factMinDisplayMs` / `factMaxDisplayMs`.
+  - **La reunión de crisis dice qué crisis viene** (`collab.meetingWhy` reemplaza a `collab.meetingTitle`).
+  - **"VOS" sobre la astronauta de la jugadora.** Los bots en AUTO no se pueden tocar, así que tocar su sala manda a la jugadora. Tocar la carita de un bot lo pasa a MANUAL y ya pregunta "¿A qué sala va?".
+  - El desafío del lugar se lee "💨 nunca menos de 30" en vez de "siempre ≥ 30".
+- Por qué: al probarlo, después de JUGAR no se entendía qué hacer ni se notaba qué se aprendía. El pedido central del track es que se vea que cada decisión cambia las variables.
+- A quién afecta: A (specs 03, 04, 05, 16: `types.ts`, `stats.ts`, `actions.ts`, `run.ts`, `BaseScene`, `BotsView`, `MeetingView`), B (spec 06: `MinigameScene.ts`, el resultado pasa a `resultCard.ts`), C (specs 12, 13: textos, `progressStorage.ts`).
+- ¿Avisado al equipo?: sí (aprobado en el chat).
+
+## 2026-11-14 — Se saca la action de CI hasta resolver la facturación
+- Quién: C (dueña del repo)
+- Qué se decidió: se borra `.github/workflows/ci.yml`. GitHub no arranca ningún job porque la cuenta dueña del repo está bloqueada por un problema de facturación, y cada PR quedaba con el check en rojo.
+- Por qué: el check fallaba siempre sin correr nada, así que no protegía y confundía.
+- Mientras tanto: antes de abrir o aprobar un PR, correr `npm run check` (lint + tipos + tests) en la compu, como ya pide `AGENTS.md` §2.
+- Para volver: cuando soporte desbloquee la cuenta, restaurar el archivo desde el historial (`git show 9ab1fad:.github/workflows/ci.yml`).
+- A quién afecta: todas (spec 02 era la dueña del archivo; spec 17 lo mencionaba).
+- ¿Avisado al equipo?: sí (este documento, PR #21).
+
+## 2026-11-14 — El juego usa el kit de imágenes en vez de los dibujos provisorios
+- Quién: C, con Claude (aprobado por el equipo)
+- Qué se decidió:
+  - Escena nueva `BootScene` (primera en `main.ts`, clave `boot` en `sceneKeys.ts`) que carga todo el kit con una barra de progreso. La lista de imágenes vive en `src/ui/sprites.ts` y los astronautas en `src/ui/astronautFrames.ts` (con animación de caminar). Se borró `src/ui/astronautTexture.ts`.
+  - Se cambió por sprites: astronautas (base y menú; de espaldas al subir, espejados a la izquierda), íconos de las barras (HUD, salas, consigna de minijuegos), sol del HUD, fondo del menú, estrellas (resultado y mapa de Marte), marco de fotos NASA (se usa solo el monitor del marco), y los 4 minijuegos + el rover con su sala de fondo y sus objetos.
+  - `ASTRONAUT_SCALE` pasa de 2 a 0,5 (regla 2× del kit). `STAT_ICONS` (emojis) queda solo para íconos dentro de una línea de texto.
+  - Paneles solares: el polvo ahora son cuadraditos recortados del panel sucio encima del panel limpio (misma mecánica de raspadita).
+  - Muro del escudo: los paneles del muro pasan a ser cuadrados (40 × 40).
+  - La base pasa a la vista isométrica: fondo `mapa-base.png`, salas con zona táctil y cartel (ícono + nombre, titila en rojo con la barra baja), recorridos puerta → centro del pasillo en cruz → puerta, astronautas parados sobre sus pies. Las medidas están en `ROOM_LAYOUTS` (`layout.ts`); se borraron `CORRIDOR`, `ROOM_RECTS` y `roomFurniture.ts`.
+  - Sprites de estado en el mapa (`MapStatusSprites`): lechugas sanas/sedientas/secas según la comida, MOXIE rota con oxígeno bajo y paneles con polvo con energía baja. Umbral nuevo `ALERT_BALANCE.worriedStatThreshold` (55).
+  - El garaje del rover queda afuera de la esclusa del pasillo.
+- Por qué: el kit ya estaba en `main` y el juego no lo usaba.
+- A quién afecta: A (specs 02, 04, 05: la base entera; esto reemplaza el PR aparte del spec 04 que estaba pendiente), B (06–10, 15: `MinigameScene.ts` dibuja la sala de fondo), C (11, 12).
+- Pendiente: sin usar todavía: botones (`boton*.png`, son solo celestes), `emblema-escudo`, `nube-polvo`, `rayo-energia`, `rocas-chicas`, `mapa-lechuga-brote`, `tiles/suelo-marte.png`. El hábitat del minijuego del escudo sigue dibujado con formas.
+- ¿Avisado al equipo?: sí (lo aprobaron antes de hacerlo).
+
+## 2026-11-14 — Las palancas se permiten
+- Quién: dueña del spec 01
+- Qué se decidió: se corrige la regla de "objetos actuales": las palancas **sí** se permiten, con aspecto moderno (mango con luz LED, carcasa blanca o grafito). Siguen fuera los tubos y las agujas.
+- Por qué: el spec 16 usa una palanca de a dos.
+- A quién afecta: `docs/STYLE_GUIDE.md`, spec 16.
+- ¿Avisado al equipo?: sí (PR #20).
+
+## 2026-11-14 — Assets al doble del tamaño en pantalla y referencias afuera de `public/`
+- Quién: dueña del spec 01, a pedido de la revisión del PR #20
+- Qué se decidió: cada imagen del juego se guarda en PNG al doble (2×) de su tamaño en pantalla (fondos 1280 × 720, astronauta 54 × 80, íconos 32 × 32; tabla completa en `STYLE_GUIDE.md`). Las hojas magenta, las propuestas y `PROMPTS.md` pasan de `public/assets/reference/` a `docs/arte/`.
+- Por qué: el kit pesaba ~29,5 MB y quedaría para siempre en el historial de Git; escalar ~10× en tiempo real con `pixelArt: true` queda serruchado; y todo lo que está en `public/` se publica con el juego.
+- A quién afecta: todas las escenas que carguen imágenes; estructura de carpetas (nueva `docs/arte/`).
+- ¿Avisado al equipo?: sí (PR #20).
+
+## 2026-11-14 — La base se arma por capas (fondo vacío + sprites de estado)
+- Quién: dueña del spec 01 (decidido al producir el kit de imágenes)
+- Qué se decidió: el mapa isométrico de la base es un fondo vacío (`public/assets/sprites/fondos/mapa-base.png`) y el estado de cada sala se dibuja encima con sprites (`public/assets/sprites/mapa/`): plantas sanas/sedientas/secas, máquina de oxígeno funcionando/rota, paneles limpios/sucios. Las salas por dentro también son fondos vacíos + sprites. Las salas por dentro son el original y el mapa se adaptó a ellas. Se descartó pasar a 3D.
+- Por qué: así lo que pasa en el juego se ve también en el mapa (si las plantas se marchitan, se marchitan en el mapa), sin generar una imagen por cada combinación de estados.
+- A quién afecta: spec 04 (la escena del mapa tiene que ubicar los sprites de estado sobre el fondo), specs 07–10 (fondos de sala + sprites).
+- Pendiente: el código del spec 04 que está en `main` es cenital (salas rectangulares, pasillo recto). Para usar `mapa-base.png` hay que rehacer `src/scenes/base/baseMap.ts`, `RoomView.ts`, los recorridos de `AstronautSprite` y los `workSpot` de cada sala. Lo toma la dueña del spec 04 en un PR aparte. **Actualización:** se hizo en el PR #21 (ver la entrada de arriba).
+- ¿Avisado al equipo?: sí (PR #20).
+
+## 2026-11-14 — Estilo visual ganador: pixel art retro 16 bits con tecnología actual, vista isométrica
+- Quién: el equipo (votación del spec 01, etapa 1)
+- Qué se decidió:
+  - Gana la propuesta "retro 16 bits": el **dibujo** es retro (pixel art de consola de 16 bits), pero los **objetos** son actuales (pantallas planas, botones táctiles, luces LED; nada de tubos ni agujas. Las palancas se permiten: ver la entrada "Las palancas se permiten"). Sin logos de la NASA en ningún lado.
+  - La base se ve en **vista isométrica** (no cenital como recomendaba el spec 01).
+  - Regla de color: el naranja y el óxido quedan para Marte (suelo, cielo, exterior). Botones, luces, pantallas y detalles tecnológicos van en celeste `#5ec8e5`, blanco y grafito. La paleta no cambia, solo dónde se usa cada color.
+  - Cambios pedidos sobre la propuesta: la base en corte y el invernadero se rehacen a partir de la base exterior para que coincidan; el marco de fotos NASA lleva más detalle.
+- Por qué: es la propuesta que más gustó; la tecnología actual muestra que la exploración de Marte es de hoy.
+- A quién afecta: spec 04 (mapa de la base: pasa a isométrico), spec 01 etapas 2 y 3, `docs/STYLE_GUIDE.md`, y todas las escenas que dibujen la base.
+- ¿Avisado al equipo?: sí (votación).
+
 ## 2026-11-14 — Solo la dueña del repo mergea a main
 - Quién: memocayar
 - Qué se decidió: una regla de GitHub ("Solo la dueña mergea a main") hace que solo la admin del repo (memocayar) pueda actualizar `main`. Las demás siguen abriendo, revisando y aprobando PRs, pero no los mergean. También bloquea borrar `main` y hacerle `push --force`.

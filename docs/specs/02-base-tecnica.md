@@ -37,7 +37,7 @@ Hubo un prototipo visual que **se descartó por feo** (decisión en `docs/DECISI
   - Escenas vacías que navegan entre sí: Inicio → Base → Resultado (un texto y un botón cada una alcanza).
   - `src/ui/palette.ts` y `src/ui/layout.ts`: los colores y tamaños de `docs/STYLE_GUIDE.md` como constantes (se actualizan cuando se vote el estilo).
   - Carga correcta de la fuente antes de dibujar textos.
-- **CI**: GitHub Actions corre `npm run check` en cada PR.
+- **CI**: ~~GitHub Actions corre `npm run check` en cada PR.~~ Sacado por ahora (ver `docs/DECISIONS.md`): cada una corre `npm run check` antes de abrir el PR.
 
 **No incluye:** ningún diseño visual (spec 01), escenas reales (04, 11), minijuegos (06+).
 

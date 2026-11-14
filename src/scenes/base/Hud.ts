@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { ALERT_BALANCE, RUN_BALANCE } from '../../config/balance';
 import { STAT_IDS, type RunState, type StatId } from '../../core/types';
 import { t } from '../../i18n';
-import { FONT_SIZE, GAME_WIDTH, HUD_HEIGHT, STAT_ICONS } from '../../ui/layout';
+import { FONT_SIZE, GAME_WIDTH, HUD_HEIGHT, type Point } from '../../ui/layout';
 import { PALETTE, STAT_COLORS, TECH_GLOW } from '../../ui/palette';
+import { addSprite, addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 
 /**
@@ -21,6 +22,16 @@ const SOL_X = 462;
 const SOL_BAR_WIDTH = 72;
 const SOL_BAR_Y = 28;
 const BLINK_PERIOD_MS = 250;
+const SOL_ICON_X = 424;
+const SOL_ICON_SIZE = 14;
+const FLASH_MS = 400;
+
+/** Middle of a stat's bar: task effects fly here and the tutorial points at it. */
+export function statBarCenter(statId: StatId): Point {
+  const index = STAT_IDS.indexOf(statId);
+  const x = BAR_START_X + index * BAR_SLOT_WIDTH + BAR_OFFSET_X + BAR_WIDTH / 2;
+  return { x, y: BAR_Y + BAR_HEIGHT / 2 };
+}
 
 export class Hud {
   private readonly bars: Phaser.GameObjects.Graphics;
@@ -33,8 +44,9 @@ export class Hud {
     background.fillStyle(TECH_GLOW, 1).fillRect(0, HUD_HEIGHT - 2, GAME_WIDTH, 2);
     STAT_IDS.forEach((statId, index) => {
       const iconX = BAR_START_X + index * BAR_SLOT_WIDTH + ICON_OFFSET_X;
-      addText(scene, iconX, BAR_Y + BAR_HEIGHT / 2, STAT_ICONS[statId]);
+      addSprite(scene, iconX, BAR_Y + BAR_HEIGHT / 2, STAT_ICON_SPRITES[statId]);
     });
+    addSpriteSized(scene, SOL_ICON_X, BAR_Y + BAR_HEIGHT / 2, 'sol', SOL_ICON_SIZE);
     this.bars = scene.add.graphics();
     this.solText = addText(scene, SOL_X, BAR_Y, '', {
       size: FONT_SIZE.small,
@@ -49,6 +61,18 @@ export class Hud {
     STAT_IDS.forEach((statId, index) => this.drawBar(statId, index, state.stats[statId], blinkOn));
     this.solText.setText(t('hud.sol', { current: state.sol, total: RUN_BALANCE.solsPerRun }));
     this.drawSolProgress(state.solElapsedMs / RUN_BALANCE.solDurationMs);
+  }
+
+  /** A short white glow on a bar, so a kid sees exactly which bar just changed. */
+  flash(scene: Phaser.Scene, statId: StatId): void {
+    const { x, y } = statBarCenter(statId);
+    const glow = scene.add.rectangle(x, y, BAR_WIDTH + 6, BAR_HEIGHT + 6, PALETTE.white, 0.8);
+    scene.tweens.add({
+      targets: glow,
+      alpha: 0,
+      duration: FLASH_MS,
+      onComplete: () => glow.destroy(),
+    });
   }
 
   private drawBar(statId: StatId, index: number, value: number, blinkOn: boolean): void {

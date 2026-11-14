@@ -49,6 +49,33 @@ describe('run simulation', () => {
     expect(state.stats.energy).toBe(RUN_BALANCE.startingStatValue - energyCost);
   });
 
+  it('records what a finished task changed, so the base can show it', () => {
+    const state = createRun(TEST_LOCATION, {});
+    state.stats.food = 50;
+    const { gain, energyCost } = TASK_BALANCE.greenhouse;
+    applyAction(state, {
+      type: 'completeTask',
+      crewId: PLAYER_ID,
+      taskId: 'greenhouse',
+      performance: 1,
+    });
+    expect(state.taskNews).toEqual([
+      { crewId: PLAYER_ID, taskId: 'greenhouse', gained: gain, spent: energyCost },
+    ]);
+  });
+
+  it('records only what really fits in a full bar', () => {
+    const state = createRun(TEST_LOCATION, {});
+    state.stats.food = RUN_BALANCE.maxStatValue;
+    applyAction(state, {
+      type: 'completeTask',
+      crewId: PLAYER_ID,
+      taskId: 'greenhouse',
+      performance: 1,
+    });
+    expect(state.taskNews[0]?.gained).toBe(0);
+  });
+
   it('lets a bot finish its task after the bot task duration', () => {
     const state = createRun(TEST_LOCATION, {});
     state.stats.oxygen = 10;

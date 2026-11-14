@@ -46,7 +46,10 @@ export const CREW_BALANCE = {
 
 export const MINIGAME_BALANCE = {
   durationMs: 12_000,
-  resultDisplayMs: 1_800,
+  /** The result card waits this long before showing GO ON, so fast taps don't skip the fact. */
+  factMinDisplayMs: 800,
+  /** ... and continues alone after this, because the base keeps running behind it. */
+  factMaxDisplayMs: 12_000,
   perfectThreshold: 1.1,
   goodThreshold: 0.7,
   /** Finishing a minigame early adds up to this bonus over 1.0 ... */
@@ -59,9 +62,16 @@ export const PLACEHOLDER_MINIGAME_BALANCE = {
   tapsGoal: 5,
 } as const;
 
+/** The guided first sol (TutorialGuide): how long each explanation arrow stays. */
+export const TUTORIAL_BALANCE = {
+  explainStepMs: 4_000,
+} as const;
+
 /** A bar below this value blinks red, and so does its room (spec 04). */
 export const ALERT_BALANCE = {
   lowStatThreshold: 30,
+  /** Below this the base map already looks worried (thirsty plants, dusty panels). */
+  worriedStatThreshold: 55,
 } as const;
 
 export const SOLAR_PANELS_BALANCE = {

@@ -1,26 +1,32 @@
 import Phaser from 'phaser';
 import { SOLAR_PANELS_BALANCE } from '../../config/balance';
-import type { Rect } from '../../ui/layout';
-import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import type { Point, Rect } from '../../ui/layout';
+import { sparkleAt } from '../../ui/sparkle';
+import { addSprite, SPRITE_SCALE } from '../../ui/sprites';
 import { MinigameScene } from '../MinigameScene';
 
 /**
  * Spec 07 — Swipe to wipe Martian dust off the solar panels (like a scratch card).
- * Performance = fraction cleaned, with a speed bonus when everything is clean.
- * On harsh locations dust slowly falls back.
+ * Each panel is the clean sprite covered by little squares cut from the dirty sprite;
+ * wiping hides the squares. Performance = fraction cleaned, with a speed bonus when everything
+ * is clean. On harsh locations dust slowly falls back.
  */
 const PANEL_COUNT = 3;
-const PANEL_WIDTH = 140;
-const PANEL_HEIGHT = 160;
 const PANEL_GAP = 24;
-const PANEL_GRID_STEP = 20;
 const SWIPE_SAMPLE_STEP = 4;
-const DUST_COLORS = [PALETTE.marsDark, PALETTE.mars, PALETTE.marsLight, PALETTE.sand];
+
+interface DustCell {
+  image: Phaser.GameObjects.Image;
+  center: Point;
+  panelIndex: number;
+}
 
 export class SolarPanelsMinigame extends MinigameScene {
   static readonly KEY = 'SolarPanelsMinigame';
   protected readonly instructionKey = 'minigame.solar-panels.instruction';
-  private dustCells: Phaser.GameObjects.Rectangle[] = [];
+  private dustCells: DustCell[] = [];
+  private shinyPanels = new Set<number>();
+  private panelCenters: Point[] = [];
   private lastPointer: Phaser.Math.Vector2 | null = null;
   private dustReturnProgress = 0;
 
@@ -30,20 +36,21 @@ export class SolarPanelsMinigame extends MinigameScene {
 
   protected buildGame(area: Rect): void {
     this.dustCells = [];
+    this.shinyPanels.clear();
+    this.panelCenters = [];
     this.lastPointer = null;
     this.dustReturnProgress = 0;
-    const totalWidth = PANEL_COUNT * PANEL_WIDTH + (PANEL_COUNT - 1) * PANEL_GAP;
+    const panelTexture = this.textures.getFrame('solarPanelClean');
+    const panelWidth = panelTexture.width * SPRITE_SCALE;
+    const panelHeight = panelTexture.height * SPRITE_SCALE;
+    const totalWidth = PANEL_COUNT * panelWidth + (PANEL_COUNT - 1) * PANEL_GAP;
     const startX = area.x + (area.width - totalWidth) / 2;
-    const y = area.y + (area.height - PANEL_HEIGHT) / 2;
+    const y = area.y + (area.height - panelHeight) / 2;
     for (let index = 0; index < PANEL_COUNT; index += 1) {
-      const panel = {
-        x: startX + index * (PANEL_WIDTH + PANEL_GAP),
-        y,
-        width: PANEL_WIDTH,
-        height: PANEL_HEIGHT,
-      };
-      this.drawPanel(panel);
-      this.coverWithDust(panel);
+      const topLeft = { x: startX + index * (panelWidth + PANEL_GAP), y };
+      addSprite(this, topLeft.x, topLeft.y, 'solarPanelClean').setOrigin(0);
+      this.panelCenters.push({ x: topLeft.x + panelWidth / 2, y: topLeft.y + panelHeight / 2 });
+      this.coverWithDust(topLeft, index);
     }
     this.input.on('pointerdown', this.handleSwipe, this);
     this.input.on('pointermove', this.handleSwipe, this);
@@ -60,32 +67,27 @@ export class SolarPanelsMinigame extends MinigameScene {
     this.dustReturnProgress += (perSecond * deltaMs) / 1000;
     while (this.dustReturnProgress >= 1) {
       this.dustReturnProgress -= 1;
-      const cleanCells = this.dustCells.filter((cell) => !cell.visible);
-      Phaser.Utils.Array.GetRandom(cleanCells)?.setVisible(true);
+      const cleanCells = this.dustCells.filter((cell) => !cell.image.visible);
+      Phaser.Utils.Array.GetRandom(cleanCells)?.image.setVisible(true);
     }
   }
 
-  private drawPanel(panel: Rect): void {
-    const graphics = this.add.graphics();
-    graphics
-      .fillStyle(PALETTE.metal, 1)
-      .fillRect(panel.x - 4, panel.y - 4, panel.width + 8, panel.height + 8);
-    graphics.fillStyle(PALETTE.space, 1).fillRect(panel.x, panel.y, panel.width, panel.height);
-    graphics.lineStyle(1, TECH_GLOW, 0.6);
-    for (let x = panel.x; x <= panel.x + panel.width; x += PANEL_GRID_STEP) {
-      graphics.lineBetween(x, panel.y, x, panel.y + panel.height);
-    }
-    for (let y = panel.y; y <= panel.y + panel.height; y += PANEL_GRID_STEP) {
-      graphics.lineBetween(panel.x, y, panel.x + panel.width, y);
-    }
-  }
-
-  private coverWithDust(panel: Rect): void {
-    const size = SOLAR_PANELS_BALANCE.dustCellSize;
-    for (let x = panel.x; x < panel.x + panel.width; x += size) {
-      for (let y = panel.y; y < panel.y + panel.height; y += size) {
-        const color = Phaser.Utils.Array.GetRandom(DUST_COLORS);
-        this.dustCells.push(this.add.rectangle(x, y, size, size, color).setOrigin(0));
+  /** Cuts the dirty sprite into squares, skipping the see-through ones around the panel. */
+  private coverWithDust(topLeft: Point, panelIndex: number): void {
+    const texture = this.textures.getFrame('solarPanelDirty');
+    const cellSize = SOLAR_PANELS_BALANCE.dustCellSize / SPRITE_SCALE;
+    for (let cropX = 0; cropX < texture.width; cropX += cellSize) {
+      for (let cropY = 0; cropY < texture.height; cropY += cellSize) {
+        const centerX = cropX + cellSize / 2;
+        const centerY = cropY + cellSize / 2;
+        if (this.textures.getPixelAlpha(centerX, centerY, 'solarPanelDirty') === 0) continue;
+        const image = addSprite(this, topLeft.x, topLeft.y, 'solarPanelDirty').setOrigin(0);
+        image.setCrop(cropX, cropY, cellSize, cellSize);
+        const center = {
+          x: topLeft.x + centerX * SPRITE_SCALE,
+          y: topLeft.y + centerY * SPRITE_SCALE,
+        };
+        this.dustCells.push({ image, center, panelIndex });
       }
     }
   }
@@ -106,16 +108,27 @@ export class SolarPanelsMinigame extends MinigameScene {
   }
 
   private wipeAt(x: number, y: number): void {
-    const half = SOLAR_PANELS_BALANCE.dustCellSize / 2;
     for (const cell of this.dustCells) {
-      if (!cell.visible) continue;
-      const distance = Phaser.Math.Distance.Between(x, y, cell.x + half, cell.y + half);
-      if (distance <= SOLAR_PANELS_BALANCE.brushRadius) cell.setVisible(false);
+      if (!cell.image.visible) continue;
+      const distance = Phaser.Math.Distance.BetweenPoints({ x, y }, cell.center);
+      if (distance > SOLAR_PANELS_BALANCE.brushRadius) continue;
+      cell.image.setVisible(false);
+      this.celebrateIfPanelClean(cell.panelIndex);
     }
   }
 
+  /** A sparkle the first time each panel is spotless. */
+  private celebrateIfPanelClean(panelIndex: number): void {
+    if (this.shinyPanels.has(panelIndex)) return;
+    const isDusty = (cell: DustCell) => cell.panelIndex === panelIndex && cell.image.visible;
+    const center = this.panelCenters[panelIndex];
+    if (!center || this.dustCells.some(isDusty)) return;
+    this.shinyPanels.add(panelIndex);
+    sparkleAt(this, center.x, center.y, 'energyFlash');
+  }
+
   private cleanFraction(): number {
-    const clean = this.dustCells.filter((cell) => !cell.visible).length;
+    const clean = this.dustCells.filter((cell) => !cell.image.visible).length;
     return this.dustCells.length === 0 ? 0 : clean / this.dustCells.length;
   }
 }

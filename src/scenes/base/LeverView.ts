@@ -4,7 +4,7 @@ import type { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import type { RunState } from '../../core/types';
 import { t } from '../../i18n';
-import { FONT_SIZE, ROOM_RECTS } from '../../ui/layout';
+import { FONT_SIZE, ROOM_LAYOUTS } from '../../ui/layout';
 import { CREW_COLORS, PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
@@ -21,7 +21,7 @@ export class LeverView {
   private readonly container: Phaser.GameObjects.Container;
   private readonly bar: Phaser.GameObjects.Graphics;
   private readonly holders: Phaser.GameObjects.Graphics;
-  private readonly room = ROOM_RECTS['shield-wall'];
+  private readonly room = ROOM_LAYOUTS['shield-wall'].rect;
 
   constructor(scene: Phaser.Scene, session: GameSession) {
     const { x, y, width, height } = this.room;

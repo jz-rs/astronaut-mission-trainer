@@ -6,7 +6,7 @@
 - Los prompts están en **inglés** (los generadores responden mejor). Las notas, en español.
 - Cada prompt = **[bloque de estilo]** + **[pieza]**. Copiá los dos juntos.
 - Si la herramienta acepta *negative prompt*, usá el de abajo. Si no, ya va incluido "no text, no antialiasing" en el bloque.
-- Guardá cada imagen en `public/assets/reference/propuesta-N/` con nombres: `1-astronauta.png`, `2-sala.png`, `3-base.png`, `4-mezcla.png`.
+- Guardá cada imagen en `docs/arte/propuesta-N/` con nombres: `1-astronauta.png`, `2-sala.png`, `3-base.png`, `4-mezcla.png`.
 - Anotá qué herramienta usaste y, si tuviste que cambiar el prompt, pegá la versión que funcionó (sirve para la plantilla final de `STYLE_GUIDE.md`).
 
 **Negative prompt (todos):**
