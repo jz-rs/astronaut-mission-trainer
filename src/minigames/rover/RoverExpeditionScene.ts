@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { ROVER_BALANCE } from '../../config/balance';
 import { t, type TranslationKey } from '../../i18n';
+import { addCloseButton } from '../../ui/closeButton';
 import { drawFramedPhoto } from '../../ui/framedPhoto';
 import { addIconLabel, type IconLabel } from '../../ui/iconLabel';
 import {
@@ -21,6 +22,7 @@ import { RoverTrack } from './RoverTrack';
  * Spec 15 — Rover trip (~15 s) over the base, which keeps running meanwhile (real risk).
  * Tap left/right to dodge rocks, tap shiny stones to collect samples. At the end it shows
  * the real photo of the place, framed, and reports how many samples came back.
+ * The X brings the rover back at once with the samples it already has (the energy was paid).
  */
 export interface RoverStartData {
   locationId: string;
@@ -83,8 +85,19 @@ export class RoverExpeditionScene extends Phaser.Scene {
       '0',
       { color: PALETTE.sun },
     );
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.handleTap(pointer));
+    this.listenToTaps();
     addScanlines(this);
+  }
+
+  /** Taps anywhere steer or collect, except on the X, which only closes. */
+  private listenToTaps(): void {
+    const closeButton = addCloseButton(this, () => this.exit());
+    this.input.on(
+      'pointerdown',
+      (pointer: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
+        if (!over.includes(closeButton)) this.handleTap(pointer);
+      },
+    );
   }
 
   update(_time: number, deltaMs: number): void {
@@ -128,6 +141,13 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.timeBar.fillRect(MINIGAME_AREA.x, y, MINIGAME_AREA.width, TIME_BAR_HEIGHT);
     this.timeBar.fillStyle(left < 0.25 ? PALETTE.alert : PALETTE.cyan, 1);
     this.timeBar.fillRect(MINIGAME_AREA.x, y, MINIGAME_AREA.width * left, TIME_BAR_HEIGHT);
+  }
+
+  private exit(): void {
+    if (this.finished) return;
+    this.finished = true;
+    this.onFinish(this.samples);
+    this.scene.stop();
   }
 
   private finish(): void {
