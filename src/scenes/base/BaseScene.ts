@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { ALERT_BALANCE, TASK_BALANCE } from '../../config/balance';
+import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
@@ -20,6 +21,7 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
 import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
+import { EventAnnouncer } from './EventAnnouncer';
 import { Hud } from './Hud';
 import { RoomView } from './RoomView';
 
@@ -44,6 +46,7 @@ export class BaseScene extends Phaser.Scene {
   private player!: AstronautSprite;
   private bots!: BotsView;
   private botFaces!: BotFaces;
+  private eventAnnouncer!: EventAnnouncer;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -65,7 +68,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.session = new GameSession(getLocation(this.locationId), loadProgress().training);
+    this.session = this.createSession();
     drawBaseMap(this);
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
@@ -89,7 +92,16 @@ export class BaseScene extends Phaser.Scene {
         color: PALETTE.sun,
       },
     ).setVisible(false);
+    this.eventAnnouncer = new EventAnnouncer(this);
     addScanlines(this);
+  }
+
+  private createSession(): GameSession {
+    return new GameSession(
+      getLocation(this.locationId),
+      loadProgress().training,
+      drawEventsForRun(this.locationId),
+    );
   }
 
   update(time: number, deltaMs: number): void {
@@ -99,6 +111,7 @@ export class BaseScene extends Phaser.Scene {
     this.hud.update(state, time);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
+    this.eventAnnouncer.update(state);
     for (const room of this.rooms.values()) {
       const value = state.stats[TASK_BALANCE[room.taskId].stat];
       room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);

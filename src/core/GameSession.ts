@@ -2,7 +2,7 @@ import { planAutoBotActions } from '../bots/autoPilot';
 import { applyAction, type GameAction } from './actions';
 import { createRun, updateRun } from './run';
 import { calculateResult, type RunResult } from './scoring';
-import type { LocationConfig, RunState, TrainingLevels } from './types';
+import type { LocationConfig, RunState, ScheduledEvent, TrainingLevels } from './types';
 
 /**
  * The single entry point scenes use to talk to the game logic.
@@ -11,8 +11,8 @@ import type { LocationConfig, RunState, TrainingLevels } from './types';
 export class GameSession {
   readonly state: RunState;
 
-  constructor(location: LocationConfig, training: TrainingLevels) {
-    this.state = createRun(location, training);
+  constructor(location: LocationConfig, training: TrainingLevels, events: ScheduledEvent[] = []) {
+    this.state = createRun(location, training, events);
   }
 
   dispatch(action: GameAction): void {

@@ -88,5 +88,6 @@
   "map.goal.samples": "Juntá {goal} muestras",
   "map.goal.challenge": "{stat} siempre ≥ {minimum}",
   "map.photoPending": "Foto real: pronto",
-  "result.map": "Mapa"
+  "result.map": "Mapa",
+  "result.worstEvent": "💥 Lo que más dañó la base: {event}"
 }
