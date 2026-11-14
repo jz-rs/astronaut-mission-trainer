@@ -15,6 +15,17 @@ Formato:
 
 ---
 
+## 2026-11-14 — Minijuegos más claros, rover que explica y balance para chicos que recién aprenden
+- Quién: C, con Claude (pedido de memocayar)
+- Qué se decidió:
+  - **Mano 👆 que muestra el gesto** al empezar cada minijuego (arrastrar, tocar o deslizar); desaparece con el primer toque (`minigames/gestureHint.ts`).
+  - **Tocar también sirve**: en el muro, tocar un hueco (o un bloque) lo tapa; en el oxígeno, tocar una burbuja de CO₂ la manda a MOXIE. Arrastrar sigue funcionando.
+  - **Rover**: el cartel dice "Rover -20⚡", se apaga si no alcanza la energía, y si estás ocupada avisa "¡Primero terminá tu tarea!". El viaje cuesta 20 ⚡ (antes 25).
+  - **Balance**: el desgaste por sol pasa de 60/45/50/25 a 45/35/40/22 (oxígeno/comida/escudo/energía). Los criterios T5 del ROADMAP quedan como tests (`tests/balance.test.ts`).
+- Por qué: al probarlo, el muro no se entendía (había que arrastrar justo), el rover parecía no responder y la partida era imposible de ganar. Simulando con la lógica real, una jugadora que saca "¡Casi!" ganaba 4 de 30 partidas en Jezero; ahora las gana todas, con bots solos se sigue perdiendo, y Gale es más difícil.
+- A quién afecta: A (spec 04 `BaseScene`/`GarageView`, `layout.ts` `GARAGE_RECT`), B (specs 08, 09, 10, 15), todas (`balance.ts`).
+- ¿Avisado al equipo?: sí (pedido en el chat).
+
 ## 2026-11-14 — Primer sol guiado y efectos visibles de cada decisión
 - Quién: C, con Claude (aprobado por el equipo)
 - Qué se decidió:

@@ -13,12 +13,16 @@ export const RUN_BALANCE = {
   minStatValue: 0,
 } as const;
 
-/** How much each stat drops during one full sol, before location multipliers. */
+/**
+ * How much each stat drops during one full sol, before location multipliers.
+ * Tuned with tests/balance.test.ts (ROADMAP T5): a kid still learning survives Jezero,
+ * but bots alone are not enough.
+ */
 export const STAT_DECAY_PER_SOL: Stats = {
-  oxygen: 60,
-  food: 45,
-  shield: 50,
-  energy: 25,
+  oxygen: 45,
+  food: 35,
+  shield: 40,
+  energy: 22,
 };
 
 export interface TaskBalance {
@@ -115,7 +119,7 @@ export const EVENT_BALANCE = {
 
 /** Spec 15 — The rover trip: costly in energy, the only way to get samples. */
 export const ROVER_BALANCE = {
-  energyCost: 25,
+  energyCost: 20,
   durationMs: 15_000,
   resultDisplayMs: 3_000,
   lanes: 3,

@@ -2,12 +2,14 @@ import Phaser from 'phaser';
 import { SHIELD_WALL_BALANCE } from '../../config/balance';
 import type { Point, Rect } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { showGestureHint } from '../gestureHint';
 import { MinigameScene } from '../MinigameScene';
 import { addRay, addShieldBlock, addWallPanel, type BlockMaterial } from './shieldDrawing';
 
 /**
  * Spec 10 — Drag water and regolith blocks into the holes of the wall to stop radiation rays.
- * Simple on purpose: no rotation, generous snap. Performance = holes plugged / holes, + speed bonus.
+ * Simple on purpose: no rotation, generous snap, and tapping works too (a hole, or a block)
+ * for small fingers that can't drag precisely yet. Performance = holes plugged / holes, + speed bonus.
  * Harsher locations (Olympus Mons) = more holes.
  */
 const SLOT_WIDTH = 40;
@@ -18,6 +20,8 @@ const WALL_OFFSET_Y = 56;
 const HABITAT_OFFSET_Y = 150;
 const TRAY_OFFSET_FROM_BOTTOM = 30;
 const TRAY_SPACING = 64;
+/** A finger that moves less than this between press and release tapped instead of dragging. */
+const TAP_DISTANCE = 8;
 
 interface Hole {
   center: Point;
@@ -59,6 +63,8 @@ export class ShieldWallMinigame extends MinigameScene {
     this.createTray(area, holeCount);
     this.input.on('drag', this.handleDrag, this);
     this.input.on('dragend', this.handleDrop, this);
+    const [firstBlock, firstHole] = [this.blocks[0], this.holes[0]];
+    if (firstBlock && firstHole) showGestureHint(this, firstBlock.home, firstHole.center);
   }
 
   protected calculatePerformance(): number {
@@ -91,7 +97,18 @@ export class ShieldWallMinigame extends MinigameScene {
       repeat: -1,
       duration: 180,
     });
-    return { center, filled: false, rayBelow };
+    const hole: Hole = { center, filled: false, rayBelow };
+    const touchZone = this.add.zone(center.x, center.y, SLOT_WIDTH, WALL_HEIGHT);
+    touchZone
+      .setInteractive({ useHandCursor: true })
+      .on('pointerup', () => this.plugWithNextBlock(hole));
+    return hole;
+  }
+
+  private plugWithNextBlock(hole: Hole): void {
+    const block = this.blocks.find((candidate) => candidate.body.input?.enabled);
+    if (hole.filled || !block || this.isFinished) return;
+    this.plug(hole, block);
   }
 
   private createTray(area: Rect, blockCount: number): void {
@@ -119,10 +136,13 @@ export class ShieldWallMinigame extends MinigameScene {
     target.setPosition(x, y).setDepth(1);
   }
 
-  private handleDrop(_pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Container): void {
+  private handleDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.Container): void {
     const block = this.blocks.find((candidate) => candidate.body === target);
     if (!block) return;
-    const hole = this.findNearestOpenHole(target.x, target.y);
+    const tapped = pointer.getDistance() < TAP_DISTANCE;
+    const hole = tapped
+      ? this.holes.find((candidate) => !candidate.filled)
+      : this.findNearestOpenHole(target.x, target.y);
     if (!hole || this.isFinished) {
       this.tweens.add({ targets: target, x: block.home.x, y: block.home.y, duration: 200 });
       return;

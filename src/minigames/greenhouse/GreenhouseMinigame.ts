@@ -3,6 +3,7 @@ import { GREENHOUSE_BALANCE } from '../../config/balance';
 import type { Rect } from '../../ui/layout';
 import { TECH_GLOW } from '../../ui/palette';
 import { addSprite, type SpriteKey } from '../../ui/sprites';
+import { showGestureHint } from '../gestureHint';
 import { MinigameScene } from '../MinigameScene';
 
 /**
@@ -123,6 +124,8 @@ export class GreenhouseMinigame extends MinigameScene {
     this.gotThirsty += 1;
     plant.thirstyMs = 0;
     this.setState(plant, 'thirsty');
+    // The very first thirsty plant shows where to tap.
+    if (this.gotThirsty === 1) showGestureHint(this, { x: plant.body.x, y: plant.body.y });
   }
 
   private water(plant: Plant): void {

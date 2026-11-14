@@ -95,7 +95,6 @@
   "result.worstEvent": "💥 What hurt the base most: {event}",
   "rover.instruction": "Dodge rocks and tap the shiny stones!",
   "rover.samples": "🧪 +{samples} samples",
-  "rover.garage": "Rover",
   "rover.away": "🚙 The rover is out",
   "collab.leverButton": "✋ HOLD",
   "collab.lever": "Hold it down together with a crewmate!",
@@ -113,5 +112,7 @@
   "tutorial.tapRoom": "Tap this room!",
   "tutorial.barRose": "It went up! But every task uses ⚡",
   "tutorial.bots": "Your robots help on their own too",
-  "collab.meetingWhy": "📡 {event} is coming! What do we do first?"
+  "collab.meetingWhy": "📡 {event} is coming! What do we do first?",
+  "rover.garageWithCost": "Rover -{cost}⚡",
+  "rover.busy": "Finish your task first!"
 }

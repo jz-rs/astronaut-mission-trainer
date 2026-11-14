@@ -6,10 +6,12 @@ import { PALETTE } from '../../ui/palette';
 import { sparkleAt } from '../../ui/sparkle';
 import { addSprite, addSpriteSized } from '../../ui/sprites';
 import { addText } from '../../ui/text';
+import { showGestureHint } from '../gestureHint';
 import { MinigameScene } from '../MinigameScene';
 
 /**
- * Spec 08 — Drag floating CO₂ bubbles into MOXIE; each one pops out an O₂ bubble.
+ * Spec 08 — Drag floating CO₂ bubbles into MOXIE (or just tap them: they fly in);
+ * each one pops out an O₂ bubble.
  * Performance = bubbles converted / goal, with a speed bonus. Harsher locations = faster bubbles.
  */
 const MACHINE_MARGIN = 24;
@@ -19,6 +21,9 @@ const METER_OFFSET_Y = 14;
 const LABEL_OFFSET_Y = 12;
 const PLATE_PADDING = 4;
 const PLATE_ALPHA = 0.8;
+/** A finger that moves less than this between press and release tapped instead of dragging. */
+const TAP_DISTANCE = 8;
+const FLY_TO_MACHINE_MS = 250;
 
 interface Bubble {
   body: Phaser.GameObjects.Container;
@@ -53,6 +58,11 @@ export class OxygenFactoryMinigame extends MinigameScene {
     }
     this.input.on('drag', this.handleDrag, this);
     this.input.on('dragend', this.handleDrop, this);
+    const firstBubble = this.bubbles[0]?.body;
+    if (firstBubble) {
+      const machineCenter = { x: this.machine.centerX, y: this.machine.centerY };
+      showGestureHint(this, { x: firstBubble.x, y: firstBubble.y }, machineCenter);
+    }
   }
 
   protected calculatePerformance(): number {
@@ -169,9 +179,13 @@ export class OxygenFactoryMinigame extends MinigameScene {
     bubble.body.setPosition(x, y);
   }
 
-  private handleDrop(_pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject): void {
+  private handleDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject): void {
     const bubble = this.findBubble(target);
     if (!bubble) return;
+    if (pointer.getDistance() < TAP_DISTANCE && !this.isFinished) {
+      this.flyIntoMachine(bubble);
+      return;
+    }
     bubble.dragging = false;
     const touchZone = Phaser.Geom.Rectangle.Clone(this.machine);
     Phaser.Geom.Rectangle.Inflate(
@@ -181,6 +195,19 @@ export class OxygenFactoryMinigame extends MinigameScene {
     );
     if (!touchZone.contains(bubble.body.x, bubble.body.y) || this.isFinished) return;
     this.convert(bubble);
+  }
+
+  /** A tapped bubble flies into MOXIE by itself. */
+  private flyIntoMachine(bubble: Bubble): void {
+    bubble.dragging = true; // stops the floating movement while it flies
+    bubble.body.disableInteractive();
+    this.tweens.add({
+      targets: bubble.body,
+      x: this.machine.centerX,
+      y: this.machine.centerY,
+      duration: FLY_TO_MACHINE_MS,
+      onComplete: () => this.convert(bubble),
+    });
   }
 
   private convert(bubble: Bubble): void {

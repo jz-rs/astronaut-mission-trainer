@@ -220,7 +220,11 @@ export class BaseScene extends Phaser.Scene {
 
   /** Spec 15 — The player drives the rover out; the base keeps running meanwhile. */
   private sendRover(): void {
-    if (this.minigameOpen || this.runEnded || this.playerBusy) return;
+    if (this.runEnded) return;
+    if (this.minigameOpen || this.playerBusy) {
+      floatText(this, GARAGE_SPOT.x, GARAGE_SPOT.y - 24, t('rover.busy'), PALETTE.alert);
+      return;
+    }
     if (!canStartExpedition(this.session.state)) {
       const message = this.session.state.roverOut ? t('rover.away') : t('hud.noEnergy');
       floatText(this, GARAGE_SPOT.x, GARAGE_SPOT.y - 24, message, PALETTE.alert);

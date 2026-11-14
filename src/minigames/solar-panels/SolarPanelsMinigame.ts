@@ -3,6 +3,7 @@ import { SOLAR_PANELS_BALANCE } from '../../config/balance';
 import type { Point, Rect } from '../../ui/layout';
 import { sparkleAt } from '../../ui/sparkle';
 import { addSprite, SPRITE_SCALE } from '../../ui/sprites';
+import { showGestureHint } from '../gestureHint';
 import { MinigameScene } from '../MinigameScene';
 
 /**
@@ -55,6 +56,14 @@ export class SolarPanelsMinigame extends MinigameScene {
     this.input.on('pointerdown', this.handleSwipe, this);
     this.input.on('pointermove', this.handleSwipe, this);
     this.input.on('pointerup', () => (this.lastPointer = null));
+    this.showSwipeHint();
+  }
+
+  /** A finger wiping across all the panels, from the first to the last. */
+  private showSwipeHint(): void {
+    const first = this.panelCenters[0];
+    const last = this.panelCenters[this.panelCenters.length - 1];
+    if (first && last) showGestureHint(this, first, last);
   }
 
   protected calculatePerformance(): number {

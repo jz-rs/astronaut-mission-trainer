@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { ROVER_BALANCE } from '../../config/balance';
+import { canStartExpedition } from '../../core/expedition';
 import type { RunState } from '../../core/types';
 import { t } from '../../i18n';
 import { FONT_SIZE, GARAGE_RECT, MIN_TOUCH_SIZE } from '../../ui/layout';
@@ -7,8 +9,9 @@ import { drawTechPanel } from '../../ui/techFrame';
 import { addIconLabel } from '../../ui/iconLabel';
 
 /**
- * Spec 15 — The rover garage outside the corridor airlock. It dims while the rover is out,
- * so the kid sees at a glance that the rover cannot leave again yet.
+ * Spec 15 — The rover garage outside the corridor airlock. It shows what a trip costs (−20 ⚡)
+ * and dims while the rover is out or the energy is not enough, so the kid sees at a glance
+ * that it cannot leave yet.
  */
 const ICON_SIZE = 22;
 
@@ -25,7 +28,7 @@ export class GarageView {
       height / 2,
       'rover',
       ICON_SIZE,
-      t('rover.garage'),
+      t('rover.garageWithCost', { cost: ROVER_BALANCE.energyCost }),
       {
         size: FONT_SIZE.small,
         color: PALETTE.sun,
@@ -37,6 +40,6 @@ export class GarageView {
   }
 
   update(state: RunState): void {
-    this.bay.setAlpha(state.roverOut ? 0.35 : 1);
+    this.bay.setAlpha(canStartExpedition(state) ? 1 : 0.35);
   }
 }
