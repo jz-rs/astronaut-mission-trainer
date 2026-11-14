@@ -13,7 +13,7 @@ import { loadProgress, saveProgress } from '../../services/progressStorage';
 import { createButton } from '../../ui/Button';
 import { FONT_SIZE, GAME_WIDTH, MARS_MAP_POINTS, MIN_TOUCH_SIZE } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
-import { drawStar } from '../../ui/star';
+import { addStar } from '../../ui/star';
 import { addScanlines, drawStarfield } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
 import { SCENE_KEYS } from '../sceneKeys';
@@ -26,7 +26,7 @@ import { drawMarsSurface } from './marsSurface';
  * with the stars still missing. The next place to play pulses so a kid knows what to tap.
  */
 const MARKER_RADIUS = 9;
-const MINI_STAR_RADIUS = 5;
+const MINI_STAR_SIZE = 12;
 const PULSE_MS = 500;
 
 export class MarsMapScene extends Phaser.Scene {
@@ -82,8 +82,7 @@ export class MarsMapScene extends Phaser.Scene {
     const progress = loadProgress();
     const earned = progress.starsByLocation[locationId] ?? 0;
     for (let index = 0; index < 3; index += 1) {
-      const star = this.add.graphics({ x: x + (index - 1) * 14, y });
-      drawStar(star, MINI_STAR_RADIUS, index < earned);
+      addStar(this, x + (index - 1) * 14, y, MINI_STAR_SIZE, index < earned);
     }
     const best = progress.bestScoreByLocation[locationId];
     if (best) {

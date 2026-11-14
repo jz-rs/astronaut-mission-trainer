@@ -30,10 +30,11 @@ import {
   HUD_HEIGHT,
   MINIGAME_AREA,
   MINIGAME_PANEL,
-  STAT_ICONS,
   type Rect,
 } from '../ui/layout';
+import { addIconLabel } from '../ui/iconLabel';
 import { PALETTE, STAT_COLORS } from '../ui/palette';
+import { ROOM_BACKGROUNDS, STAT_ICON_SPRITES } from '../ui/sprites';
 import { addScanlines, drawTechPanel } from '../ui/techFrame';
 import { addText } from '../ui/text';
 
@@ -52,6 +53,9 @@ export interface MinigameStartData {
 const DIM_ALPHA = 0.55;
 const TIME_BAR_HEIGHT = 6;
 const RESULT_DEPTH = 100;
+const INSTRUCTION_ICON_SIZE = 16;
+/** The room picture is taller than the play area: skip this much of its top (texture pixels). */
+const ROOM_CROP_TOP = 130;
 
 export abstract class MinigameScene extends Phaser.Scene {
   protected taskId: TaskId = 'solar-panels';
@@ -125,12 +129,27 @@ export abstract class MinigameScene extends Phaser.Scene {
     dim.setOrigin(0).setAlpha(DIM_ALPHA).setInteractive(); // swallows taps meant for the base
     const statColor = STAT_COLORS[TASK_BALANCE[this.taskId].stat];
     drawTechPanel(this.add.graphics(), MINIGAME_PANEL, statColor);
-    const icon = STAT_ICONS[TASK_BALANCE[this.taskId].stat];
-    addText(this, GAME_WIDTH / 2, MINIGAME_PANEL.y + 18, `${icon} ${t(this.instructionKey)}`, {
-      size: FONT_SIZE.medium,
-    });
+    this.drawRoom();
+    const icon = STAT_ICON_SPRITES[TASK_BALANCE[this.taskId].stat];
+    addIconLabel(
+      this,
+      GAME_WIDTH / 2,
+      MINIGAME_PANEL.y + 18,
+      icon,
+      INSTRUCTION_ICON_SIZE,
+      t(this.instructionKey),
+      { size: FONT_SIZE.medium },
+    );
     this.timeBar = this.add.graphics();
     this.drawTimeBar();
+  }
+
+  /** The empty room of this task fills the play area; the minigame sprites go on top. */
+  private drawRoom(): void {
+    const room = this.add.image(MINIGAME_AREA.x, 0, ROOM_BACKGROUNDS[this.taskId]).setOrigin(0);
+    const scale = MINIGAME_AREA.width / room.width;
+    room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
+    room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);
   }
 
   private drawTimeBar(): void {

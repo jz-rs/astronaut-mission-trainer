@@ -54,7 +54,7 @@ Armada con la [guía oficial de entrega de proyectos](https://www.spaceappschall
 - En los PRs del repo aparece un check de **Vercel**: alguien del equipo ya conectó Vercel. Falta confirmar en el panel de Vercel que publica `main` y anotar acá el link público.
 - **GitHub Pages** no es opción mientras el repo sea privado en una cuenta gratis (Pages en repos privados requiere un plan pago).
 - `vite.config.ts` ya usa `base: './'`, así que el build funciona en cualquier hosting estático.
-- El CI de GitHub Actions (PR "Spec 02 — CI") todavía no arranca: falla antes de empezar, probablemente por la configuración o los minutos de Actions de la cuenta dueña del repo.
+- El CI de GitHub Actions no arrancaba porque la cuenta dueña del repo está bloqueada por facturación. Se sacó `.github/workflows/ci.yml` hasta que soporte lo resuelva (ver `docs/DECISIONS.md`).
 
 ## Aprobación
 - [ ] A — _(nombre)_

@@ -2,8 +2,9 @@ import Phaser from 'phaser';
 import { ALERT_BALANCE, RUN_BALANCE } from '../../config/balance';
 import { STAT_IDS, type RunState, type StatId } from '../../core/types';
 import { t } from '../../i18n';
-import { FONT_SIZE, GAME_WIDTH, HUD_HEIGHT, STAT_ICONS } from '../../ui/layout';
+import { FONT_SIZE, GAME_WIDTH, HUD_HEIGHT } from '../../ui/layout';
 import { PALETTE, STAT_COLORS, TECH_GLOW } from '../../ui/palette';
+import { addSprite, addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 
 /**
@@ -21,6 +22,8 @@ const SOL_X = 462;
 const SOL_BAR_WIDTH = 72;
 const SOL_BAR_Y = 28;
 const BLINK_PERIOD_MS = 250;
+const SOL_ICON_X = 424;
+const SOL_ICON_SIZE = 14;
 
 export class Hud {
   private readonly bars: Phaser.GameObjects.Graphics;
@@ -33,8 +36,9 @@ export class Hud {
     background.fillStyle(TECH_GLOW, 1).fillRect(0, HUD_HEIGHT - 2, GAME_WIDTH, 2);
     STAT_IDS.forEach((statId, index) => {
       const iconX = BAR_START_X + index * BAR_SLOT_WIDTH + ICON_OFFSET_X;
-      addText(scene, iconX, BAR_Y + BAR_HEIGHT / 2, STAT_ICONS[statId]);
+      addSprite(scene, iconX, BAR_Y + BAR_HEIGHT / 2, STAT_ICON_SPRITES[statId]);
     });
+    addSpriteSized(scene, SOL_ICON_X, BAR_Y + BAR_HEIGHT / 2, 'sol', SOL_ICON_SIZE);
     this.bars = scene.add.graphics();
     this.solText = addText(scene, SOL_X, BAR_Y, '', {
       size: FONT_SIZE.small,

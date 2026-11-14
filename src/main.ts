@@ -3,6 +3,7 @@ import { setLanguage } from './i18n';
 import { MINIGAME_SCENES } from './minigames/registry';
 import { RoverExpeditionScene } from './minigames/rover/RoverExpeditionScene';
 import { BaseScene } from './scenes/base/BaseScene';
+import { BootScene } from './scenes/BootScene';
 import { MarsMapScene } from './scenes/map/MarsMapScene';
 import { MenuScene } from './scenes/MenuScene';
 import { ResultScene } from './scenes/ResultScene';
@@ -29,6 +30,7 @@ async function startGame(): Promise<void> {
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
     input: { activePointers: 2 },
     scene: [
+      BootScene,
       MenuScene,
       BaseScene,
       ResultScene,

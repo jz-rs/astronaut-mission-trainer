@@ -2,20 +2,21 @@ import Phaser from 'phaser';
 import { getLanguage, setLanguage, t, type Language } from '../i18n';
 import { loadProgress, saveProgress } from '../services/progressStorage';
 import { createButton } from '../ui/Button';
-import { ensureAstronautTexture } from '../ui/astronautTexture';
+import { astronautFrameKey } from '../ui/astronautFrames';
 import { ASTRONAUT_SCALE, FONT_SIZE, GAME_WIDTH } from '../ui/layout';
-import { CREW_COLORS, PALETTE } from '../ui/palette';
+import { PALETTE } from '../ui/palette';
 import { enterFullscreenLandscape, updateRotateMessage } from '../ui/screen';
-import { addScanlines, drawStarfield } from '../ui/techFrame';
+import { SPRITE_SCALE } from '../ui/sprites';
+import { addScanlines } from '../ui/techFrame';
 import { addText } from '../ui/text';
 import { SCENE_KEYS } from './sceneKeys';
 
 /**
- * Spec 11 — Start screen: title over Mars, ONE giant PLAY button, ES/EN.
+ * Spec 11 — Start screen: title over the base on Mars, ONE giant PLAY button, ES/EN.
  * From opening the link to playing: one tap.
  */
 const LANGUAGES: readonly Language[] = ['es', 'en'];
-const PLANET = { x: 520, y: 400, radius: 190 } as const;
+const TITLE_BAND = { y: 46, height: 96, alpha: 0.75 } as const;
 const CENTER_X = GAME_WIDTH / 2;
 
 export class MenuScene extends Phaser.Scene {
@@ -24,8 +25,7 @@ export class MenuScene extends Phaser.Scene {
   }
 
   create(): void {
-    drawStarfield(this, 120);
-    this.drawMars();
+    this.drawBackground();
     this.drawFloatingAstronaut();
     addText(this, CENTER_X, 70, t('menu.title'), { size: FONT_SIZE.large, color: PALETTE.white });
     addText(this, CENTER_X, 122, t('menu.subtitle'), {
@@ -53,32 +53,18 @@ export class MenuScene extends Phaser.Scene {
     this.scene.start(SCENE_KEYS.map);
   }
 
-  private drawMars(): void {
-    const graphics = this.add.graphics();
-    graphics.fillStyle(PALETTE.marsDark, 1).fillCircle(PLANET.x, PLANET.y, PLANET.radius + 6);
-    graphics.fillStyle(PALETTE.mars, 1).fillCircle(PLANET.x, PLANET.y, PLANET.radius);
-    graphics
-      .fillStyle(PALETTE.marsLight, 1)
-      .fillCircle(PLANET.x - 40, PLANET.y - 60, PLANET.radius - 70);
-    graphics
-      .fillStyle(PALETTE.mars, 1)
-      .fillCircle(PLANET.x - 20, PLANET.y - 40, PLANET.radius - 80);
-    for (const [offsetX, offsetY, radius] of [
-      [-120, -150, 14],
-      [-60, -120, 8],
-      [10, -170, 10],
-      [-150, -80, 6],
-    ]) {
-      graphics
-        .fillStyle(PALETTE.marsDark, 1)
-        .fillCircle(PLANET.x + offsetX, PLANET.y + offsetY, radius);
-    }
+  /** The base on Mars fills the screen; a dark band keeps the title readable on top of it. */
+  private drawBackground(): void {
+    this.add.image(0, 0, 'menuBackground').setOrigin(0).setScale(SPRITE_SCALE);
+    this.add
+      .rectangle(0, TITLE_BAND.y, GAME_WIDTH, TITLE_BAND.height, PALETTE.night)
+      .setOrigin(0)
+      .setAlpha(TITLE_BAND.alpha);
   }
 
   private drawFloatingAstronaut(): void {
-    const texture = ensureAstronautTexture(this, CREW_COLORS.player ?? PALETTE.violet);
     const astronaut = this.add
-      .image(96, 220, texture)
+      .image(96, 220, astronautFrameKey('violet', 'front'))
       .setScale(ASTRONAUT_SCALE * 2)
       .setAngle(-12);
     this.tweens.add({

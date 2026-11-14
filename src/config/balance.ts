@@ -62,6 +62,8 @@ export const PLACEHOLDER_MINIGAME_BALANCE = {
 /** A bar below this value blinks red, and so does its room (spec 04). */
 export const ALERT_BALANCE = {
   lowStatThreshold: 30,
+  /** Below this the base map already looks worried (thirsty plants, dusty panels). */
+  worriedStatThreshold: 55,
 } as const;
 
 export const SOLAR_PANELS_BALANCE = {
