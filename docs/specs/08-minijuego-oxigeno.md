@@ -5,7 +5,7 @@
 | _(nombre)_ | B | P0 | 1 | ⚪ Propuesto |
 
 ## Objetivo
-**Arrastrar burbujas de CO₂ a la máquina y ver salir burbujas de O₂**, para entender que en Marte se puede fabricar oxígeno a partir de su aire.
+**Romper el CO₂ en MOXIE y juntar dos O para formar O₂** (ver DECISIONS 2026-11-14), para entender que en Marte se puede fabricar oxígeno a partir de su aire.
 
 ## Por qué importa
 Oxígeno es la barra que baja más rápido. Y enseña MOXIE, el experimento de Perseverance que hizo oxígeno en Marte de verdad.

@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-14 — Misión de oxígeno: "Rompé la molécula", como MOXIE
+- Quién: C (con Claude)
+- Qué se decidió: el minijuego de oxígeno deja de ser "arrastrá burbujas de CO₂". Ahora cada CO₂ (O–C–O) entra a MOXIE (800 °C), se parte, el CO sale afuera por un caño y queda una O suelta; dos O juntas forman O₂, que llena el tanque (2 CO₂ → 2 CO + O₂). Se puede arrastrar o tocar. En `balance.ts`, `OXYGEN_FACTORY_BALANCE` cambia `bubblesGoal`, `bubblesOnScreen`, `bubbleSpeed` y `bubbleRadius` por `oxygenGoal`, `moleculesOnScreen`, `moleculeSpeed`, `atomRadius` y `joinDistance`. Cambia el texto de la instrucción y de `task.oxygen-factory.why`, y hay 3 claves nuevas de i18n.
+- Por qué: que la mecánica misma enseñe cómo se fabrica oxígeno en Marte, no solo el dato del final. Respaldo: NASA, "MOXIE Completes Mars Mission" (2023) y JPL, "MOXIE Could Help Future Rockets Launch Off Mars". Es la primera misión de la propuesta de misiones educativas; las demás esperan revisión.
+- A quién afecta: B (spec 08, `src/minigames/oxygen-factory/*`), `balance.ts`, `i18n`.
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
 ---
 
 ## 2026-11-14 — Biomas por nivel: cada lugar de Marte se ve distinto

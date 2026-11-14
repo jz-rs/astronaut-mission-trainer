@@ -86,10 +86,13 @@ export const SOLAR_PANELS_BALANCE = {
 } as const;
 
 export const OXYGEN_FACTORY_BALANCE = {
-  bubblesGoal: 6,
-  bubblesOnScreen: 3,
-  bubbleSpeed: 35,
-  bubbleRadius: 22,
+  /** O₂ molecules to fill the tank: each one needs 2 CO₂ split in MOXIE. */
+  oxygenGoal: 3,
+  moleculesOnScreen: 3,
+  moleculeSpeed: 30,
+  atomRadius: 11,
+  /** A loose O dropped this close to another one joins it into O₂. */
+  joinDistance: 40,
 } as const;
 
 export const GREENHOUSE_BALANCE = {

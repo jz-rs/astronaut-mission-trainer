@@ -46,7 +46,7 @@
   "minigame.placeholder.button": "TAP",
   "hud.noEnergy": "No energy!",
   "hud.pickRoom": "Which room?",
-  "minigame.oxygen-factory.instruction": "Drag the CO₂ into the machine!",
+  "minigame.oxygen-factory.instruction": "Split the CO₂, then join O + O!",
   "minigame.oxygen-factory.machine": "MOXIE",
   "minigame.greenhouse.instruction": "Water the thirsty plants!",
   "minigame.shield-wall.instruction": "Plug the holes in the wall!",
@@ -102,7 +102,7 @@
   "collab.lever": "Hold it down together with a crewmate!",
   "collab.saved": "🛡️ You did it together! The shield held.",
   "collab.priority": "🤖 Bots will focus on: {task}",
-  "task.oxygen-factory.why": "Just like MOXIE on Mars: you take the oxygen (O₂) out of the CO₂ in the air.",
+  "task.oxygen-factory.why": "Just like MOXIE on Mars: take one O out of each CO₂, and two O make O₂.",
   "task.solar-panels.why": "Martian dust covers the panels: if you don't clean them, there's no power.",
   "task.greenhouse.why": "Without water plants dry out: on the Space Station astronauts water them.",
   "task.shield-wall.why": "Water and soil stop the Sun's radiation: that's why you used those blocks.",
@@ -120,5 +120,8 @@
   "photo.realNasa": "📷 Real NASA photo",
   "exitRun.question": "Leave this run?",
   "exitRun.leave": "LEAVE",
-  "exitRun.stay": "KEEP PLAYING"
+  "exitRun.stay": "KEEP PLAYING",
+  "minigame.oxygen-factory.oven": "800 °C",
+  "minigame.oxygen-factory.tank": "O₂",
+  "minigame.oxygen-factory.outside": "CO out"
 }
