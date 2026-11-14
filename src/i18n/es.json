@@ -31,5 +31,11 @@
   "result.evacuated": "La tripulación tuvo que evacuar",
   "result.score": "Puntaje: {score}",
   "result.retry": "Reintentar",
-  "result.menu": "Menú"
+  "result.menu": "Menú",
+  "menu.title": "ASTRONAUT\nMISSION TRAINER",
+  "result.newRecord": "¡Nuevo récord!",
+  "result.allStars": "¡Misión perfecta!",
+  "result.reason.evacuated": "{stat} llegó a 0",
+  "result.reason.challenge": "{stat} bajó del {minimum}%",
+  "result.reason.samples": "Faltaron muestras del rover ({samples}/{goal})"
 }
