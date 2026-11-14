@@ -1,20 +1,74 @@
 [
   {
-    "id": "solar-flare-2024-05",
+    "id": "solar-storm-2024-05",
     "type": "solar-storm",
-    "locations": ["jezero", "olympus-mons", "valles-marineris"],
+    "locations": ["jezero", "gale", "olympus-mons", "north-pole", "valles-marineris"],
     "warningSolsBefore": [0, 1],
-    "effect": { "shield": -40 },
-    "source": "DONKI — https://kauai.ccmc.gsfc.nasa.gov/DONKI/",
-    "realDate": "2024-05-10"
+    "effect": { "shield": -35 },
+    "source": "NASA/JPL — NASA Watches Mars Light Up During Epic Solar Storm (2024) — https://phys.org/news/2024-06-nasa-mars-epic-solar-storm.html",
+    "realDate": "2024-05-20"
   },
   {
-    "id": "dust-storm-gale",
-    "type": "dust-storm",
-    "locations": ["gale", "valles-marineris"],
+    "id": "solar-storm-2017-09",
+    "type": "solar-storm",
+    "locations": ["jezero", "gale", "olympus-mons", "valles-marineris"],
     "warningSolsBefore": [1],
-    "effect": { "energy": -30 },
-    "source": "TODO: agregar fuente NASA en docs/DATA_SOURCES.md",
-    "realDate": null
+    "effect": { "shield": -30 },
+    "source": "NASA/JPL — Large Solar Storm Sparks Global Aurora and Doubles Radiation Levels on the Martian Surface — https://www.jpl.nasa.gov/news/large-solar-storm-sparks-global-aurora-and-doubles-radiation-levels-on-the-martian-surface/",
+    "realDate": "2017-09-11"
+  },
+  {
+    "id": "solar-storm-2003-10",
+    "type": "solar-storm",
+    "locations": ["olympus-mons", "north-pole", "valles-marineris"],
+    "warningSolsBefore": [0],
+    "effect": { "shield": -45 },
+    "source": "NASA/JPL — MARIE: The Martian Radiation Environment Experiment — https://webarchive.library.unt.edu/eot2008/20090118014506/http://mars.jpl.nasa.gov/odyssey/technology/marie.html",
+    "realDate": "2003-10-28"
+  },
+  {
+    "id": "dust-storm-2018",
+    "type": "dust-storm",
+    "locations": ["jezero", "gale", "north-pole", "valles-marineris"],
+    "warningSolsBefore": [1],
+    "effect": { "energy": -35 },
+    "source": "NASA — NASA's Record-Setting Opportunity Rover Mission on Mars Comes to End — https://www.nasa.gov/news-release/nasas-record-setting-opportunity-rover-mission-on-mars-comes-to-end",
+    "realDate": "2018-06-10"
+  },
+  {
+    "id": "dusty-panels-2022",
+    "type": "dust-storm",
+    "locations": ["gale", "north-pole", "valles-marineris"],
+    "warningSolsBefore": [0],
+    "effect": { "energy": -20 },
+    "source": "NASA (vía EarthSky) — InSight falls silent, NASA declares mission end — https://earthsky.org/space/insight-falls-silent-nasa-declares-mission-end/",
+    "realDate": "2022-12-21"
+  },
+  {
+    "id": "greenhouse-mold-2016",
+    "type": "equipment-failure",
+    "locations": ["jezero", "gale", "olympus-mons", "north-pole", "valles-marineris"],
+    "warningSolsBefore": [0],
+    "effect": { "food": -25 },
+    "source": "NASA (vía Space.com) — A Garden Grows in Space: First Zinnias Bloom — https://www.space.com/31658-zinnia-flowers-bloom-in-space-photo.html",
+    "realDate": "2016-01-16"
+  },
+  {
+    "id": "wind-cleaning-2009",
+    "type": "good",
+    "locations": ["jezero", "gale", "valles-marineris"],
+    "warningSolsBefore": [0],
+    "effect": { "energy": 25 },
+    "source": "NASA/JPL — Spirit Gets Energy Boost From Cleaner Solar Panels — https://www.jpl.nasa.gov/news/spirit-gets-energy-boost-from-cleaner-solar-panels/",
+    "realDate": "2009-02-06"
+  },
+  {
+    "id": "first-harvest-2015",
+    "type": "good",
+    "locations": ["jezero", "olympus-mons", "north-pole"],
+    "warningSolsBefore": [0],
+    "effect": { "food": 20 },
+    "source": "NASA — Veggie fact sheet — https://www.nasa.gov/wp-content/uploads/2019/04/veggie_fact_sheet_508.pdf",
+    "realDate": "2015-08-10"
   }
 ]

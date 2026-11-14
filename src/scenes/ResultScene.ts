@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { randomFactKey } from '../content/facts';
 import type { RunResult } from '../core/scoring';
 import { TASK_IDS, type LocationChallenge, type StatId } from '../core/types';
 import { t } from '../i18n';
@@ -50,7 +51,7 @@ export class ResultScene extends Phaser.Scene {
     if (data.isNewRecord) this.showNewRecord();
     const reason = describeLostStar({ ...data, stars: data.result.stars });
     addText(this, CENTER_X, 196, reason, { size: FONT_SIZE.small, color: PALETTE.marsLight });
-    const fact = t(`task.${Phaser.Utils.Array.GetRandom([...TASK_IDS])}.fact` as const);
+    const fact = t(randomFactKey(Phaser.Utils.Array.GetRandom([...TASK_IDS])));
     addText(this, CENTER_X, 226, fact, {
       size: FONT_SIZE.small,
       color: PALETTE.cyan,
