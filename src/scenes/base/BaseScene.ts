@@ -25,6 +25,7 @@ import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
 import { GarageView } from './GarageView';
+import { TeamworkViews } from './TeamworkViews';
 import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
@@ -35,6 +36,8 @@ import { RoomView } from './RoomView';
  * it reads `session.state` to draw and sends GameActions through the session.
  */
 const DEFAULT_LOCATION_ID = 'jezero';
+/** Scenes that open on top of the base: minigames and the rover trip. */
+const OVERLAY_KEYS = [...MINIGAME_KEYS, RoverExpeditionScene.KEY];
 
 /** The Mars map (spec 12) and the result screen's Retry say where to land. */
 export interface BaseSceneData {
@@ -50,6 +53,7 @@ export class BaseScene extends Phaser.Scene {
   private botFaces!: BotFaces;
   private eventAnnouncer!: EventAnnouncer;
   private garage!: GarageView;
+  private teamwork!: TeamworkViews;
   private pickRoomHint!: Phaser.GameObjects.Text;
   private playerBusy = false;
   private minigameOpen = false;
@@ -88,6 +92,7 @@ export class BaseScene extends Phaser.Scene {
     this.pickRoomHint = createPickRoomHint(this);
     this.eventAnnouncer = new EventAnnouncer(this);
     this.garage = new GarageView(this, () => this.sendRover());
+    this.teamwork = new TeamworkViews(this, this.session, OVERLAY_KEYS);
     addScanlines(this);
   }
 
@@ -108,6 +113,7 @@ export class BaseScene extends Phaser.Scene {
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
     this.garage.update(state);
+    this.teamwork.update(state, time);
     for (const room of this.rooms.values()) {
       const value = state.stats[TASK_BALANCE[room.taskId].stat];
       room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);
@@ -216,7 +222,7 @@ export class BaseScene extends Phaser.Scene {
 
   private endRun(): void {
     this.runEnded = true;
-    [...MINIGAME_KEYS, RoverExpeditionScene.KEY].forEach((key) => this.scene.stop(key));
+    OVERLAY_KEYS.forEach((key) => this.scene.stop(key));
     finishRun(this, this.session);
   }
 }

@@ -93,5 +93,10 @@
   "rover.instruction": "Dodge rocks and tap the shiny stones!",
   "rover.samples": "🧪 +{samples} samples",
   "rover.garage": "Rover",
-  "rover.away": "🚙 The rover is out"
+  "rover.away": "🚙 The rover is out",
+  "collab.leverButton": "✋ HOLD",
+  "collab.lever": "Hold it down together with a crewmate!",
+  "collab.saved": "🛡️ You did it together! The shield held.",
+  "collab.meetingTitle": "🚨 Crisis meeting: what do we do first?",
+  "collab.priority": "🤖 Bots will focus on: {task}"
 }

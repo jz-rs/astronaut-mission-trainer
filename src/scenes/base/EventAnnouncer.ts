@@ -33,6 +33,10 @@ export class EventAnnouncer {
 
   private announce(news: EventNews, state: RunState): void {
     const isGood = state.events.find((event) => event.eventId === news.eventId)?.type === 'good';
+    if (news.kind === 'saved') {
+      this.showBanner(t('collab.saved'), PALETTE.green);
+      return;
+    }
     if (news.kind === 'warning') {
       const eventName = t(eventKey(news.eventId, 'name'));
       this.showBanner(t('event.warning', { event: eventName }), PALETTE.cyan);

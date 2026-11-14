@@ -117,6 +117,20 @@ export const ROVER_BALANCE = {
   rockStunMs: 600,
 } as const;
 
+/** Spec 16 — Teamwork moments. Set the flags to false to turn them off if they are not polished. */
+export const COLLAB_BALANCE = {
+  leverEnabled: true,
+  meetingEnabled: true,
+  leverHoldersNeeded: 2,
+  leverHoldMs: 3_000,
+  leverWindowMs: 12_000,
+  /** Time a bot takes to walk to the lever before it can hold it. */
+  botLeverDelayMs: 2_500,
+  /** Holding the lever together leaves only this share of the storm damage. */
+  leverSavedDamageFactor: 0.25,
+  meetingVoteMs: 10_000,
+} as const;
+
 export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,
