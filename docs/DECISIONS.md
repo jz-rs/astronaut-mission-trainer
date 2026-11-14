@@ -15,6 +15,22 @@ Formato:
 
 ---
 
+## 2026-11-14 — El juego usa el kit de imágenes en vez de los dibujos provisorios
+- Quién: C, con Claude (aprobado por el equipo)
+- Qué se decidió:
+  - Escena nueva `BootScene` (primera en `main.ts`, clave `boot` en `sceneKeys.ts`) que carga todo el kit con una barra de progreso. La lista de imágenes vive en `src/ui/sprites.ts` y los astronautas en `src/ui/astronautFrames.ts` (con animación de caminar). Se borró `src/ui/astronautTexture.ts`.
+  - Se cambió por sprites: astronautas (base y menú; de espaldas al subir, espejados a la izquierda), íconos de las barras (HUD, salas, consigna de minijuegos), sol del HUD, fondo del menú, estrellas (resultado y mapa de Marte), marco de fotos NASA (se usa solo el monitor del marco), y los 4 minijuegos + el rover con su sala de fondo y sus objetos.
+  - `ASTRONAUT_SCALE` pasa de 2 a 0,5 (regla 2× del kit). `STAT_ICONS` (emojis) queda solo para íconos dentro de una línea de texto.
+  - Paneles solares: el polvo ahora son cuadraditos recortados del panel sucio encima del panel limpio (misma mecánica de raspadita).
+  - Muro del escudo: los paneles del muro pasan a ser cuadrados (40 × 40).
+  - La base pasa a la vista isométrica: fondo `mapa-base.png`, salas con zona táctil y cartel (ícono + nombre, titila en rojo con la barra baja), recorridos puerta → centro del pasillo en cruz → puerta, astronautas parados sobre sus pies. Las medidas están en `ROOM_LAYOUTS` (`layout.ts`); se borraron `CORRIDOR`, `ROOM_RECTS` y `roomFurniture.ts`.
+  - Sprites de estado en el mapa (`MapStatusSprites`): lechugas sanas/sedientas/secas según la comida, MOXIE rota con oxígeno bajo y paneles con polvo con energía baja. Umbral nuevo `ALERT_BALANCE.worriedStatThreshold` (55).
+  - El garaje del rover queda afuera de la esclusa del pasillo.
+- Por qué: el kit ya estaba en `main` y el juego no lo usaba.
+- A quién afecta: A (specs 02, 04, 05: la base entera; esto reemplaza el PR aparte del spec 04 que estaba pendiente), B (06–10, 15: `MinigameScene.ts` dibuja la sala de fondo), C (11, 12).
+- Pendiente: sin usar todavía: botones (`boton*.png`, son solo celestes), `emblema-escudo`, `nube-polvo`, `rayo-energia`, `rocas-chicas`, `mapa-lechuga-brote`, `tiles/suelo-marte.png`. El hábitat del minijuego del escudo sigue dibujado con formas.
+- ¿Avisado al equipo?: sí (lo aprobaron antes de hacerlo).
+
 ## 2026-11-14 — Las palancas se permiten
 - Quién: dueña del spec 01
 - Qué se decidió: se corrige la regla de "objetos actuales": las palancas **sí** se permiten, con aspecto moderno (mango con luz LED, carcasa blanca o grafito). Siguen fuera los tubos y las agujas.
@@ -29,25 +45,12 @@ Formato:
 - A quién afecta: todas las escenas que carguen imágenes; estructura de carpetas (nueva `docs/arte/`).
 - ¿Avisado al equipo?: sí (PR #20).
 
-## 2026-11-14 — El juego usa el kit de imágenes en vez de los dibujos provisorios
-- Quién: C, con Claude (aprobado por el equipo)
-- Qué se decidió:
-  - Escena nueva `BootScene` (primera en `main.ts`, clave `boot` en `sceneKeys.ts`) que carga todo el kit con una barra de progreso. La lista de imágenes vive en `src/ui/sprites.ts` y los astronautas en `src/ui/astronautFrames.ts` (con animación de caminar). Se borró `src/ui/astronautTexture.ts`.
-  - Se cambió por sprites: astronautas (base y menú; de espaldas al subir, espejados a la izquierda), íconos de las barras (HUD, salas, consigna de minijuegos), sol del HUD, fondo del menú, estrellas (resultado y mapa de Marte), marco de fotos NASA (se usa solo el monitor del marco), y los 4 minijuegos + el rover con su sala de fondo y sus objetos.
-  - `ASTRONAUT_SCALE` pasa de 2 a 0,5 (regla 2× del kit). `STAT_ICONS` (emojis) queda solo para íconos dentro de una línea de texto.
-  - Paneles solares: el polvo ahora son cuadraditos recortados del panel sucio encima del panel limpio (misma mecánica de raspadita).
-  - Muro del escudo: los paneles del muro pasan a ser cuadrados (40 × 40).
-- Por qué: el kit ya estaba en `main` y el juego no lo usaba.
-- A quién afecta: A (specs 02, 04, 05), B (06–10, 15: `MinigameScene.ts` dibuja la sala de fondo), C (11, 12).
-- Pendiente: la base isométrica (`mapa-base.png` + `sprites/mapa/`) sigue en el PR aparte del spec 04. Sin usar todavía: botones (`boton*.png`, son solo celestes), `emblema-escudo`, `nube-polvo`, `rayo-energia`, `roca`/`rocas-chicas` del mapa, `tiles/suelo-marte.png`. El hábitat del minijuego del escudo sigue dibujado con formas.
-- ¿Avisado al equipo?: sí (lo aprobaron antes de hacerlo).
-
 ## 2026-11-14 — La base se arma por capas (fondo vacío + sprites de estado)
 - Quién: dueña del spec 01 (decidido al producir el kit de imágenes)
 - Qué se decidió: el mapa isométrico de la base es un fondo vacío (`public/assets/sprites/fondos/mapa-base.png`) y el estado de cada sala se dibuja encima con sprites (`public/assets/sprites/mapa/`): plantas sanas/sedientas/secas, máquina de oxígeno funcionando/rota, paneles limpios/sucios. Las salas por dentro también son fondos vacíos + sprites. Las salas por dentro son el original y el mapa se adaptó a ellas. Se descartó pasar a 3D.
 - Por qué: así lo que pasa en el juego se ve también en el mapa (si las plantas se marchitan, se marchitan en el mapa), sin generar una imagen por cada combinación de estados.
 - A quién afecta: spec 04 (la escena del mapa tiene que ubicar los sprites de estado sobre el fondo), specs 07–10 (fondos de sala + sprites).
-- Pendiente: el código del spec 04 que está en `main` es cenital (salas rectangulares, pasillo recto). Para usar `mapa-base.png` hay que rehacer `src/scenes/base/baseMap.ts`, `RoomView.ts`, los recorridos de `AstronautSprite` y los `workSpot` de cada sala. Lo toma la dueña del spec 04 en un PR aparte.
+- Pendiente: el código del spec 04 que está en `main` es cenital (salas rectangulares, pasillo recto). Para usar `mapa-base.png` hay que rehacer `src/scenes/base/baseMap.ts`, `RoomView.ts`, los recorridos de `AstronautSprite` y los `workSpot` de cada sala. Lo toma la dueña del spec 04 en un PR aparte. **Actualización:** se hizo en el PR #21 (ver la entrada de arriba).
 - ¿Avisado al equipo?: sí (PR #20).
 
 ## 2026-11-14 — Estilo visual ganador: pixel art retro 16 bits con tecnología actual, vista isométrica

@@ -13,7 +13,8 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
  * Tapping a bot selects it so the next tapped room becomes its order.
  */
 const PROGRESS_WIDTH = 28;
-const PROGRESS_OFFSET_Y = 30;
+/** Above the helmet: astronauts are drawn from their feet up. */
+const PROGRESS_OFFSET_Y = 48;
 
 interface BotSprite {
   astronaut: AstronautSprite;
@@ -56,7 +57,7 @@ export class BotsView {
     bot.shownTask = taskId;
     const target = taskId
       ? this.getWorkSpot(taskId, member.id)
-      : { spot: this.idleSpot(member.id), doorX: null };
+      : { spot: this.idleSpot(member.id), door: null };
     bot.astronaut.walkTo(target);
   }
 
@@ -77,7 +78,7 @@ export class BotsView {
 
   private createBot(botId: string): BotSprite {
     const ring = this.scene.add.graphics().setVisible(false);
-    ring.lineStyle(2, PALETTE.white, 1).strokeEllipse(0, 18, 34, 12);
+    ring.lineStyle(2, PALETTE.white, 1).strokeEllipse(0, 0, 34, 12); // around the feet
     const color = CREW_SUIT_COLORS[botId] ?? 'red';
     const astronaut = new AstronautSprite(this.scene, this.idleSpot(botId), color);
     makeFingerSized(astronaut.image);

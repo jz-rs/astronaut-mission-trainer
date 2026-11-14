@@ -47,26 +47,82 @@ export const STAT_ICONS: Record<StatId, string> = {
 export const MINIGAME_PANEL: Rect = { x: 48, y: 50, width: 544, height: 302 };
 export const MINIGAME_AREA: Rect = { x: 60, y: 96, width: 520, height: 248 };
 
-/** The base: 4 rooms around one central corridor (spec 04). */
-export const CORRIDOR: Rect = { x: 16, y: 184, width: 608, height: 40 };
+/**
+ * The base (spec 04): the isometric map `fondos/mapa-base.png`, 4 rooms around an X-shaped corridor.
+ * Points were measured on the image (texture pixel ÷ 2, + BASE_MAP_OFFSET_Y). Astronaut spots are
+ * where their feet stand. Walking always goes room door → corridor center → room door, so it
+ * follows the corridor arms and never crosses the Mars ground.
+ */
+export const BASE_MAP_OFFSET_Y = 20;
+export const CORRIDOR_CENTER: Point = { x: 320, y: 192 };
 
-export const ROOM_RECTS: Record<TaskId, Rect> = {
-  'oxygen-factory': { x: 32, y: 52, width: 268, height: 124 },
-  greenhouse: { x: 340, y: 52, width: 268, height: 124 },
-  'solar-panels': { x: 32, y: 232, width: 268, height: 120 },
-  'shield-wall': { x: 340, y: 232, width: 268, height: 120 },
+export interface RoomLayout {
+  /** Touch area, also used to center floating texts and the lever panel. */
+  rect: Rect;
+  /** End of the corridor arm that leads into the room. */
+  door: Point;
+  /** Where the crew works; each crew member stands one `workStep` further along the floor. */
+  workCenter: Point;
+  workStep: Point;
+  /** Icon and name of the room. */
+  label: Point;
+}
+
+export const ROOM_LAYOUTS: Record<TaskId, RoomLayout> = {
+  'oxygen-factory': {
+    rect: { x: 80, y: 44, width: 200, height: 132 },
+    door: { x: 232, y: 146 },
+    workCenter: { x: 182, y: 122 },
+    workStep: { x: 8, y: -4 },
+    label: { x: 180, y: 58 },
+  },
+  greenhouse: {
+    rect: { x: 366, y: 44, width: 194, height: 140 },
+    door: { x: 415, y: 149 },
+    workCenter: { x: 457, y: 157 },
+    workStep: { x: 8, y: -4 },
+    label: { x: 465, y: 58 },
+  },
+  'shield-wall': {
+    rect: { x: 72, y: 196, width: 180, height: 150 },
+    door: { x: 235, y: 232 },
+    workCenter: { x: 167, y: 280 },
+    workStep: { x: 6, y: -3 },
+    label: { x: 162, y: 206 },
+  },
+  'solar-panels': {
+    rect: { x: 392, y: 210, width: 230, height: 136 },
+    door: { x: 402, y: 237 },
+    workCenter: { x: 450, y: 285 },
+    workStep: { x: 8, y: 4 },
+    label: { x: 480, y: 220 },
+  },
 };
 
-/** Where the player waits when not working. */
-export const PLAYER_IDLE_SPOT: Point = { x: 320, y: 204 };
+/** Where the player waits when not working: the middle of the corridor. */
+export const PLAYER_IDLE_SPOT: Point = { x: 320, y: 196 };
 
 export const WALK_SPEED_PX_PER_SECOND = 150;
 
-/** Where idle bots wait in the corridor (spec 05). */
+/** Where idle bots wait, on the corridor arms next to the center (spec 05). */
 export const BOT_IDLE_SPOTS: readonly Point[] = [
-  { x: 250, y: 204 },
-  { x: 390, y: 204 },
-  { x: 460, y: 204 },
+  { x: 298, y: 181 },
+  { x: 342, y: 181 },
+  { x: 298, y: 203 },
+];
+
+/** State sprites drawn on the map (`sprites/mapa/`), feet points like the astronauts. */
+export const MAP_OXYGEN_MACHINE: Point = { x: 222, y: 110 };
+export const MAP_LETTUCE_BEDS: readonly Point[] = [
+  { x: 440, y: 128 },
+  { x: 465, y: 140 },
+  { x: 467, y: 116 },
+  { x: 492, y: 127 },
+];
+export const MAP_SOLAR_PANELS: readonly Point[] = [
+  { x: 24, y: 296 },
+  { x: 48, y: 308 },
+  { x: 72, y: 320 },
 ];
 
 /** Mars map (spec 12): a flat map, longitude → x and latitude → y. */
@@ -82,6 +138,6 @@ export const MARS_MAP_POINTS: Record<string, Point> = {
 
 export const LOCATION_CARD: Rect = { x: 120, y: 40, width: 400, height: 290 };
 
-/** Rover garage at the left end of the corridor (spec 15). */
-export const GARAGE_RECT: Rect = { x: 20, y: 186, width: 72, height: 36 };
-export const GARAGE_SPOT: Point = { x: 110, y: 204 };
+/** Rover garage outside the airlock of the corridor (spec 15); the player waits at the airlock. */
+export const GARAGE_RECT: Rect = { x: 262, y: 318, width: 72, height: 30 };
+export const GARAGE_SPOT: Point = { x: 360, y: 212 };

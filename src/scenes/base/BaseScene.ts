@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { ALERT_BALANCE, TASK_BALANCE } from '../../config/balance';
+import { TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
@@ -25,6 +25,7 @@ import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
 import { GarageView } from './GarageView';
+import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
 import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
@@ -48,6 +49,7 @@ export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
+  private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
   private botFaces!: BotFaces;
@@ -76,7 +78,7 @@ export class BaseScene extends Phaser.Scene {
 
   create(): void {
     this.session = this.createSession();
-    drawBaseMap(this);
+    this.mapStatus = drawBaseMap(this);
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
@@ -109,15 +111,13 @@ export class BaseScene extends Phaser.Scene {
     this.session.update(deltaMs);
     const { state } = this.session;
     this.hud.update(state, time);
+    this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
     this.garage.update(state);
     this.teamwork.update(state, time);
-    for (const room of this.rooms.values()) {
-      const value = state.stats[TASK_BALANCE[room.taskId].stat];
-      room.setAlarm(value < ALERT_BALANCE.lowStatThreshold, time);
-    }
+    for (const room of this.rooms.values()) room.update(state.stats, time);
     if (this.session.isOver()) this.endRun();
   }
 
@@ -190,8 +190,8 @@ export class BaseScene extends Phaser.Scene {
   private workSpot(taskId: TaskId, crewId: string): WalkTarget {
     const slot = this.session.state.crew.findIndex((member) => member.id === crewId);
     const room = this.rooms.get(taskId);
-    if (!room) return { spot: PLAYER_IDLE_SPOT, doorX: null };
-    return { spot: room.workSpot(slot), doorX: room.doorX };
+    if (!room) return { spot: PLAYER_IDLE_SPOT, door: null };
+    return { spot: room.workSpot(slot), door: room.door };
   }
 
   private showFloatingText(taskId: TaskId, message: string, color: number): void {
@@ -210,7 +210,7 @@ export class BaseScene extends Phaser.Scene {
       return;
     }
     this.playerBusy = true;
-    this.player.walkTo({ spot: GARAGE_SPOT, doorX: null }, () => {
+    this.player.walkTo({ spot: GARAGE_SPOT, door: null }, () => {
       if (this.runEnded) return;
       this.minigameOpen = true;
       launchRoverTrip(this, this.session, this.locationId, () => {

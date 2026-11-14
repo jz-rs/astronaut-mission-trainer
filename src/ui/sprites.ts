@@ -10,6 +10,14 @@ export const SPRITE_SCALE = 0.5;
 
 const SPRITE_FILES = {
   menuBackground: 'fondos/fondo-menu.png',
+  baseMap: 'fondos/mapa-base.png',
+  mapOxygenMachine: 'mapa/mapa-maquina-oxigeno.png',
+  mapOxygenMachineBroken: 'mapa/mapa-maquina-oxigeno-rota.png',
+  mapLettuceHealthy: 'mapa/mapa-lechuga-grande.png',
+  mapLettuceThirsty: 'mapa/mapa-lechuga-sedienta.png',
+  mapLettuceWithered: 'mapa/mapa-lechuga-seca.png',
+  mapPanelClean: 'mapa/mapa-panel-limpio.png',
+  mapPanelDirty: 'mapa/mapa-panel-sucio.png',
   roomEnergy: 'fondos/sala-energia.png',
   roomShield: 'fondos/sala-escudo.png',
   roomGreenhouse: 'fondos/sala-invernadero.png',
