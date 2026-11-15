@@ -34,6 +34,10 @@ const DARK_TINT = PALETTE.metal;
 const GROW_SPRITES: readonly SpriteKey[] = ['lettuceSprout', 'lettuceYoung', 'lettuceHealthy'];
 const SHAKE_PIXELS = 4;
 const SHAKE_MS = 50;
+/** Mars soil makes the plant go red and droop for a moment. */
+const POISON_TINT = PALETTE.alert;
+const POISON_MS = 600;
+const POISON_SQUASH = 0.8;
 
 export class PlantPot {
   state: PotState = 'healthy';
@@ -104,6 +108,31 @@ export class PlantPot {
       ease: 'Back.Out',
     });
     return true;
+  }
+
+  /**
+   * Mars soil is toxic: the plant goes red and droops for a moment, then is as before (a
+   * plant that was waiting for something keeps waiting). It never counts as help.
+   */
+  poison(): void {
+    if (this.state === 'withered') return;
+    const { scaleY } = this.sprite;
+    this.sprite.setTint(POISON_TINT);
+    this.scene.tweens.add({
+      targets: this.sprite,
+      scaleY: scaleY * POISON_SQUASH,
+      duration: POISON_MS / 2,
+      yoyo: true,
+      onComplete: () => {
+        this.sprite.setScale(this.sprite.scaleX, scaleY);
+        this.restoreTint();
+      },
+    });
+  }
+
+  private restoreTint(): void {
+    if (this.state !== 'needy') this.sprite.clearTint();
+    else this.sprite.setTint(this.need === 'water' ? THIRSTY_TINT : DARK_TINT);
   }
 
   wither(): void {

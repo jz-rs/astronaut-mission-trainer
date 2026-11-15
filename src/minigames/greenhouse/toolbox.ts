@@ -1,55 +1,65 @@
 import Phaser from 'phaser';
-import { t } from '../../i18n';
+import { t, type TranslationKey } from '../../i18n';
 import { FONT_SIZE, MIN_TOUCH_SIZE, type Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addText } from '../../ui/text';
-import { addLamp, addSpriteOfHeight } from './greenhouseIcons';
+import { addLamp, addMarsSoilHeap, addSpriteOfHeight } from './greenhouseIcons';
 import type { Need } from './plantPot';
 
 /**
- * Spec 09 — The two tools of the greenhouse, big on the right: water and light. The kid can
- * drag a tool onto a plant, or tap a tool (it lights up) and then tap the plant.
+ * Spec 09 — The tools of the greenhouse, big on the right: water, light and Mars soil. The
+ * soil is a decoy: it is toxic for the plants, and the kid who learned it never uses it.
+ * The kid can drag a tool onto a plant, or tap a tool (it lights up) and then tap the plant.
  */
+export type ToolKind = Need | 'marsSoil';
+const TOOL_KINDS: readonly ToolKind[] = ['water', 'light', 'marsSoil'];
+const LABEL_KEYS: Record<ToolKind, TranslationKey> = {
+  water: 'minigame.greenhouse.water',
+  light: 'minigame.greenhouse.light',
+  marsSoil: 'minigame.greenhouse.marsSoil',
+};
 const TOOL_SIZE = 60;
 const ICON_SIZE = 34;
-const LABEL_GAP = 8;
+/** Space between the tool and the top of its label. */
+const LABEL_GAP = 3;
 const SELECTED_SCALE = 1.1;
 const TAP_DISTANCE = 8;
 const RETURN_MS = 150;
 const TOOL_DEPTH = 5;
+/** Each tool sits a bit above the middle of its slot, so its label (maybe 2 lines) fits below. */
+const TOOL_LIFT = 10;
 
 interface Tool {
-  need: Need;
+  need: ToolKind;
   home: { x: number; y: number };
   body: Phaser.GameObjects.Container;
   plate: Phaser.GameObjects.Rectangle;
 }
 
 export class Toolbox {
-  selected: Need | null = null;
+  selected: ToolKind | null = null;
   private readonly tools: Tool[];
 
   /** `onDrop` is called when a tool is dragged and let go at (x, y). */
   constructor(
     private readonly scene: Phaser.Scene,
     column: Rect,
-    private readonly onDrop: (need: Need, x: number, y: number) => void,
+    private readonly onDrop: (tool: ToolKind, x: number, y: number) => void,
   ) {
     const centerX = column.x + column.width / 2;
-    const needs: readonly Need[] = ['water', 'light'];
-    this.tools = needs.map((need, index) => {
-      const y = column.y + (column.height * (index + 0.5)) / needs.length;
+    this.tools = TOOL_KINDS.map((need, index) => {
+      const y = column.y + (column.height * (index + 0.5)) / TOOL_KINDS.length - TOOL_LIFT;
       return this.createTool(need, centerX, y);
     });
     scene.input.on('drag', this.handleDrag, this);
     scene.input.on('dragend', this.handleDragEnd, this);
   }
 
-  homeOf(need: Need): { x: number; y: number } {
+  homeOf(need: ToolKind): { x: number; y: number } {
     return this.tools.find((tool) => tool.need === need)?.home ?? { x: 0, y: 0 };
   }
 
-  select(need: Need | null): void {
+  select(need: ToolKind | null): void {
     this.selected = need;
     for (const tool of this.tools) {
       const isSelected = tool.need === need;
@@ -58,24 +68,26 @@ export class Toolbox {
     }
   }
 
-  private createTool(need: Need, x: number, y: number): Tool {
+  private createTool(need: ToolKind, x: number, y: number): Tool {
     const plate = this.scene.add.rectangle(0, 0, TOOL_SIZE, TOOL_SIZE, PALETTE.night, 0.9);
-    const icon =
-      need === 'water'
-        ? addSpriteOfHeight(this.scene, 0, 0, 'waterDrop', ICON_SIZE)
-        : addLamp(this.scene, 0, -ICON_SIZE / 3);
-    const labelKey = need === 'water' ? 'minigame.greenhouse.water' : 'minigame.greenhouse.light';
+    const icon = this.createIcon(need);
     const labelY = TOOL_SIZE / 2 + LABEL_GAP;
-    const label = addText(this.scene, 0, labelY, t(labelKey), {
+    const label = addText(this.scene, 0, labelY, t(LABEL_KEYS[need]), {
       size: FONT_SIZE.small,
       color: PALETTE.white,
-    });
+    }).setOrigin(0.5, 0);
     const body = this.scene.add.container(x, y, [plate, icon, label]).setDepth(TOOL_DEPTH);
     body.setSize(Math.max(TOOL_SIZE, MIN_TOUCH_SIZE), Math.max(TOOL_SIZE, MIN_TOUCH_SIZE));
     body.setInteractive({ useHandCursor: true, draggable: true });
     const tool: Tool = { need, home: { x, y }, body, plate };
     plate.setStrokeStyle(2, PALETTE.white);
     return tool;
+  }
+
+  private createIcon(need: ToolKind): Phaser.GameObjects.GameObject {
+    if (need === 'water') return addSpriteOfHeight(this.scene, 0, 0, 'waterDrop', ICON_SIZE);
+    if (need === 'light') return addLamp(this.scene, 0, -ICON_SIZE / 3);
+    return addMarsSoilHeap(this.scene);
   }
 
   private findTool(target: Phaser.GameObjects.GameObject): Tool | undefined {

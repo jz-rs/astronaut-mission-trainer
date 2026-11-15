@@ -1,4 +1,4 @@
-# 16 — Palanca de a dos y reunión de crisis
+# 16 — Crisis meeting and shelter
 
 | Dueña | Rol | Prioridad | Fase | Estado |
 |---|---|---|---|---|
@@ -11,20 +11,23 @@ Dos momentos donde **la tripulación tiene que actuar junta**, como las emergenc
 Lo social es el gancho de Among Us. Aunque en la v0 sean bots, deja la mecánica lista para cuando haya personas reales, y se puede mostrar en el pitch.
 
 ## Alcance
-**Palanca de a dos** (con tormenta solar):
-- Aparece una emergencia en la sala de escudo. Hacen falta 2 astronautas manteniendo apretado a la vez ~3 s.
-- La jugadora va y aprieta; un bot (o el más cercano) va y aprieta el otro.
-- Si se logra: el escudo aguanta. Si no: daño grande.
+> Updated 2026-11-15 (see `docs/DECISIONS.md`): the crisis meeting votes real NASA procedures on the mission tablet, and the two-person lever was replaced by taking shelter.
 
-**Reunión de crisis** (al llegar un aviso del spec 14):
-- Pantalla con 2 opciones grandes con íconos (ej.: "⚡ limpiar paneles" vs "☢️ subir escudo"), 10 s para votar.
-- Los bots votan (con alguna lógica simple). Gana la mayoría → los bots en auto priorizan esa tarea durante el sol.
+**Crisis meeting on the tablet** (when Earth warns of a solar or dust storm, spec 14). The base pauses and the cabin tablet pops up over it, its edges flashing black:
+1. *Message from Earth*: a signal travels from Earth to Mars; "It took N minutes to arrive" (3–22 min, the real light delay).
+2. *What do we do?*: a small real NASA photo, one line and two huge buttons, 10 s to vote. Solar storm: "Take shelter" (right) vs "Go outside". Dust storm: "Save energy" (right) vs "Clean panels". The right answer changes side with the sol.
+3. *Right / Oops*: a real NASA photo and one line on **why**, from real missions (Orion's radiation dummies, Curiosity's radiation specks in 2024, the 2018 global dust storm, Opportunity's dusty panels). OK goes back to the base.
+- The player is the commander: bots vote the same as the player, right after the player. Voting right halves the event's damage and sets what bots on auto do first.
+
+**Shelter** (when a solar storm lands, with or without warning): "GET INSIDE!" with a countdown; the shield room blinks. Tapping it gets the player in; bots walk in by themselves. Getting in halves the damage again.
+
+**Reward** (when a crisis is over): the tablet shows a real NASA photo and one fact (MAVEN's 2024 auroras, Opportunity cleaned by the wind in 2014).
 
 **No incluye:** multijugador online, chat.
 
 ## Criterios de aceptación
 - [ ] Ambas mecánicas se entienden sin texto largo.
-- [ ] Los bots participan usando `GameAction` (votar y apretar son acciones).
+- [ ] Los bots participan usando `GameAction` (`castVote` and `enterShelter` are actions).
 - [ ] Se pueden desactivar desde `balance.ts` si no llegan pulidas.
 
 ## Archivos
