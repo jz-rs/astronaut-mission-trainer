@@ -76,8 +76,6 @@ export const MINIGAME_BALANCE = {
   durationMs: 12_000,
   /** The result card waits this long before showing GO ON, so fast taps don't skip the fact. */
   factMinDisplayMs: 800,
-  /** ... and continues alone after this, because the base keeps running behind it. */
-  factMaxDisplayMs: 12_000,
   perfectThreshold: 1.1,
   goodThreshold: 0.7,
   /** Finishing a minigame early adds up to this bonus over 1.0 ... */
@@ -158,15 +156,29 @@ export const EVENT_BALANCE = {
 /** Spec 15 — The rover trip: costly in energy, the only way to get samples. */
 export const ROVER_BALANCE = {
   energyCost: 20,
-  durationMs: 15_000,
-  resultDisplayMs: 3_000,
+  /** How long the rover drives catching stones (then the sample is stored in its tube). */
+  durationMs: 10_000,
+  /** Mission 5 — storing the drilled sample, like the 43 tubes of Perseverance. */
+  storeDurationMs: 20_000,
+  /** Tubes to fill on each trip: the first one is guided, the rest the kid fills alone. */
+  tubesPerTrip: 3,
+  /** How long the kid keeps the drill pressed to cut the rock core. */
+  drillHoldMs: 1_200,
+  /** An open tube left this long gets Mars dust inside: the sample is contaminated. */
+  sealWithinMs: 4_000,
+  /** Each sealed tube is worth this many extra samples. */
+  sealedTubeSamples: 1,
+  /** Tubes on the rover's shelf: the rocks caught while driving, plus the drilled cores. */
+  shelfSlots: 8,
+  /** The core drops into the tube if let go this close to it (px). */
+  coreSnapDistance: 60,
   lanes: 3,
   scrollSpeedPxPerSecond: 90,
   spawnEveryMs: 800,
-  /** Share of spawned things that are shiny samples instead of rocks. */
-  sampleChance: 0.45,
-  samplesLostPerRock: 1,
-  rockStunMs: 600,
+  /** Share of spawned things that are rocks (samples) instead of soft sand. */
+  rockChance: 0.55,
+  /** The rover is stuck this long after driving into soft sand. */
+  sandStuckMs: 700,
 } as const;
 
 /** Spec 16 — Teamwork moments. Set the flags to false to turn them off if they are not polished. */
