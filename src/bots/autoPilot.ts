@@ -1,6 +1,6 @@
 import type { GameAction } from '../core/actions';
 import { planTeamworkActions } from './teamwork';
-import { canAffordTask } from '../core/stats';
+import { canStartTask } from '../core/daylight';
 import { TASK_BALANCE } from '../config/balance';
 import { TASK_IDS, type RunState, type TaskId } from '../core/types';
 
@@ -33,7 +33,7 @@ function planTaskActions(state: RunState): GameAction[] {
 
 function pickMostUrgentTask(state: RunState, takenTasks: Set<TaskId>): TaskId | undefined {
   const candidates = TASK_IDS.filter(
-    (taskId) => !takenTasks.has(taskId) && canAffordTask(state.stats, taskId),
+    (taskId) => !takenTasks.has(taskId) && canStartTask(state, taskId),
   );
   const priority = state.priority;
   if (priority && state.sol <= priority.untilSol && candidates.includes(priority.taskId)) {

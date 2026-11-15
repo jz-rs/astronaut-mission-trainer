@@ -22,6 +22,11 @@ export const NIGHT_BALANCE = {
   fullNight: 0.9,
   /** How dark full night gets on top of the violet tint (0 = no change, 1 = black). */
   maxShade: 0.3,
+  /**
+   * From this much night on (0 to 1) the Sun has set: the solar panels can't be worked on until
+   * the next sol. 0.75 = the last 20 % of each sol.
+   */
+  noSunFrom: 0.75,
 } as const;
 
 /**

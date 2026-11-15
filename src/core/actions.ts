@@ -1,6 +1,7 @@
 import { CREW_BALANCE } from '../config/balance';
 import { castVote, holdLever } from './collab';
 import { completeExpedition, startExpedition } from './expedition';
+import { canStartTask } from './daylight';
 import { applyTaskResult, canAffordTask } from './stats';
 import { clampPerformance } from './training';
 import type { CrewMember, RunState, TaskId } from './types';
@@ -53,9 +54,12 @@ function findCrewMember(state: RunState, crewId: string): CrewMember {
   return member;
 }
 
-/** Bots work on a timer; the player plays the minigame instead, so they never get a timer. */
+/**
+ * Bots work on a timer; the player plays the minigame instead, so they never get a timer.
+ * A task already started can finish after sunset; only starting one needs the Sun.
+ */
 function assignTask(state: RunState, member: CrewMember, taskId: TaskId): void {
-  if (!member.isBot || !canAffordTask(state.stats, taskId)) return;
+  if (!member.isBot || !canStartTask(state, taskId)) return;
   member.task = { taskId, remainingMs: CREW_BALANCE.botTaskDurationMs };
 }
 

@@ -6,15 +6,9 @@ import { PALETTE } from './palette';
 /**
  * Day and night on Mars. The sol bar at the top is the Sun moving across the sky: after half the
  * sol it starts to get dark, so the base and the rooms of the missions go darker too. The kid
- * sees that sunlight (and solar energy) does not last all day.
+ * sees that sunlight (and solar energy) does not last all day. How dark it is comes from
+ * `nightAmount` in core/daylight.ts.
  */
-
-/** 0 = full day, 1 = full night, from how much of the sol has passed (0 to 1). */
-export function nightAmount(solFraction: number): number {
-  const { nightStarts, fullNight } = NIGHT_BALANCE;
-  const progress = (solFraction - nightStarts) / (fullNight - nightStarts);
-  return Math.min(1, Math.max(0, progress));
-}
 
 /**
  * Night over `area`: the same picture, tinted violet (a violet layer that multiplies the colors,

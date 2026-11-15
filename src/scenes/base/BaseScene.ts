@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
-import { RUN_BALANCE, TASK_BALANCE } from '../../config/balance';
+import { TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
+import { isTooDarkFor, nightAmount } from '../../core/daylight';
 import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
@@ -14,7 +15,7 @@ import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
 import { GAME_HEIGHT, GAME_WIDTH, GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
-import { nightAmount, NightShade } from '../../ui/nightfall';
+import { NightShade } from '../../ui/nightfall';
 import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
@@ -33,6 +34,7 @@ import { TeamworkViews } from './TeamworkViews';
 import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
+import { NightSign } from './NightSign';
 import { RoomView } from './RoomView';
 import { TaskEffectsView } from './TaskEffectsView';
 import { TutorialGuide } from './TutorialGuide';
@@ -57,6 +59,7 @@ export class BaseScene extends Phaser.Scene {
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
   private nightShade!: NightShade;
+  private nightSign!: NightSign;
   private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
@@ -127,15 +130,23 @@ export class BaseScene extends Phaser.Scene {
   private createTopLayer(): void {
     const screen = { x: 0, y: 0, width: GAME_WIDTH, height: GAME_HEIGHT };
     this.nightShade = new NightShade(this, screen, this.currentNight());
+    this.nightSign = new NightSign(this, 'solar-panels');
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
     addFrost(this, this.locationId);
   }
 
-  /** After half the sol it gets dark (ui/nightfall.ts). */
+  /** At night the panels can't be used: says why, so the kid isn't left wondering. */
+  private saysNoSun(taskId: TaskId): boolean {
+    if (!isTooDarkFor(this.session.state, taskId)) return false;
+    this.showFloatingText(taskId, t('hud.noSun'), PALETTE.white);
+    return true;
+  }
+
+  /** After half the sol it gets dark (core/daylight.ts). */
   private currentNight(): number {
-    return nightAmount(this.session.state.solElapsedMs / RUN_BALANCE.solDurationMs);
+    return nightAmount(this.session.state.solElapsedMs);
   }
 
   private createSession(): GameSession {
@@ -153,6 +164,7 @@ export class BaseScene extends Phaser.Scene {
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
     this.nightShade.setAmount(this.currentNight());
+    this.nightSign.setVisible(isTooDarkFor(state, 'solar-panels'));
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -174,7 +186,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private sendPlayer(taskId: TaskId): void {
-    if (this.playerBusy) return;
+    if (this.playerBusy || this.saysNoSun(taskId)) return;
     if (!canAffordTask(this.session.state.stats, taskId)) {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
       return;
@@ -224,9 +236,9 @@ export class BaseScene extends Phaser.Scene {
     const bot = this.session.state.crew.find((member) => member.id === botId);
     if (bot?.task?.taskId === taskId) {
       this.showFloatingText(taskId, t('hud.botAlreadyThere'), PALETTE.sun); // why it doesn't move
-    } else if (canAffordTask(this.session.state.stats, taskId)) {
+    } else if (!this.saysNoSun(taskId) && canAffordTask(this.session.state.stats, taskId)) {
       this.session.dispatch({ type: 'assignTask', crewId: botId, taskId });
-    } else {
+    } else if (!isTooDarkFor(this.session.state, taskId)) {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
     }
     this.setSelectedBot(null);

@@ -5,7 +5,7 @@ import { getLocation } from '../src/content/locations';
 import { applyAction } from '../src/core/actions';
 import { createRun, PLAYER_ID, updateRun } from '../src/core/run';
 import { calculateResult } from '../src/core/scoring';
-import { canAffordTask } from '../src/core/stats';
+import { canStartTask } from '../src/core/daylight';
 import { TASK_IDS, type RunState, type TaskId } from '../src/core/types';
 
 /**
@@ -24,9 +24,10 @@ interface PlayerHabit {
 }
 
 function choosePlayerTask(state: RunState): TaskId | undefined {
-  if (state.stats.energy < PLAYER_LOW_ENERGY) return 'solar-panels';
+  const canClean = canStartTask(state, 'solar-panels');
+  if (state.stats.energy < PLAYER_LOW_ENERGY && canClean) return 'solar-panels';
   const statOf = (taskId: TaskId) => state.stats[TASK_BALANCE[taskId].stat];
-  const affordable = TASK_IDS.filter((taskId) => canAffordTask(state.stats, taskId));
+  const affordable = TASK_IDS.filter((taskId) => canStartTask(state, taskId));
   return affordable.sort((a, b) => statOf(a) - statOf(b))[0];
 }
 
