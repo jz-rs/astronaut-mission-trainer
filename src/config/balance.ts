@@ -187,16 +187,23 @@ export const ROVER_BALANCE = {
 
 /** Spec 16 — Teamwork moments. Set the flags to false to turn them off if they are not polished. */
 export const COLLAB_BALANCE = {
-  leverEnabled: true,
   meetingEnabled: true,
-  leverHoldersNeeded: 2,
-  leverHoldMs: 3_000,
-  leverWindowMs: 12_000,
-  /** Time a bot takes to walk to the lever before it can hold it. */
-  botLeverDelayMs: 2_500,
-  /** Holding the lever together leaves only this share of the storm damage. */
-  leverSavedDamageFactor: 0.25,
+  shelterEnabled: true,
+  /** The tablet shows the message travelling from Earth before the vote starts. */
+  meetingIntroMs: 2_000,
   meetingVoteMs: 10_000,
+  /** Voting the real procedure leaves only this share of the event's damage. */
+  rightChoiceDamageFactor: 0.5,
+  /** Seconds the crew has to get into the shield room once a solar storm lands. */
+  shelterWindowMs: 8_000,
+  /** Time bots take to walk into the shelter. */
+  botShelterDelayMs: 2_500,
+  /** Getting into the shelter in time leaves only this share of the storm's damage. */
+  shelterDamageFactor: 0.5,
+  /** Real light delay from Earth to Mars, from closest to farthest (NASA Mars facts). */
+  signalDelayMinutes: { min: 3, max: 22 },
+  /** The reward photo waits for the storm's banner and shake to finish. */
+  rewardDelayMs: 2_500,
 } as const;
 
 export const SCORING = {

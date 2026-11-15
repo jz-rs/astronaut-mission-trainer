@@ -33,7 +33,7 @@ Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá 
 | 13 | [Contenido educativo e idiomas](13-contenido-educativo-idiomas.md) | C | P0 | 1 | ⚪ |
 | 14 | [Eventos y avisos con retraso](14-eventos-avisos.md) | A | P1 | 2 | ⚪ |
 | 15 | [Expedición con el rover](15-expedicion-rover.md) | B | P1 | 2 | ⚪ |
-| 16 | [Palanca de a dos y reunión de crisis](16-colaboracion.md) | A | P2 | 3 | ⚪ |
+| 16 | [Crisis meeting and shelter](16-colaboracion.md) | A | P2 | 3 | ⚪ |
 | 17 | [Deploy y demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
 | 18 | [Paneles solares afuera, bajo el cielo de Marte](18-paneles-afuera.md) | B + C | P1 | 2 | ⚪ |
 | 19 | [Intro, cabina y manual de misión](19-intro-cabina-manual.md) | C | P0 | Planificación | ⚪ |

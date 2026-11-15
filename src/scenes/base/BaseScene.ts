@@ -25,6 +25,7 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
 import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
+import { preloadCrisisArt } from './crisis/crisisArt';
 import { EventAnnouncer } from './EventAnnouncer';
 import { ExitRunView } from './ExitRunView';
 import { GarageView } from './GarageView';
@@ -75,6 +76,8 @@ export class BaseScene extends Phaser.Scene {
   private minigameOpen = false;
   private selectedBotId: string | null = null;
   private runEnded = false;
+  /** A minigame or rover trip reached during a crisis opens once the crisis screen is gone. */
+  private waitingLaunch: (() => void) | null = null;
   private locationId = DEFAULT_LOCATION_ID;
 
   constructor() {
@@ -86,12 +89,14 @@ export class BaseScene extends Phaser.Scene {
     this.freePlayer();
     this.selectedBotId = null;
     this.runEnded = false;
+    this.waitingLaunch = null;
     this.rooms = new Map();
   }
 
   /** The images of this level (map, rooms, frost); the rest of the kit was loaded at boot. */
   preload(): void {
     preloadBiome(this, this.locationId);
+    preloadCrisisArt(this.load);
   }
 
   create(): void {
@@ -161,7 +166,7 @@ export class BaseScene extends Phaser.Scene {
 
   update(time: number, deltaMs: number): void {
     if (this.runEnded) return;
-    if (!this.tutorial.pausesGame && !this.exitRun.isAsking) this.session.update(deltaMs);
+    if (!this.isPaused()) this.session.update(deltaMs);
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
@@ -172,19 +177,39 @@ export class BaseScene extends Phaser.Scene {
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
     this.garage.update(state);
-    this.teamwork.update(state, time);
+    this.teamwork.update(state);
+    this.launchWaitingScene();
     for (const room of this.rooms.values()) room.update(state.stats, time);
     if (this.session.isOver()) this.endRun();
   }
 
+  /** The tutorial, the exit question and the crisis cards stop the clock while they are read. */
+  private isPaused(): boolean {
+    return this.tutorial.pausesGame || this.exitRun.isAsking || this.teamwork.pausesGame;
+  }
+
   private handleRoomTap(taskId: TaskId): void {
-    if (this.minigameOpen || this.runEnded) return;
+    if (this.runEnded) return;
+    if (this.session.state.shelter) {
+      this.takeShelter(taskId);
+      return;
+    }
+    if (this.minigameOpen) return;
     this.tutorial.roomTapped();
     if (this.selectedBotId) {
       this.orderBot(this.selectedBotId, taskId);
       return;
     }
     this.sendPlayer(taskId);
+  }
+
+  /** Spec 16 — During a solar storm the only room that matters is the shield room. */
+  private takeShelter(taskId: TaskId): void {
+    if (taskId !== 'shield-wall') return;
+    this.session.dispatch({ type: 'enterShelter', crewId: PLAYER_ID });
+    if (this.playerBusy) return; // already walking somewhere: the tap still counts
+    this.playerBusy = true;
+    this.player.walkTo(this.workSpot(taskId, PLAYER_ID), () => this.freePlayer());
   }
 
   private sendPlayer(taskId: TaskId): void {
@@ -194,7 +219,25 @@ export class BaseScene extends Phaser.Scene {
       return;
     }
     this.playerBusy = true;
-    this.player.walkTo(this.workSpot(taskId, PLAYER_ID), () => this.openMinigame(taskId));
+    this.player.walkTo(this.workSpot(taskId, PLAYER_ID), () =>
+      this.launchWhenCrisisEnds(() => this.openMinigame(taskId)),
+    );
+  }
+
+  /**
+   * Spec 16 — A minigame launched under the crisis tablet would pause the base to show its card,
+   * hidden under the tablet, and freeze both. So it waits until the crisis screen is gone.
+   */
+  private launchWhenCrisisEnds(launch: () => void): void {
+    if (this.teamwork.isShowing) this.waitingLaunch = launch;
+    else launch();
+  }
+
+  private launchWaitingScene(): void {
+    if (!this.waitingLaunch || this.teamwork.isShowing) return;
+    const launch = this.waitingLaunch;
+    this.waitingLaunch = null;
+    launch();
   }
 
   private openMinigame(taskId: TaskId): void {
@@ -207,8 +250,9 @@ export class BaseScene extends Phaser.Scene {
       locationId: this.locationId,
       nightAmount: this.currentNight(),
       onFinish: (result) => this.handleMinigameFinished(result),
-      onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
+      onExit: () => this.backFromScene(), // the X: nothing done, nothing spent
     };
+    this.enterScene();
     this.scene.launch(MINIGAME_REGISTRY[taskId].key, data);
   }
 
@@ -217,8 +261,18 @@ export class BaseScene extends Phaser.Scene {
     this.playerBusy = false;
   }
 
-  private handleMinigameFinished({ taskId, performance }: MinigameResult): void {
+  /** Spec 16 — While the player is inside a minigame or the rover trip, crises wait. */
+  private enterScene(): void {
+    this.session.dispatch({ type: 'setBusy', crewId: PLAYER_ID, busy: true });
+  }
+
+  private backFromScene(): void {
+    this.session.dispatch({ type: 'setBusy', crewId: PLAYER_ID, busy: false });
     this.freePlayer();
+  }
+
+  private handleMinigameFinished({ taskId, performance }: MinigameResult): void {
+    this.backFromScene();
     if (this.runEnded) return;
     this.session.dispatch({ type: 'completeTask', crewId: PLAYER_ID, taskId, performance });
     recordMinigameResult(taskId, performance);
@@ -291,11 +345,14 @@ export class BaseScene extends Phaser.Scene {
       return;
     }
     this.playerBusy = true;
-    this.player.walkTo({ spot: GARAGE_SPOT, door: null }, () => {
-      if (this.runEnded) return;
-      this.minigameOpen = true;
-      launchRoverTrip(this, this.session, this.locationId, () => this.freePlayer());
-    });
+    this.player.walkTo({ spot: GARAGE_SPOT, door: null }, () =>
+      this.launchWhenCrisisEnds(() => {
+        if (this.runEnded) return;
+        this.minigameOpen = true;
+        this.enterScene();
+        launchRoverTrip(this, this.session, this.locationId, () => this.backFromScene());
+      }),
+    );
   }
 
   /** The X of the base: back to the ship, without saving this run's result. */

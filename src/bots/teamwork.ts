@@ -1,34 +1,39 @@
-import { COLLAB_BALANCE, TASK_BALANCE } from '../config/balance';
+import { COLLAB_BALANCE } from '../config/balance';
 import type { GameAction } from '../core/actions';
-import type { RunState, TaskId } from '../core/types';
+import type { CrisisProcedureId, RunState } from '../core/types';
 
 /**
  * Spec 16 — How bots take part in teamwork, with the same GameActions as a person:
- *   - in a crisis meeting every bot votes for the option whose bar is lowest;
- *   - in a lever emergency one bot on auto walks over and holds the other side.
+ *   - in a crisis meeting the player is the commander: bots vote the same as the player,
+ *     right after the player votes (so the kid's choice decides, and nobody copies the bots);
+ *   - when a solar storm lands every bot walks into the shelter.
  */
 export function planTeamworkActions(state: RunState): GameAction[] {
-  return [...planVotes(state), ...planLeverHelp(state)];
+  return [...planVotes(state), ...planShelter(state)];
 }
 
 function planVotes(state: RunState): GameAction[] {
   const meeting = state.meeting;
   if (!meeting) return [];
-  const statValue = (taskId: TaskId) => state.stats[TASK_BALANCE[taskId].stat];
-  const choice = [...meeting.options].sort((a, b) => statValue(a) - statValue(b))[0];
-  if (!choice) return [];
+  const commanderVote = findHumanVote(state, meeting.votes);
+  if (!commanderVote) return [];
   return state.crew
     .filter((member) => member.isBot && !meeting.votes[member.id])
-    .map((bot): GameAction => ({ type: 'castVote', crewId: bot.id, taskId: choice }));
+    .map((bot): GameAction => ({ type: 'castVote', crewId: bot.id, procedureId: commanderVote }));
 }
 
-function planLeverHelp(state: RunState): GameAction[] {
-  const lever = state.emergency;
-  if (!lever || lever.elapsedMs < COLLAB_BALANCE.botLeverDelayMs) return [];
-  const botsHolding = state.crew.filter(
-    (member) => member.isBot && lever.holders.includes(member.id),
-  );
-  if (botsHolding.length > 0) return [];
-  const helper = state.crew.find((member) => member.isBot && member.autoMode);
-  return helper ? [{ type: 'holdLever', crewId: helper.id, holding: true }] : [];
+function findHumanVote(
+  state: RunState,
+  votes: Record<string, CrisisProcedureId>,
+): CrisisProcedureId | undefined {
+  const human = state.crew.find((member) => !member.isBot && votes[member.id]);
+  return human ? votes[human.id] : undefined;
+}
+
+function planShelter(state: RunState): GameAction[] {
+  const shelter = state.shelter;
+  if (!shelter || shelter.elapsedMs < COLLAB_BALANCE.botShelterDelayMs) return [];
+  return state.crew
+    .filter((member) => member.isBot && !shelter.sheltered.includes(member.id))
+    .map((bot): GameAction => ({ type: 'enterShelter', crewId: bot.id }));
 }
