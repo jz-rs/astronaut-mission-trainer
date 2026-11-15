@@ -19,7 +19,7 @@ A game that cannot be opened does not exist for the judges.
 - Prepare demo materials (screenshots, short session video).
 
 ## Acceptance criteria
-- [ ] Public link works and updates automatically.
+- [x] Public link works and updates automatically.
 - [ ] Hackathon submission checklist complete (recorded in this spec).
 - [ ] Tested on ≥ 2 different phones.
 
@@ -50,13 +50,14 @@ Based on the [official project submission guide](https://www.spaceappschallenge.
 - [ ] QR code for the presentation link.
 - [ ] Screenshots and a short session video for the demo.
 
-## Deployment status (2026-11-14)
-- **Published with GitHub Pages**: `.github/workflows/deploy-pages.yml` runs `npm run check`, builds, and publishes on every push to `main`.
-- Public link: https://memocayar.github.io/astronaut-mission-trainer/
+## Deployment status (2026-11-15)
+- **Live with GitHub Pages**: `.github/workflows/deploy-pages.yml` runs `npm run check`, builds, and publishes on every push to `main`. The Pages source is set to "GitHub Actions".
+- Public link: https://jz-rs.github.io/astronaut-mission-trainer/
+- The repo moved to the `jz-rs` account: https://github.com/jz-rs/astronaut-mission-trainer (the old `memocayar` links redirect there).
 - **Vercel was ruled out**: its free plan blocks deployments of commits by contributors who are not Vercel project members (happened with `main` merges).
 - The repo is now public, so Pages works on the free account.
 - `vite.config.ts` already uses `base: './'`, so the build works under the Pages subpath.
-- Note: GitHub Actions is still blocked by account billing (see `docs/DECISIONS.md`). The Pages workflow will not run until support resolves it.
+- GitHub Actions runs on the new account: the billing lock was on the old owner's account. First successful deploy: 2026-11-15.
 
 ## Approval
 - [ ] A — _(name)_

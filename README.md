@@ -1,5 +1,13 @@
 # Astronaut Mission Trainer
 
+## 🚀 Live links
+
+- **Play the game:** https://jz-rs.github.io/astronaut-mission-trainer/ (best on a phone, in landscape)
+- **Repository:** https://github.com/jz-rs/astronaut-mission-trainer
+- **NASA data, images, music and sounds we use:** [`docs/DATA_SOURCES.md`](docs/DATA_SOURCES.md) (also on the game's **Sources** screen)
+
+The game is published again automatically on every merge to `main`.
+
 An educational game for **NASA Space Apps Challenge 2026** — *Junior Astronaut Mission Trainer* track.
 
 You command a base on Mars. Together with your crew (bots, and later friends), you maintain oxygen, food, radiation shielding, and energy by playing short minigames. The bots learn from how you play. Each location on Mars gets harder for real scientific reasons.
