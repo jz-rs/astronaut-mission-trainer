@@ -18,14 +18,14 @@ Formato:
 - Qué se decidió: la barra de cada sala (la tarjeta de `RoomView`, las únicas barras de stats del juego) deja de ser una barra continua y pasa a ser de **10 bloques**, como las del manual de la tablet: bloques encendidos en el color de la stat hasta el valor y bloques apagados después. Si la stat está por encima de 0 se ve al menos un bloque. Cuando la barra está baja, los bloques encendidos titilan en rojo como antes y los apagados se ven rojizos. La cantidad de bloques es una sola constante (`STAT_BAR_SEGMENTS` en `layout.ts`) para la base y el manual.
 - Por qué: a C le gustan más; los bloques se cuentan de un vistazo y combinan con la estética de pantalla del manual.
 - A quién afecta: dueña de la base (spec 04, `src/scenes/base/RoomView.ts`: cambia solo cómo se dibuja la barra; `barCenter` y `flashBar` siguen igual). `layout.ts` (se agregan 2 valores).
-- ¿Avisado al equipo?: no todavía (va en el PR #33).
+- ¿Avisado al equipo?: no todavía (va en el PR #35).
 
 ## 2026-11-15 — En la cabina, los destinos se eligen en el tablero del centro (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca se adapta a ese lugar: se ve desde el asiento, con la parte de abajo del parabrisas arriba (con la misma foto real de Marte de la ventana) y la pared de la cabina a los costados, en vez del marco de mueble encastrado en la pared; el beige pasa a los grises claros del tablero. El entorno lo dibujó Gemini y el panel (pantallas y huecos de los botones) quedó idéntico, así no cambian las posiciones. El botón de aterrizar lleva **ATERRIZAR ▼ grabado** en su cara, en la misma perspectiva que el botón (texto traducible, `monitor.landButton`; en inglés LAND), en vez del ícono del módulo de aterrizaje, que no se entendía; cuando se puede aterrizar tiene una luz amarilla suave que late. El contador "FOTO REAL NASA 1/3" pasa a una etiqueta sobre la foto, porque en inglés se pisaba con "DESTINATION 1/5". En la cabina flotan los objetos de `bocetos/cabina/flotantes/` (birome, bolsa de agua, llave, snack; el cohetito se sacó porque confundía) en gravedad cero: deriva lenta en línea recta, giro lento y rebote suave en los bordes.
 - Por qué: al probarlo, lo intuitivo era tocar la pantalla del centro para elegir misión.
 - A quién afecta: solo el spec 19 (`cabina-fondo.png`, `layout.ts`: `CABIN_DASHBOARD_*` reemplaza a `CABIN_MONITOR_*`, que solo usaba el spec 19; textos `cabin.manualDone` y `cabin.again`; `consola-fondo.png`; `botones/aterrizar*.png` sin ícono; clave nueva `monitor.landButton`; valores nuevos en `INTRO_BALANCE`).
-- ¿Avisado al equipo?: no todavía (va en el PR #33).
+- ¿Avisado al equipo?: no todavía (va en el PR #35).
 
 ## 2026-11-15 — La intro en la cabina pasa a ser el spec 19
 - Quién: memocayar
@@ -103,7 +103,7 @@ Formato:
 - Qué se decidió: al salir de una partida (resultado o ✕ en la base) se vuelve a la **nave** (cabina), no al mapa ni al monitor. El aterrizaje termina con un fundido a negro directo a la base (sin pantalla de "llegaste"). Los diálogos de la guía usan el panel y los botones normales del juego. En el monitor la pantalla grande muestra solo destino, nombre y fotos reales (el botón de la cámara pasa por **varias fotos NASA por destino**, en `src/content/locationGallery.ts`); la explicación, los objetivos y si se puede aterrizar aparecen con el botón i. La pantallita de ruta es un mini mapa de Marte. Los textos del manual son más explicativos.
 - Por qué: pedido de C al probar la intro.
 - A quién afecta: navegación (`ResultScene.ts`, `BaseScene.ts`: cambian a dónde vuelven), `i18n` (claves nuevas y textos del manual reescritos; se borraron `landing.arrived` y `landing.start`, que solo usaba el spec 19).
-- ¿Avisado al equipo?: no todavía (va en el PR #33).
+- ¿Avisado al equipo?: no todavía (va en el PR #35).
 
 ## 2026-11-15 — Se implementa la intro en la cabina (spec 19)
 - Quién: C (Emilia), con Claude

@@ -190,7 +190,7 @@ export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
 
 /**
  * Destination console: the dashboard under the cockpit window, seen up close from the seat. The
- * bottom of the windshield shows at the top and the seats peek at the sides; then its 3 screens
+ * bottom of the windshield shows at the top and the cabin walls at the sides; then its 3 screens
  * and the physical buttons (top-left corners).
  */
 export const CONSOLE_WINDOW: Rect = { x: 132, y: 0, width: 371, height: 60 };
