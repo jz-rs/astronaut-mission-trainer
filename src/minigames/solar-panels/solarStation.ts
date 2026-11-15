@@ -31,9 +31,11 @@ const PLAY_GAP = 20;
 const LABEL_GAP = 14;
 const CABLE_RISE = 20;
 const CABLE_WIDTH = 4;
-const BEAM_FAINT = 0.12;
-const BEAM_BRIGHT = 0.55;
-const BEAM_TOP_WIDTH = 10;
+const RAYS_PER_PANEL = 3;
+const RAY_WIDTH = 2;
+/** A spotless panel gets thicker rays than a dusty one. */
+const RAY_EXTRA_WIDTH = 2;
+const RAY_FAINT = 0.2;
 const BOLT_HEIGHT = 14;
 const BOLT_DROP_MS = 200;
 const BOLT_TRAVEL_MS = 600;
@@ -67,30 +69,24 @@ export class SolarStation {
     this.setBatteryLevel(0);
   }
 
-  /** Brighter beams on cleaner panels: the light only gets in where there is no dust. */
+  /**
+   * Sun rays on every panel, brighter on cleaner panels: the light only gets in where there is
+   * no dust. Each ray has a dark edge so it stands out over the yellow room.
+   */
   setLight(cleanFractions: readonly number[]): void {
     this.beams.clear();
     this.slots.forEach((slot, index) => {
       const clean = cleanFractions[index] ?? 0;
-      const alpha = BEAM_FAINT + (BEAM_BRIGHT - BEAM_FAINT) * clean;
-      const { x, y } = slot.topLeft;
-      this.beams.fillStyle(PALETTE.sun, alpha);
-      this.beams.fillTriangle(
-        this.sun.x - BEAM_TOP_WIDTH / 2,
-        this.sun.y,
-        x,
-        y + slot.width / 3,
-        x + slot.width,
-        y + slot.width / 3,
-      );
-      this.beams.fillTriangle(
-        this.sun.x - BEAM_TOP_WIDTH / 2,
-        this.sun.y,
-        this.sun.x + BEAM_TOP_WIDTH / 2,
-        this.sun.y,
-        x + slot.width,
-        y + slot.width / 3,
-      );
+      const alpha = RAY_FAINT + (1 - RAY_FAINT) * clean;
+      const width = RAY_WIDTH + RAY_EXTRA_WIDTH * clean;
+      const targetY = slot.topLeft.y + slot.width / 3;
+      for (let ray = 1; ray <= RAYS_PER_PANEL; ray += 1) {
+        const targetX = slot.topLeft.x + (slot.width * ray) / (RAYS_PER_PANEL + 1);
+        this.beams.lineStyle(width + 2, PALETTE.night, alpha * 0.6);
+        this.beams.lineBetween(this.sun.x, this.sun.y, targetX, targetY);
+        this.beams.lineStyle(width, PALETTE.sun, alpha);
+        this.beams.lineBetween(this.sun.x, this.sun.y, targetX, targetY);
+      }
     });
   }
 
