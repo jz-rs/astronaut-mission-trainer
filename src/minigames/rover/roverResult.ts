@@ -1,4 +1,5 @@
-import type Phaser from 'phaser';
+import Phaser from 'phaser';
+import { LOCATION_PHOTOS, photoTextureKey } from '../../content/locationPhotos';
 import { t, type TranslationKey } from '../../i18n';
 import { drawFramedPhoto } from '../../ui/framedPhoto';
 import { FONT_SIZE, TABLET_SCREEN, type Rect } from '../../ui/layout';
@@ -15,6 +16,21 @@ import type { StorageResult } from './SampleStorage';
  */
 const PHOTO: Rect = { x: TABLET_SCREEN.x + 16, y: TABLET_SCREEN.y + 18, width: 180, height: 124 };
 const COLUMN = { x: PHOTO.x + PHOTO.width + 18, y: PHOTO.y + 4, width: 232, gap: 8 };
+
+/**
+ * The cabin loads every place's photo, but the trip must not depend on it: if this place's photo
+ * is missing (the base was reached another way), the trip loads it, so the result never shows
+ * "Real photo: soon".
+ */
+export function loadRoverPhoto(load: Phaser.Loader.LoaderPlugin, locationId: string): void {
+  const photo = LOCATION_PHOTOS[locationId];
+  const key = photoTextureKey(locationId);
+  if (!photo || load.textureManager.exists(key)) return;
+  load.image(key, `assets/nasa/${photo.file}`);
+  load.once(Phaser.Loader.Events.COMPLETE, () =>
+    load.textureManager.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR),
+  );
+}
 
 interface ResultLine {
   text: string;

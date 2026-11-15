@@ -3,6 +3,7 @@ import { INTRO_BALANCE } from '../../config/balance';
 import { photoTextureKey } from '../../content/locationPhotos';
 import { t } from '../../i18n';
 import { setCoverPhoto } from '../../ui/coverPhoto';
+import { playLandingRumble } from '../../ui/soundEffects';
 import {
   CABIN_DASHBOARD_SCREEN,
   GAME_HEIGHT,
@@ -23,7 +24,8 @@ import { describeLanding, type LandingFrame } from './landingTimeline';
 /**
  * Spec 19, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
  * to the real photo of the chosen place, the cabin grows toward the window, the ship shakes,
- * a warning light blinks, the rockets raise dust, and then everything stops: we are there.
+ * a warning light blinks, the rockets raise dust (with a real rocket rumble), and then
+ * everything stops: we are there.
  * Every number of the sequence comes from landingTimeline.ts; this scene only draws it.
  */
 export interface LandingSceneData {
@@ -65,6 +67,7 @@ export class LandingScene extends Phaser.Scene {
     this.ui = this.add.container(0, 0).setDepth(100);
     this.buildCabin();
     this.splitCameras();
+    playLandingRumble(this);
   }
 
   update(_time: number, deltaMs: number): void {

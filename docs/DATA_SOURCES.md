@@ -100,3 +100,23 @@ La base del juego es **ficción**: es una misión tripulada imaginaria del futur
 | `public/assets/sprites/biomas/sala-*-north-pole.png` | Llanura ártica de Vastitas Borealis (~68°N) vista por Phoenix, cerca del casquete pero no encima (recortada, vista por la ventana de cada sala) | NASA/JPL-Caltech/Univ. of Arizona/Texas A&M | Dominio público (NASA/JPL) | [PIA10713](https://photojournal.jpl.nasa.gov/catalog/PIA10713) |
 | `public/assets/sprites/biomas/sala-*-olympus-mons.png` | Olympus Mons **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
 | `public/assets/sprites/biomas/sala-*-valles-marineris.png` | Valles Marineris **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00425](https://photojournal.jpl.nasa.gov/catalog/PIA00425) |
+
+## Music (NASA data sonifications)
+
+Real telescope data turned into sound by NASA's *A Universe of Sound* project. NASA invites people to download them and use them in their own music ([NASA Data Sonifications](https://www.nasa.gov/data-sonifications/)). Only the audio track was kept (AAC, `.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/music-galactic-center.m4a` | Sonification of the center of the Milky Way (Chandra X-rays, Hubble optical, Spitzer infrared), 64 s | Background music of the whole game, looping | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/gcenter.html](https://chandra.si.edu/sound/gcenter.html) |
+| `public/assets/audio/music-pillars-of-creation.m4a` | Sonification of the Pillars of Creation (M16, Chandra + Hubble), 30 s | Only at night in the base (after sunset); loops from second 10 | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/m16.html](https://chandra.si.edu/sound/m16.html) |
+
+## Sound effects (real NASA recordings, except the tap)
+
+Cut and converted to AAC (`.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/sfx-tap-bubble-pop.m4a` | A soft bubble "pop" (0.12 s), **synthesized for this game, not a NASA recording** (the team chose it over the NASA options because it fits the calm music) | Every touch on something that reacts (buttons, rooms, tools, molecules) | Made by the team for this project | — |
+| `public/assets/audio/sfx-landing-artemis-liftoff.m4a` | The Artemis I launch (16/11/2022), 8 s: the rumble and the NASA announcer | The landing, while the cabin zooms toward the window | NASA | [liftoff1.mp3](https://www.nasa.gov/wp-content/uploads/2023/02/liftoff1.mp3) |
+| `public/assets/audio/sfx-alert-apollo-quindar.m4a` | Two Quindar tones (0.25 s, 2525 Hz each, cut at 2.42 s and 3.82 s), the beeps Mission Control used to key the radio to spacecraft | A message from Earth (crisis warning) arrives in the base | NASA (public domain) | [578628main_hskquindar.mp3](https://www.nasa.gov/mp3/578628main_hskquindar.mp3), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Quindar_-_Sound_(1).mp3) |
+| `public/assets/audio/sfx-error-insight-donk.m4a` | Two low "donks" (0.9 s): one "dink" of InSight's seismometer (SEIS) on Mars, sol 226 (16/07/2019), played an octave lower and then a bit lower again | Every wrong choice: N₂/Ar fed to MOXIE, Mars soil on a plant, the rover on soft sand | NASA/JPL-Caltech | [Cropped-Dinks-and-Donks-sample.wav](https://www.nasa.gov/wp-content/uploads/2015/01/Cropped-Dinks-and-Donks-sample.wav) (NASA [Sounds from Beyond](https://www.nasa.gov/sounds-from-beyond/)) |
