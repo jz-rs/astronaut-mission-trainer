@@ -8,7 +8,7 @@ import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
 
 /**
- * The dark "◀ BACK" button in the top-left corner of the base: leave the run and go back to the Mars map.
+ * The dark "◀ BACK" button in the top-left corner of the base: leave the run and go back to the ship.
  * It asks first ("Leave the run?" LEAVE / KEEP PLAYING) and the base waits meanwhile,
  * so a kid who taps it by accident loses nothing.
  */

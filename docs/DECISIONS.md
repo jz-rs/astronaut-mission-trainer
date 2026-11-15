@@ -45,7 +45,7 @@ Formato:
 - Quién: C (Emilia), con Claude
 - Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola un **halo dorado** sigue el borde del vidrio de la ventana y de la pantalla del tablero, como el brillo de la tablet (se lee la forma del vidrio desde la imagen; ya no son esquinas). El halo celeste de la tablet también late igual: se prende y se apaga despacio; (2) en la cabina hay un botón **◀ Volver / Back** arriba a la izquierda, con el mismo estilo que los botones de la pantalla de inicio (en color crema y con una flecha dibujada), que lleva al inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
 - Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
-- A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `cabin/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `cabin.back` en `i18n`.
+- A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `src/ui/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `hud.back` en `i18n`.
 - ¿Avisado al equipo?: no todavía.
 
 ## 2026-11-15 — The first mission manual can't be skipped (spec 19)

@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { t } from '../i18n';
 import { createButton } from './Button';
-import { FONT_SIZE, type Rect } from './layout';
+import { FONT_SIZE, MIN_TOUCH_SIZE, type Rect } from './layout';
 import { PALETTE } from './palette';
 
 /**
@@ -18,7 +18,7 @@ const LOOKS: Record<BackButtonLook, { face: number; ink: number; edge?: number }
 };
 const DEPTH = 40;
 const ARROW = { inset: 10, halfHeight: 4, width: 5 } as const;
-/** The word moves right to leave room for the arrow. */
+/** How far the word moves right to leave room for the arrow (px). */
 const LABEL_SHIFT = 5;
 /** How far the button face sinks when pressed (same as `createButton`). */
 const PRESS_DEPTH = 3;
@@ -42,8 +42,7 @@ export function addBackButton(
     textColor: ink,
     onPress,
   }).setDepth(DEPTH);
-  const label = button.list.find((part) => part instanceof Phaser.GameObjects.Text);
-  if (label instanceof Phaser.GameObjects.Text) label.setX(LABEL_SHIFT);
+  shiftLabel(button);
   const marks = scene.add.graphics();
   drawArrow(marks, -area.width / 2 + ARROW.inset, ink);
   if (edge !== undefined) {
@@ -52,7 +51,29 @@ export function addBackButton(
   }
   sinkWhenPressed(button, marks);
   button.add(marks);
+  addTouchMargin(scene, button, area, onPress);
   return button;
+}
+
+/**
+ * The button is drawn thin to fit the top bar, but small fingers need 48 px: an invisible zone
+ * that tall sits under it, so a tap just above or below the button still counts.
+ */
+function addTouchMargin(
+  scene: Phaser.Scene,
+  button: Phaser.GameObjects.Container,
+  area: Rect,
+  onPress: () => void,
+): void {
+  const height = Math.max(area.height, MIN_TOUCH_SIZE);
+  const zone = scene.add.zone(button.x, button.y, area.width, height).setDepth(DEPTH - 1);
+  zone.setInteractive({ useHandCursor: true }).on('pointerup', onPress);
+}
+
+/** The word moves right to leave room for the arrow. */
+function shiftLabel(button: Phaser.GameObjects.Container): void {
+  const label = button.list.find((part) => part instanceof Phaser.GameObjects.Text);
+  if (label instanceof Phaser.GameObjects.Text) label.setX(LABEL_SHIFT);
 }
 
 /** A left-pointing triangle. */
