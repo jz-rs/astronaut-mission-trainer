@@ -25,12 +25,12 @@ const TOOL_COLUMN_WIDTH = 76;
  * room layout), back row first so the front plants are drawn over the back ones.
  */
 const BEDS_IN_PICTURE: readonly Point[] = [
-  { x: 418, y: 378 },
-  { x: 585, y: 415 },
-  { x: 712, y: 442 },
-  { x: 300, y: 440 },
-  { x: 465, y: 495 },
-  { x: 645, y: 537 },
+  { x: 410, y: 361 },
+  { x: 578, y: 404 },
+  { x: 717, y: 447 },
+  { x: 305, y: 442 },
+  { x: 468, y: 490 },
+  { x: 650, y: 533 },
 ];
 const OXYGEN_RISE_PX = 40;
 const OXYGEN_MS = 900;

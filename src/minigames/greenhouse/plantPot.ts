@@ -9,7 +9,7 @@ import { addLamp, addSpriteOfHeight } from './greenhouseIcons';
  * the pink LED lamp of the room. Sometimes it needs something, and it shows it so the kid knows
  * what to bring:
  *   - water: it turns yellow, with a water drop over it;
- *   - light: its bed and the plant go dark (the lamp went off), with a lit lamp next to it.
+ *   - light: the plant goes dark (its lamp went off), with a lit lamp next to it.
  * Helped with the right thing, it grows; if nobody helps in time, it withers.
  */
 export type Need = 'water' | 'light';
@@ -17,12 +17,10 @@ type PotState = 'healthy' | 'needy' | 'withered';
 
 /** The beds of the picture are small: the lettuces are shown a bit smaller to fit in them. */
 const PLANT_SCALE = 0.7;
-/** The plant stands a bit below the middle of its bed. */
+/** The soil mound of the lettuce pictures sits in the middle of its bed. */
 const PLANT_DROP = 8;
 /** The touch area around a plant (bigger than the plant, for small fingers). */
 const TOUCH = { width: 76, height: 76 };
-/** The dark patch on the bed when its lamp is off. */
-const SHADE = { width: 92, height: 40, alpha: 0.7 };
 /** The bubble sits right next to the top of the plant, so it is clearly its bubble. */
 const BUBBLE_BESIDE = { x: 20, y: 2 };
 const BOB_PIXELS = 3;
@@ -44,7 +42,6 @@ export class PlantPot {
   readonly body: Phaser.GameObjects.Zone;
   private growth = 0;
   private readonly sprite: Phaser.GameObjects.Image;
-  private readonly shade: Phaser.GameObjects.Ellipse;
   private readonly bubble: Phaser.GameObjects.Container;
   private readonly waterIcon: Phaser.GameObjects.Image;
   private readonly lampIcon: Phaser.GameObjects.Graphics;
@@ -55,8 +52,6 @@ export class PlantPot {
     private readonly base: Point,
   ) {
     const { x, y } = base;
-    this.shade = scene.add.ellipse(x, y, SHADE.width, SHADE.height, PALETTE.night, SHADE.alpha);
-    this.shade.setVisible(false);
     this.sprite = addSprite(scene, x, y + PLANT_DROP, GROW_SPRITES[0] ?? 'lettuceHealthy');
     this.sprite.setOrigin(0.5, 1).setScale(this.sprite.scale * PLANT_SCALE);
     const bubble = addNeedBubble(scene);
@@ -86,7 +81,6 @@ export class PlantPot {
     this.waterIcon.setVisible(need === 'water');
     this.lampIcon.setVisible(need === 'light');
     this.sprite.setTint(need === 'water' ? THIRSTY_TINT : DARK_TINT);
-    this.shade.setVisible(need === 'light');
   }
 
   /** The right thing makes it healthy and grow; the wrong one makes it shake "no". */
@@ -99,7 +93,6 @@ export class PlantPot {
     this.state = 'healthy';
     this.need = null;
     this.bubble.setVisible(false);
-    this.shade.setVisible(false);
     this.sprite.clearTint();
     this.growth = Math.min(this.growth + 1, GROW_SPRITES.length - 1);
     this.sprite.setTexture(GROW_SPRITES[this.growth] ?? 'lettuceHealthy');
@@ -117,7 +110,6 @@ export class PlantPot {
     this.state = 'withered';
     this.need = null;
     this.bubble.setVisible(false);
-    this.shade.setVisible(false);
     this.sprite.clearTint().setTexture('lettuceWithered');
   }
 
