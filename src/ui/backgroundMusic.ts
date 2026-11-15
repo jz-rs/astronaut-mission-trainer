@@ -8,8 +8,8 @@ import type { MusicMood } from '../core/musicMood';
  *     notice), only while it is night in the base (core/musicMood.ts).
  * Only one plays at a time: changing mood crossfades for a moment, then the other one stops.
  * It plays softly under the game, and the kid can mute it (and the sound effects) with the
- * sound button on every screen (soundButton.ts). Browsers only allow sound after the first
- * tap: Phaser waits.
+ * sound on/off button of the base's top bar and the start screen (soundToggle.ts). Browsers
+ * only allow sound after the first tap: Phaser waits.
  */
 const CALM_KEY = 'musicCalm';
 const TENSE_KEY = 'musicTense';

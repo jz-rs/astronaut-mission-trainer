@@ -11,7 +11,7 @@ import Phaser from 'phaser';
  *     from Earth arrives;
  *   - error: two low "donks" (InSight's seismometer "dink", an octave lower), an "uh-oh" for
  *     wrong choices (wrongChoice.ts).
- * The sound button (soundButton.ts) mutes these too.
+ * The sound on/off button (soundToggle.ts) mutes these too.
  */
 const TAP_KEY = 'sfxTap';
 const LANDING_KEY = 'sfxLanding';
