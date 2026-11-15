@@ -1,0 +1,38 @@
+{
+  "volver": {
+    "x": 325,
+    "y": 583,
+    "width": 117,
+    "height": 82
+  },
+  "destino-anterior": {
+    "x": 446,
+    "y": 582,
+    "width": 101,
+    "height": 82
+  },
+  "foto": {
+    "x": 556,
+    "y": 589,
+    "width": 170,
+    "height": 70
+  },
+  "destino-siguiente": {
+    "x": 733,
+    "y": 583,
+    "width": 102,
+    "height": 82
+  },
+  "aterrizar": {
+    "x": 995,
+    "y": 574,
+    "width": 220,
+    "height": 95
+  },
+  "info": {
+    "x": 271,
+    "y": 416,
+    "width": 66,
+    "height": 77
+  }
+}

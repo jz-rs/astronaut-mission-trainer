@@ -35,6 +35,7 @@ Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá 
 | 15 | [Expedición con el rover](15-expedicion-rover.md) | B | P1 | 2 | ⚪ |
 | 16 | [Palanca de a dos y reunión de crisis](16-colaboracion.md) | A | P2 | 3 | ⚪ |
 | 17 | [Deploy y demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
+| 18 | [Intro, cabina y manual de misión](18-intro-cabina-manual.md) | C | P0 | Planificación | ⚪ |
 
 ## Plantilla para specs nuevos
 
