@@ -7,8 +7,8 @@ import Phaser from 'phaser';
  *     the kid touches that reacts (buttons, rooms, molecules, tools), so every touch answers
  *     (AGENTS.md §4);
  * The other three are real NASA recordings:
- *   - landing: a real Martian dust devil passing over Perseverance, while the cabin zooms
- *     toward the window (its last gust lands with the touchdown);
+ *   - landing: the Artemis I launch, rumble and the NASA announcer's voice, while the cabin
+ *     zooms toward the window (the team liked it more than a Martian dust devil);
  *   - alert: two Quindar beeps, the radio tones of Apollo's Mission Control, when a message
  *     from Earth arrives;
  *   - error: two low "donks" (InSight's seismometer "dink", an octave lower), an "uh-oh" for
@@ -20,13 +20,13 @@ const LANDING_KEY = 'sfxLanding';
 const ALERT_KEY = 'sfxAlert';
 const ERROR_KEY = 'sfxError';
 const TAP_VOLUME = 0.5;
-const LANDING_VOLUME = 0.7;
+const LANDING_VOLUME = 0.6;
 const ALERT_VOLUME = 0.3;
 const ERROR_VOLUME = 0.45;
 
 export function preloadSoundEffects(load: Phaser.Loader.LoaderPlugin): void {
   load.audio(TAP_KEY, 'assets/audio/sfx-tap-bubble-pop.m4a');
-  load.audio(LANDING_KEY, 'assets/audio/sfx-landing-mars-dust-devil.m4a');
+  load.audio(LANDING_KEY, 'assets/audio/sfx-landing-artemis-liftoff.m4a');
   load.audio(ALERT_KEY, 'assets/audio/sfx-alert-apollo-quindar.m4a');
   load.audio(ERROR_KEY, 'assets/audio/sfx-error-insight-donk.m4a');
 }
