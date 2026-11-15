@@ -141,6 +141,8 @@ export interface RunState {
   /** Spec 15 — true while the rover is out collecting samples. */
   roverOut: boolean;
   shelter: ShelterEmergency | null;
+  /** Crew members inside a minigame or the rover trip: crises wait for them (spec 16). */
+  busyCrewIds: string[];
   meeting: CrisisMeeting | null;
   priority: PriorityOrder | null;
 }

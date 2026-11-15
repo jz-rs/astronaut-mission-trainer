@@ -76,6 +76,19 @@ function countWinner(meeting: CrisisMeeting): CrisisProcedureId | null {
   return count(second) > count(first) ? second : first;
 }
 
+/**
+ * A crisis never interrupts someone playing a minigame or driving the rover: it waits until they
+ * are back in the base, so the kid sees the whole message.
+ */
+export function setCrewBusy(state: RunState, crewId: string, busy: boolean): void {
+  const others = state.busyCrewIds.filter((id) => id !== crewId);
+  state.busyCrewIds = busy ? [...others, crewId] : others;
+}
+
+export function isCrewBusy(state: RunState): boolean {
+  return state.busyCrewIds.length > 0;
+}
+
 /** Share of an event's damage left by the meeting: 1 without a meeting or with a wrong choice. */
 export function choiceDamageFactor(event: ScheduledEvent): number {
   if (event.crisisChoice === undefined) return 1;

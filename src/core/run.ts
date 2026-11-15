@@ -31,6 +31,7 @@ export function createRun(
     taskNews: [],
     roverOut: false,
     shelter: null,
+    busyCrewIds: [],
     meeting: null,
     priority: null,
   };

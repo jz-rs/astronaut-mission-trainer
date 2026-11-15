@@ -152,6 +152,29 @@ describe('shelter during a solar storm', () => {
   });
 });
 
+describe('crises wait for the crew to be back in the base', () => {
+  it('the meeting starts only after the player leaves the minigame', () => {
+    const state = createRun(TEST_LOCATION, {}, [{ ...WARNED_STORM }]);
+    applyAction(state, { type: 'setBusy', crewId: PLAYER_ID, busy: true });
+    updateRun(state, 1);
+    expect(state.meeting).toBeNull();
+    applyAction(state, { type: 'setBusy', crewId: PLAYER_ID, busy: false });
+    updateRun(state, 1);
+    expect(state.meeting?.eventId).toBe('storm');
+  });
+
+  it('the solar storm waits to land until the player is back', () => {
+    const state = createRun(TEST_LOCATION, {}, [{ ...SOLAR_STORM }]);
+    applyAction(state, { type: 'setBusy', crewId: PLAYER_ID, busy: true });
+    landEventNow(state);
+    expect(state.shelter).toBeNull();
+    expect(state.events[0]?.status).toBe('pending');
+    applyAction(state, { type: 'setBusy', crewId: PLAYER_ID, busy: false });
+    updateRun(state, 1);
+    expect(state.shelter?.eventId).toBe('storm');
+  });
+});
+
 describe('result after teamwork', () => {
   it('does not blame a storm the crew stopped together', () => {
     const state = createRun(TEST_LOCATION, {}, [{ ...SOLAR_STORM }]);

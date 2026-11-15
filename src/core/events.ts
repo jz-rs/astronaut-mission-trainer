@@ -1,5 +1,5 @@
 import { EVENT_BALANCE, RUN_BALANCE } from '../config/balance';
-import { choiceDamageFactor, shouldStartMeeting, startMeeting } from './collab';
+import { choiceDamageFactor, isCrewBusy, shouldStartMeeting, startMeeting } from './collab';
 import { landEvent } from './eventDamage';
 import { shouldStartShelter, startShelter } from './shelter';
 import { STAT_IDS, type MarsEvent, type RunState, type ScheduledEvent } from './types';
@@ -43,20 +43,36 @@ function createScheduledEvent(
   };
 }
 
-/** Called every frame by updateRun, after the clock moves. */
+/**
+ * Called every frame by updateRun, after the clock moves. A crisis that needs the crew (meeting,
+ * shelter) waits while someone is inside a minigame (spec 16).
+ */
 export function updateEvents(state: RunState): void {
   for (const event of state.events) {
-    if (event.status === 'pending' && event.warningSol !== null && state.sol >= event.warningSol) {
+    if (isWarningDue(state, event)) {
       event.status = 'warned';
       state.eventNews.push({ kind: 'warning', eventId: event.eventId });
       if (shouldStartMeeting(event, state)) startMeeting(state, event);
     }
-    if (event.status !== 'hit' && hasArrived(state, event)) {
-      event.status = 'hit';
-      if (shouldStartShelter(event, state)) startShelter(state, event);
-      else landEvent(state, event, choiceDamageFactor(event));
-    }
+    if (event.status !== 'hit' && hasArrived(state, event)) arrive(state, event);
   }
+}
+
+function isWarningDue(state: RunState, event: ScheduledEvent): boolean {
+  if (event.status !== 'pending' || event.warningSol === null) return false;
+  if (state.sol < event.warningSol) return false;
+  return !(shouldStartMeeting(event, state) && isCrewBusy(state));
+}
+
+function arrive(state: RunState, event: ScheduledEvent): void {
+  if (shouldStartShelter(event, state)) {
+    if (isCrewBusy(state)) return;
+    event.status = 'hit';
+    startShelter(state, event);
+    return;
+  }
+  event.status = 'hit';
+  landEvent(state, event, choiceDamageFactor(event));
 }
 
 function hasArrived(state: RunState, event: ScheduledEvent): boolean {

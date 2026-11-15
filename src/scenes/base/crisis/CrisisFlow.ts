@@ -52,14 +52,15 @@ export class CrisisFlow {
     return this.cardOnScreen !== null;
   }
 
-  update(state: RunState): void {
+  /** `canInterrupt` is false while a minigame is open: cards wait until the kid is back. */
+  update(state: RunState, canInterrupt: boolean): void {
     this.readNews(state);
     if (state.meeting) {
       this.showMeeting(state.meeting);
       return;
     }
     this.meetingScreen = null;
-    if (this.cardOnScreen) return;
+    if (this.cardOnScreen || (!canInterrupt && !this.tablet.isVisible)) return;
     const next = this.cards.shift();
     if (next) this.showCard(next);
     else if (this.tablet.isVisible) this.tablet.hide();

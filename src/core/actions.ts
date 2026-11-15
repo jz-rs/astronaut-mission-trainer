@@ -1,5 +1,5 @@
 import { CREW_BALANCE } from '../config/balance';
-import { castVote } from './collab';
+import { castVote, setCrewBusy } from './collab';
 import { completeExpedition, startExpedition } from './expedition';
 import { enterShelter } from './shelter';
 import { canStartTask } from './daylight';
@@ -18,7 +18,8 @@ export type GameAction =
   | { type: 'startExpedition'; crewId: string }
   | { type: 'completeExpedition'; crewId: string; samples: number }
   | { type: 'castVote'; crewId: string; procedureId: CrisisProcedureId }
-  | { type: 'enterShelter'; crewId: string };
+  | { type: 'enterShelter'; crewId: string }
+  | { type: 'setBusy'; crewId: string; busy: boolean };
 
 export function applyAction(state: RunState, action: GameAction): void {
   if (state.status !== 'playing') return;
@@ -45,6 +46,9 @@ export function applyAction(state: RunState, action: GameAction): void {
       break;
     case 'enterShelter':
       enterShelter(state, member.id);
+      break;
+    case 'setBusy':
+      setCrewBusy(state, member.id, action.busy);
       break;
   }
 }
