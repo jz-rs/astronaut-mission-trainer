@@ -72,7 +72,7 @@ export class GreenhouseMinigame extends MinigameScene {
       startKey: 'minigame.greenhouse.start',
       steps: GREENHOUSE_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.resumeGame());
+    showHowToCard(this, howTo, () => this.resumeGame());
   }
 
   private createPots(): PlantPot[] {

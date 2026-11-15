@@ -109,7 +109,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
       startKey: 'rover.start',
       steps: ROVER_STEPS,
     } as const;
-    showHowToCard(this, MINIGAME_AREA, howTo, () => {
+    showHowToCard(this, howTo, () => {
       this.resumeBase();
       this.phase = 'drive';
       this.track.spawnFirstRock(FIRST_ROCK_LANE);
