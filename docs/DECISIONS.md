@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Manual en frases cortas, con palabras clave en color (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: cada página del manual deja de tener un párrafo y pasa a tener **3 frases cortas**, una por renglón, con un cuadradito de color según el tipo: el problema (naranja Marte), la ciencia real (celeste) y qué hacés en el juego (amarillo, siempre al final). Las palabras clave van en el color de su barra (oxígeno, comida, escudo, energía; Marte en naranja; tripulación en violeta). Si entra, abajo va un **dato curioso en un recuadro**, sin título. Hay 2 plantillas: con foto real (las frases van abajo a todo el ancho; el dato casi nunca entra) y sin foto (las frases van a la derecha del dibujo). Las claves `manual.<página>.text` se reemplazan por `line1..3` y `fact`. Los botones de los mensajes de la guía quedan los dos en mayúsculas (SALTAR / SEGUIR).
+- Por qué: los párrafos eran largos y planos para chicos de 7 a 12.
+- A quién afecta: solo el spec 19 (`src/scenes/manual/*`, nuevo `manualText.ts`, i18n del manual).
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).

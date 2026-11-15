@@ -3,6 +3,7 @@ import type { TranslationKey } from '../../i18n';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import type { SpriteKey } from '../../ui/sprites';
 import type { IntroPhotoKey } from '../cabin/cabinArt';
+import type { LineKind } from './manualText';
 
 /**
  * Spec 19, scene 2 — The ten pages of the mission manual, as data.
@@ -27,9 +28,17 @@ export interface PageEffect {
   change: 1 | -1;
 }
 
+export interface ManualLine {
+  kind: LineKind;
+  text: TranslationKey;
+}
+
 export interface ManualPage {
   title: TranslationKey;
-  text: TranslationKey;
+  /** One short sentence each: the problem, the real science, and what you do in the game. */
+  lines: readonly ManualLine[];
+  /** An extra curious fact, shown in a box when there is room. */
+  fact?: TranslationKey;
   color: number;
   icon?: SpriteKey;
   art: PageArt;
@@ -39,17 +48,28 @@ export interface ManualPage {
 }
 
 const SPENDS_ENERGY: PageEffect = { stat: 'energy', change: -1 };
+const STORY: readonly LineKind[] = ['problem', 'science', 'play'];
+
+/** The three lines of a page, keyed "manual.<page>.line1..3", in the kinds given. */
+function pageLines(page: string, kinds: readonly LineKind[] = STORY): readonly ManualLine[] {
+  return kinds.map((kind, index) => ({
+    kind,
+    text: `manual.${page}.line${index + 1}` as TranslationKey,
+  }));
+}
 
 export const MANUAL_PAGES: readonly ManualPage[] = [
   {
     title: 'manual.mission.title',
-    text: 'manual.mission.text',
+    lines: pageLines('mission'),
+    fact: 'manual.mission.fact',
     color: PALETTE.white,
     art: 'mission',
   },
   {
     title: 'manual.oxygen.title',
-    text: 'manual.oxygen.text',
+    lines: pageLines('oxygen'),
+    fact: 'manual.oxygen.fact',
     color: STAT_COLORS.oxygen,
     icon: 'iconOxygen',
     art: 'oxygenMachine',
@@ -58,7 +78,8 @@ export const MANUAL_PAGES: readonly ManualPage[] = [
   },
   {
     title: 'manual.food.title',
-    text: 'manual.food.text',
+    lines: pageLines('food'),
+    fact: 'manual.food.fact',
     color: STAT_COLORS.food,
     icon: 'iconFood',
     art: 'greenhouse',
@@ -67,7 +88,8 @@ export const MANUAL_PAGES: readonly ManualPage[] = [
   },
   {
     title: 'manual.shield.title',
-    text: 'manual.shield.text',
+    lines: pageLines('shield'),
+    fact: 'manual.shield.fact',
     color: STAT_COLORS.shield,
     icon: 'iconShield',
     art: 'shield',
@@ -75,27 +97,45 @@ export const MANUAL_PAGES: readonly ManualPage[] = [
   },
   {
     title: 'manual.energy.title',
-    text: 'manual.energy.text',
+    lines: pageLines('energy'),
+    fact: 'manual.energy.fact',
     color: STAT_COLORS.energy,
     icon: 'iconEnergy',
     art: 'energy',
     effects: [{ stat: 'energy', change: 1 }],
   },
-  { title: 'manual.crew.title', text: 'manual.crew.text', color: PALETTE.violet, art: 'crew' },
+  {
+    title: 'manual.crew.title',
+    lines: pageLines('crew', ['problem', 'play', 'play']),
+    color: PALETTE.violet,
+    art: 'crew',
+  },
   {
     title: 'manual.rover.title',
-    text: 'manual.rover.text',
+    lines: pageLines('rover', ['science', 'science', 'play']),
+    fact: 'manual.rover.fact',
     color: PALETTE.sun,
     art: 'rover',
     compare: { photo: 'perseverance', labels: 'real' },
     effects: [SPENDS_ENERGY],
   },
-  { title: 'manual.events.title', text: 'manual.events.text', color: PALETTE.alert, art: 'events' },
+  {
+    title: 'manual.events.title',
+    lines: pageLines('events', ['problem', 'problem', 'play']),
+    color: PALETTE.alert,
+    art: 'events',
+  },
   {
     title: 'manual.messages.title',
-    text: 'manual.messages.text',
+    lines: pageLines('messages'),
+    fact: 'manual.messages.fact',
     color: PALETTE.cyan,
     art: 'messages',
   },
-  { title: 'manual.ready.title', text: 'manual.ready.text', color: PALETTE.green, art: 'ready' },
+  {
+    title: 'manual.ready.title',
+    lines: pageLines('ready', ['problem', 'problem', 'play']),
+    color: PALETTE.green,
+    art: 'ready',
+  },
 ];
