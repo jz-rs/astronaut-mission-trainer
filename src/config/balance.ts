@@ -20,8 +20,8 @@ export const RUN_BALANCE = {
 export const NIGHT_BALANCE = {
   nightStarts: 0.5,
   fullNight: 0.9,
-  /** How dark full night gets (0 = no change, 1 = black). Kept see-through so kids can play. */
-  maxShade: 0.55,
+  /** How dark full night gets on top of the violet tint (0 = no change, 1 = black). */
+  maxShade: 0.3,
 } as const;
 
 /**
