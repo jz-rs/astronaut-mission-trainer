@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Las explicaciones y resultados de los minijuegos salen en la tablet
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la tarjeta de explicación (`howToCard`) y la de resultado (`resultCard`, y `roverResult` del rover) ya no son un panel dentro del minijuego: aparecen en la pantalla de la tablet de la misión, igual que las crisis. La tablet pasó de `scenes/base/crisis/CrisisTablet.ts` a `src/ui/MissionTablet.ts` (clase `MissionTablet`, recibe la profundidad; suma `addToScreen` y `destroy`) y `TABLET_TEXTURE` vive ahí. `showHowToCard` ya no recibe el área y `addContinueButton` recibe la tablet. Bordes: cian en la explicación, verde si salió bien o perfecto, cian en "¡Casi!".
+- Por qué: que todo lo que se lee venga del mismo aparato (manual, crisis, minijuegos).
+- A quién afecta: B (specs 06–10 y 15, minijuegos y rover), A (spec 16, crisis: solo cambia de dónde importa la tablet). Mientras se ve la explicación, la X del minijuego queda tapada: se sale después de tocar el botón de empezar.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — Aviso en rojo si tocás la consola sin haber leído el manual (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "En el manual está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.

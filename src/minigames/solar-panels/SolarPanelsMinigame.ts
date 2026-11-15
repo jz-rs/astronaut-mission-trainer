@@ -76,7 +76,7 @@ export class SolarPanelsMinigame extends MinigameScene {
       startKey: 'minigame.solar-panels.start',
       steps: SOLAR_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.startPlaying(station));
+    showHowToCard(this, howTo, () => this.startPlaying(station));
   }
 
   /** Each panel is the clean sprite with Martian dust on top. */
