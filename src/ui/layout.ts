@@ -170,6 +170,8 @@ export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 
 /** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
 export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
+/** "Back" to the start screen, in the top-left corner of the cabin. */
+export const CABIN_BACK_BUTTON: Rect = { x: 10, y: 12, width: 96, height: 28 };
 /** Loose things floating in zero gravity: where each one starts its drift. */
 export const CABIN_FLOATING_ITEMS = [
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
@@ -187,6 +189,8 @@ export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86
 
 /** The tablet fills the screen; pages are drawn on its glass. */
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
+/** The round physical button on the tablet's right side: it closes the manual too. */
+export const TABLET_HOME_BUTTON = { x: 574, y: 179, radius: 9 } as const;
 
 /**
  * Destination console: the dashboard under the cockpit window, seen up close from the seat. The

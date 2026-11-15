@@ -16,6 +16,7 @@ import { PALETTE } from '../../ui/palette';
 import { addScanlines } from '../../ui/techFrame';
 import { drawRouteMap } from '../monitor/routeMap';
 import { SCENE_KEYS } from '../sceneKeys';
+import { addBackButton } from './backButton';
 import { INTRO_PHOTOS, preloadCabinArt, type CabinArtKey } from './cabinArt';
 import {
   addCabinBackground,
@@ -39,10 +40,11 @@ export interface CabinSceneData {
   manualJustDone?: boolean;
 }
 
-const TARGET_AREAS: Record<CabinTarget, Rect> = {
-  window: CABIN_WINDOW,
-  tablet: CABIN_TABLET_ZONE,
-  monitor: CABIN_DASHBOARD_OUTLINE,
+/** The window also opens the console, so it lights up together with the dashboard. */
+const TARGET_AREAS: Record<CabinTarget, Rect[]> = {
+  window: [CABIN_WINDOW],
+  tablet: [CABIN_TABLET_ZONE],
+  monitor: [CABIN_DASHBOARD_OUTLINE, CABIN_WINDOW],
 };
 const GUIDE_FLOAT_PX = 6;
 const GUIDE_DEPTH = 20;
@@ -70,7 +72,10 @@ export class CabinScene extends Phaser.Scene {
     addFloatingItems(this);
     this.guide = this.addGuide();
     this.addTouchZone(CABIN_TABLET_ZONE, () => this.openManual());
+    // Kids tap the big window with Mars too: it opens the same console as the dashboard.
+    this.addTouchZone(CABIN_WINDOW, () => this.scene.start(SCENE_KEYS.monitor));
     this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.scene.start(SCENE_KEYS.monitor));
+    addBackButton(this, () => this.scene.start(SCENE_KEYS.menu));
     addScanlines(this);
     this.startMoment(data);
   }
@@ -124,7 +129,7 @@ export class CabinScene extends Phaser.Scene {
 
   private point(pose: CabinArtKey, target?: CabinTarget): void {
     this.moment.forEach((part) => part.destroy());
-    this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
+    this.moment = target ? TARGET_AREAS[target].map((area) => addHighlight(this, area)) : [];
     this.guide.setTexture(pose);
   }
 

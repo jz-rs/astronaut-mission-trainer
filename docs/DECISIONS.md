@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Cabina: la ventana también abre la consola, botón Volver y botón físico de la tablet (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola las esquinas amarillas marcan la ventana y el tablero; (2) en la cabina hay un botón **Volver / Back** arriba a la izquierda que lleva a la pantalla de inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X.
+- Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
+- A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `cabin/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `cabin.back` en `i18n`.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — Las barras de cada sala pasan a ser de bloques
 - Quién: C (Emilia), con Claude
 - Qué se decidió: la barra de cada sala (la tarjeta de `RoomView`, las únicas barras de stats del juego) deja de ser una barra continua y pasa a ser de **10 bloques**, como las del manual de la tablet: bloques encendidos en el color de la stat hasta el valor y bloques apagados después. Si la stat está por encima de 0 se ve al menos un bloque. Cuando la barra está baja, los bloques encendidos titilan en rojo como antes y los apagados se ven rojizos. La cantidad de bloques es una sola constante (`STAT_BAR_SEGMENTS` en `layout.ts`) para la base y el manual.

@@ -197,6 +197,7 @@
   "monitor.challenge.shield": "Shield must not drop below {minimum}",
   "monitor.challenge.energy": "Energy must not drop below {minimum}",
   "cabin.tablet": "MANUAL",
+  "cabin.back": "Back",
   "result.ship": "Ship",
   "minigame.greenhouse.introTitle": "How do you grow food in space?",
   "minigame.greenhouse.start": "Let's grow!",
