@@ -189,10 +189,15 @@ export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
 
 /**
- * Destination console: the dashboard under the cockpit window, seen up close. The strip at the
- * top is the bottom of that window; then its 3 screens and the physical buttons (top-left corners).
+ * Destination console: the dashboard under the cockpit window, seen up close from the seat. The
+ * bottom of the windshield shows at the top and the seats peek at the sides; then its 3 screens
+ * and the physical buttons (top-left corners).
  */
-export const CONSOLE_WINDOW: Rect = { x: 128, y: 25, width: 384, height: 47 };
+export const CONSOLE_WINDOW: Rect = { x: 132, y: 0, width: 371, height: 60 };
+/** Through the windshield, close up: the lower half of the planet. */
+export const CONSOLE_WINDOW_PHOTO_FOCUS_Y = 0.7;
+/** The windshield has round corners: the photo credit sits inside them. */
+export const CONSOLE_WINDOW_CREDIT_AREA: Rect = { x: 172, y: 0, width: 291, height: 57 };
 export const CONSOLE_BIG_SCREEN: Rect = { x: 193, y: 110, width: 254, height: 141 };
 export const CONSOLE_STARS_SCREEN: Rect = { x: 62, y: 193, width: 80, height: 66 };
 export const CONSOLE_ROUTE_SCREEN: Rect = { x: 37, y: 291, width: 79, height: 27 };

@@ -15,8 +15,13 @@ import {
   LAND_LOCKED_TEXTURE,
   preloadCabinArt,
 } from '../cabin/cabinArt';
-import { addPhotoCredit, addWindowPhoto } from '../cabin/cabinView';
-import { CONSOLE_WINDOW } from '../../ui/layout';
+import { addPhotoCredit } from '../cabin/cabinView';
+import { addCoverPhoto } from '../../ui/coverPhoto';
+import {
+  CONSOLE_WINDOW,
+  CONSOLE_WINDOW_CREDIT_AREA,
+  CONSOLE_WINDOW_PHOTO_FOCUS_Y,
+} from '../../ui/layout';
 import { SCENE_KEYS } from '../sceneKeys';
 import { createConsoleButton, type ConsoleButton } from './consoleButton';
 import { addLandHint, type LandHint } from './landHint';
@@ -28,7 +33,8 @@ import {
 } from './monitorScreens';
 
 /**
- * Spec 19, scene 4 — The destination console (the dashboard under the cockpit window), up close. Physical buttons browse the
+ * Spec 19, scene 4 — The destination console: the dashboard under the cockpit window, seen up
+ * close from the seat. Physical buttons browse the
  * places (every one can be explored), change the real photo, show the info (i) and LAND.
  * LAND only works after the first manual and on unlocked places; otherwise the screen says
  * what is still missing. It replaces the old Mars map as the way to pick a destination.
@@ -60,8 +66,8 @@ export class MonitorScene extends Phaser.Scene {
     this.photoIndex = 0;
     this.screenParts = [];
     // The bottom of the cockpit window: the same real Mars the cabin window shows.
-    addWindowPhoto(this, 'marsGlobe', CONSOLE_WINDOW);
-    addPhotoCredit(this, CONSOLE_WINDOW, INTRO_PHOTOS.marsGlobe.credit);
+    addCoverPhoto(this, 'marsGlobe', CONSOLE_WINDOW, 1, CONSOLE_WINDOW_PHOTO_FOCUS_Y);
+    addPhotoCredit(this, CONSOLE_WINDOW_CREDIT_AREA, INTRO_PHOTOS.marsGlobe.credit);
     this.add.image(0, 0, 'console').setOrigin(0).setScale(SPRITE_SCALE).setDepth(10);
     createConsoleButton(this, 'back', () => this.scene.start(SCENE_KEYS.cabin)).sprite.setDepth(11);
     createConsoleButton(this, 'previous', () => this.browse(-1)).sprite.setDepth(11);
