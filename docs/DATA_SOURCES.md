@@ -1,5 +1,15 @@
 # Fuentes de datos e imágenes de NASA
 
+## Outdoor solar mission (spec 18, 2026-11-15)
+
+| Presentation | Scientific source | Scope |
+|---|---|---|
+| Blue twilight near the Sun | [NASA/JPL — Curiosity views serene sundown](https://www.jpl.nasa.gov/news/nasas-curiosity-rover-views-serene-sundown-on-mars/) (2015) | Fine atmospheric dust makes blue light near the Sun more prominent at sunset. The game's pixel tint is an illustration, not a color-calibrated observation. |
+| Polar ice crystals and frost | [NASA/JPL — Phoenix sees falling snow](https://www.jpl.nasa.gov/news/nasa-mars-lander-sees-falling-snow-soil-data-suggest-liquid-past/) (2008) | Phoenix detected snow falling from clouds near its Arctic landing site; that observation showed sublimation before the ground. The game's flakes and polar landscape are stylized, not a reconstruction of that landing site. |
+| Exterior backgrounds and airlock sprites | [Generation record](arte/biomas/OUTDOOR_SOLAR_ART.md) | Generated pixel art of an imaginary human base, not NASA photographs. Olympus and Valles surface views are fictional illustrations, not images obtained by a landed mission. |
+
+Dust-storm shading is a presentation of an existing hit event for its hit sol; it adds no stat penalty or new core rule. Day/night timing remains the existing shared gameplay simplification for all locations.
+
 Todo dato científico o imagen real que aparezca en el juego se registra acá. Esta lista se muestra también en la pantalla de Fuentes del juego.
 
 > ⚠️ La mayoría de las imágenes de NASA son de dominio público, pero **no todas** (algunas son de ESA, universidades o empresas). Verificá la licencia de cada imagen antes de usarla y poné el crédito que indique la fuente (por ejemplo "NASA/JPL-Caltech").

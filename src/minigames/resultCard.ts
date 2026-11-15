@@ -66,6 +66,7 @@ export function addContinueButton(
   const continueOnce = () => {
     if (continued) return;
     continued = true;
+    tablet.destroy(); // allow a mission's return transition to appear after the result
     onContinue();
   };
   scene.time.delayedCall(MINIGAME_BALANCE.factMinDisplayMs, () => {

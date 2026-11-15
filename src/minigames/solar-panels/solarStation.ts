@@ -3,10 +3,11 @@ import { t } from '../../i18n';
 import type { Point, Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import { addPlateLabel } from '../../ui/plateLabel';
-import { addSpriteOfHeight, drawBattery } from './solarIcons';
+import { addSpriteOfHeight } from './solarIcons';
+import { addSprite } from '../../ui/sprites';
 
 /**
- * Spec 07 — Everything around the panels: the sunlight that comes in through the room's window
+ * Spec 18 — Everything around the panels: sunlight from the outdoor Sun
  * (bright on clean panels, faint where the dust blocks it, and weaker as night comes), the cable
  * and the battery of the base. Little yellow bolts travel along the cable, so the kid SEES clean
  * panels make energy.
@@ -21,12 +22,10 @@ export interface PanelSlot {
 
 const PANEL_COUNT = 3;
 const PANEL_GAP = 10;
-/** Low enough that the light comes down from the window onto the panels. */
+/** Leave the upper sky clear for the Sun and its rays. */
 const PANELS_TOP = 100;
-/** At night the window glass goes this dark (on top of the room's own night shade). */
-const WINDOW_NIGHT_ALPHA = 0.8;
 const BATTERY_WIDTH = 40;
-const BATTERY_HEIGHT = 120;
+const BATTERY_HEIGHT = 76;
 const BATTERY_MARGIN = 14;
 const BATTERY_BOTTOM_GAP = 22;
 const PLAY_GAP = 20;
@@ -47,18 +46,17 @@ export class SolarStation {
   readonly battery: Phaser.Geom.Rectangle;
   private readonly cableY: number;
   private readonly beams: Phaser.GameObjects.Graphics;
-  private readonly batteryGraphics: Phaser.GameObjects.Graphics;
+  private readonly batteryFill: Phaser.GameObjects.Image;
 
   /**
-   * `window` is the glass of the room's window on screen; `daylight` goes from 1 (noon) down to
-   * the little light left at night.
+   * The Sun and available light are refreshed from the base without changing gameplay rules.
    */
   constructor(
     private readonly scene: Phaser.Scene,
     area: Rect,
     playLeft: number,
-    readonly window: Rect,
-    private readonly daylight: number,
+    private sun: Point,
+    private daylight: number,
   ) {
     const batteryX = area.x + area.width - BATTERY_MARGIN - BATTERY_WIDTH;
     const batteryY = area.y + area.height - BATTERY_BOTTOM_GAP - BATTERY_HEIGHT;
@@ -68,18 +66,24 @@ export class SolarStation {
     this.placePanels(playLeft, playRight - playLeft, area.y + PANELS_TOP);
     this.beams = scene.add.graphics();
     this.drawCable();
-    this.darkenWindow(area);
-    this.batteryGraphics = scene.add.graphics();
+    addSprite(scene, batteryX, batteryY, 'solarBatteryEmpty')
+      .setOrigin(0)
+      .setDisplaySize(BATTERY_WIDTH, BATTERY_HEIGHT);
+    this.batteryFill = addSprite(scene, batteryX, batteryY, 'solarBatteryFull')
+      .setOrigin(0)
+      .setDisplaySize(BATTERY_WIDTH, BATTERY_HEIGHT);
     const label = t('minigame.solar-panels.battery');
     addPlateLabel(scene, this.battery.centerX, batteryY - LABEL_GAP, label, STAT_COLORS.energy);
     this.setBatteryLevel(0);
   }
 
   /**
-   * Rays of sunlight from the window to every panel, brighter on cleaner panels: the light only
+   * Rays of sunlight from the Sun to every panel, brighter on cleaner panels: the light only
    * gets in where there is no dust. Each ray has a dark edge so it stands out over the yellow room.
    */
-  setLight(cleanFractions: readonly number[]): void {
+  setLight(cleanFractions: readonly number[], sun = this.sun, daylight = this.daylight): void {
+    this.sun = sun;
+    this.daylight = daylight;
     this.beams.clear();
     this.slots.forEach((slot, index) => {
       const clean = cleanFractions[index] ?? 0;
@@ -89,17 +93,20 @@ export class SolarStation {
       for (let ray = 1; ray <= RAYS_PER_PANEL; ray += 1) {
         const share = ray / (RAYS_PER_PANEL + 1);
         const targetX = slot.topLeft.x + slot.width * share;
-        const startX = this.window.x + this.window.width * share;
+        const startX = this.sun.x;
         this.beams.lineStyle(width + 2, PALETTE.night, alpha * 0.6);
-        this.beams.lineBetween(startX, this.window.y + this.window.height, targetX, targetY);
+        this.beams.lineBetween(startX, this.sun.y, targetX, targetY);
         this.beams.lineStyle(width, PALETTE.sun, alpha);
-        this.beams.lineBetween(startX, this.window.y + this.window.height, targetX, targetY);
+        this.beams.lineBetween(startX, this.sun.y, targetX, targetY);
       }
     });
   }
 
   setBatteryLevel(level: number): void {
-    drawBattery(this.batteryGraphics, this.battery, level);
+    const height = this.batteryFill.height * Phaser.Math.Clamp(level, 0, 1);
+    this.batteryFill
+      .setVisible(height > 0)
+      .setCrop(0, this.batteryFill.height - height, this.batteryFill.width, height);
   }
 
   /** A little bolt leaves the panel, runs along the cable and goes into the battery. */
@@ -120,20 +127,6 @@ export class SolarStation {
         onArrive();
       },
     });
-  }
-
-  /** Night outside: the window glass goes dark, only the part inside the play area. */
-  private darkenWindow(area: Rect): void {
-    const top = Math.max(area.y, this.window.y);
-    const height = this.window.y + this.window.height - top;
-    const glass = this.scene.add.rectangle(
-      this.window.x,
-      top,
-      this.window.width,
-      height,
-      PALETTE.night,
-    );
-    glass.setOrigin(0).setAlpha((1 - this.daylight) * WINDOW_NIGHT_ALPHA);
   }
 
   private placePanels(left: number, width: number, top: number): void {

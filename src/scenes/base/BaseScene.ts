@@ -15,7 +15,7 @@ import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
 import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene';
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
-import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
+import { GARAGE_SPOT, PLAYER_IDLE_SPOT, ROOM_LAYOUTS } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
@@ -45,6 +45,7 @@ import { TaskEffectsView } from './TaskEffectsView';
 import { TutorialGuide } from './TutorialGuide';
 import { addFrost, addWeather } from './WeatherView';
 import { addYouTag } from './youTag';
+import { SolarAirlock } from './SolarAirlock';
 
 /**
  * Spec 04 (+ bots from spec 05) — The base during a run. It never calculates game rules:
@@ -67,6 +68,7 @@ export class BaseScene extends Phaser.Scene {
   private stationLights!: StationLights;
   private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
+  private solarAirlock!: SolarAirlock;
   private bots!: BotsView;
   private botFaces!: BotFaces;
   private eventAnnouncer!: EventAnnouncer;
@@ -106,9 +108,7 @@ export class BaseScene extends Phaser.Scene {
 
   create(): void {
     this.session = this.createSession();
-    this.mapStatus = drawBaseMap(this, this.locationId);
-    this.stationLights = new StationLights(this); // night goes under the signs and astronauts
-    this.stationLights.setNight(this.currentNight());
+    this.createMap();
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
@@ -133,6 +133,13 @@ export class BaseScene extends Phaser.Scene {
       () => this.leaveRun(),
     );
     addScanlines(this);
+  }
+
+  private createMap(): void {
+    this.mapStatus = drawBaseMap(this, this.locationId);
+    this.solarAirlock = new SolarAirlock(this);
+    this.stationLights = new StationLights(this); // night goes under the signs and astronauts
+    this.stationLights.setNight(this.currentNight());
   }
 
   /** Weather falls over the base, the HUD goes on top, and the pole's frost covers even the HUD. */
@@ -182,6 +189,7 @@ export class BaseScene extends Phaser.Scene {
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
+    this.solarAirlock.update();
     this.eventAnnouncer.update(state);
     this.garage.update(state);
     this.teamwork.update(state);
@@ -256,6 +264,16 @@ export class BaseScene extends Phaser.Scene {
       difficulty: this.session.state.location.decayMultiplier[stat] ?? 1,
       locationId: this.locationId,
       nightAmount: this.currentNight(),
+      readEnvironment: () => ({
+        solElapsedMs: this.session.state.solElapsedMs,
+        nightAmount: this.currentNight(),
+        dustStorm: this.session.state.events.some(
+          (event) =>
+            event.type === 'dust-storm' &&
+            event.status === 'hit' &&
+            event.hitSol === this.session.state.sol,
+        ),
+      }),
       onFinish: (result) => this.handleMinigameFinished(result),
       onExit: () => this.backFromScene(), // the X: nothing done, nothing spent
     };
@@ -341,7 +359,11 @@ export class BaseScene extends Phaser.Scene {
     const slot = this.session.state.crew.findIndex((member) => member.id === crewId);
     const room = this.rooms.get(taskId);
     if (!room) return { spot: PLAYER_IDLE_SPOT, door: null };
-    return { spot: room.workSpot(slot), door: room.door };
+    return {
+      spot: room.workSpot(slot),
+      door: room.door,
+      outdoorRoute: ROOM_LAYOUTS[taskId].outdoorRoute,
+    };
   }
 
   private showFloatingText(taskId: TaskId, message: string, color: number): void {

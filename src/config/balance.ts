@@ -101,6 +101,12 @@ export const ALERT_BALANCE = {
 } as const;
 
 export const SOLAR_PANELS_BALANCE = {
+  /** Visual crossing takes less than one second and pauses the mission clock. */
+  airlockCloseMs: 220,
+  airlockHoldMs: 180,
+  airlockOpenMs: 260,
+  celebrationMs: 180,
+  stormLight: 0,
   dustCellSize: 10,
   brushRadius: 16,
   /** Dust cells that fall back per second for each point of difficulty above 1. */

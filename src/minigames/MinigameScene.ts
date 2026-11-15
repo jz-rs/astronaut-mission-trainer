@@ -47,23 +47,8 @@ import { NightShade } from '../ui/nightfall';
 import { STAT_ICON_SPRITES } from '../ui/sprites';
 import { addScanlines, drawTechPanel } from '../ui/techFrame';
 
-export interface MinigameResult {
-  taskId: TaskId;
-  performance: number;
-}
-
-export interface MinigameStartData {
-  taskId: TaskId;
-  /** 1 = normal. Comes from the location decay multiplier of this task's bar. */
-  difficulty: number;
-  /** Level the base is on: its rooms show a real photo of that place through the window. */
-  locationId?: string;
-  /** 0 = day, 1 = night (ui/nightfall.ts): the room is as dark as the base outside. */
-  nightAmount?: number;
-  onFinish: (result: MinigameResult) => void;
-  /** The kid tapped the X: the task was not done. */
-  onExit?: () => void;
-}
+import type { MinigameEnvironment, MinigameStartData } from './minigameTypes';
+export type { MinigameEnvironment, MinigameResult, MinigameStartData } from './minigameTypes';
 
 const DIM_ALPHA = 0.55;
 const TIME_BAR_HEIGHT = 6;
@@ -76,7 +61,8 @@ export abstract class MinigameScene extends Phaser.Scene {
   protected difficulty = 1;
   /** 0 = day, 1 = night: the room is already darkened; a minigame may use it (less sunlight). */
   protected nightAmount = 0;
-  private locationId: string | undefined;
+  protected locationId: string | undefined;
+  protected readEnvironment: (() => MinigameEnvironment) | undefined;
   private onFinish: MinigameStartData['onFinish'] = () => undefined;
   private onExit: () => void = () => undefined;
   private elapsedMs = 0;
@@ -98,6 +84,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.taskId = data.taskId;
     this.difficulty = data.difficulty;
     this.locationId = data.locationId;
+    this.readEnvironment = data.readEnvironment;
     this.nightAmount = data.nightAmount ?? 0;
     this.onFinish = data.onFinish;
     this.onExit = data.onExit ?? (() => undefined);
@@ -141,6 +128,10 @@ export abstract class MinigameScene extends Phaser.Scene {
     return this.finished;
   }
 
+  protected get isPlaying(): boolean {
+    return !this.finished && !this.gamePaused;
+  }
+
   protected get timeLeftFraction(): number {
     return Math.max(0, 1 - this.elapsedMs / MINIGAME_BALANCE.durationMs);
   }
@@ -160,9 +151,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.closeButton?.setVisible(false); // the result card has only its big GO ON button
     const performance = clampPerformance(this.calculatePerformance());
     showResultCard(this, this.taskId, performance, () => {
-      this.resumeGame();
-      this.onFinish({ taskId: this.taskId, performance });
-      this.scene.stop();
+      this.leaveGame(() => this.onFinish({ taskId: this.taskId, performance }));
     });
   }
 
@@ -170,9 +159,22 @@ export abstract class MinigameScene extends Phaser.Scene {
   private exit(): void {
     if (this.finished) return;
     this.finished = true;
-    this.resumeGame(); // never leave the base frozen behind
-    this.onExit();
-    this.scene.stop();
+    this.pauseGame();
+    this.leaveGame(this.onExit);
+  }
+
+  /** Outdoor missions can cross an airlock; indoor missions keep closing immediately. */
+  protected playExitTransition(onComplete: () => void): void {
+    onComplete();
+  }
+
+  private leaveGame(report: () => void): void {
+    this.closeButton?.setVisible(false);
+    this.playExitTransition(() => {
+      this.resumeGame();
+      report();
+      this.scene.stop();
+    });
   }
 
   private drawFrame(): void {
@@ -180,7 +182,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     dim.setOrigin(0).setAlpha(DIM_ALPHA).setInteractive(); // swallows taps meant for the base
     const statColor = STAT_COLORS[TASK_BALANCE[this.taskId].stat];
     drawTechPanel(this.add.graphics(), MINIGAME_PANEL, statColor);
-    this.drawRoom();
+    this.drawBackground(MINIGAME_AREA);
     const icon = STAT_ICON_SPRITES[TASK_BALANCE[this.taskId].stat];
     addIconLabel(
       this,
@@ -197,15 +199,19 @@ export abstract class MinigameScene extends Phaser.Scene {
   }
 
   /** The empty room of this task fills the play area; the minigame sprites go on top. */
-  private drawRoom(): void {
+  protected drawBackground(area: Rect): void {
+    this.drawRoom(area);
+  }
+
+  private drawRoom(area: Rect): void {
     const roomKey = roomBackgroundKey(this.taskId, this.locationId);
-    const room = this.add.image(MINIGAME_AREA.x, 0, roomKey).setOrigin(0);
-    const scale = MINIGAME_AREA.width / room.width;
-    room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
-    room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);
+    const room = this.add.image(area.x, 0, roomKey).setOrigin(0);
+    const scale = area.width / room.width;
+    room.setCrop(0, ROOM_CROP_TOP, room.width, area.height / scale);
+    room.setScale(scale).setY(area.y - ROOM_CROP_TOP * scale);
     this.roomScale = scale;
     this.roomKey = roomKey;
-    new NightShade(this, MINIGAME_AREA, this.nightAmount);
+    new NightShade(this, area, this.nightAmount);
   }
 
   /**
