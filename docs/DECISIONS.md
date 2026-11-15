@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Wrong choices in the oxygen and greenhouse missions (specs 08, 09)
+- Who: Jeza, with Claude
+- What was decided: like the rover's soft sand, two missions get a "wrong choice" that only a kid who learned the science avoids. **Oxygen factory**: one N₂ and one Ar molecule float among the CO₂ (real Martian air is ~95 % CO₂ plus a little nitrogen and argon). MOXIE spits them back with a one-line message ("That's nitrogen (N₂)! MOXIE only uses CO₂") and each one fed costs `OXYGEN_FACTORY_BALANCE.decoyPenalty` (0.15) of performance. **Greenhouse**: a third tool, "Mars soil" (a red-brown heap, no cross on it). Given to a plant, the plant goes red and droops for a moment, "Mars soil is toxic!" shows up, the request is not helped, and it costs `GREENHOUSE_BALANCE.marsSoilPenalty` (0.15). `floatText` (`src/ui/floatingText.ts`) gets an optional `durationMs` so these teaching messages stay long enough to read; existing calls don't change.
+- Why: reward the kid's knowledge (step 1 of each how-to card already teaches it: Mars air is CO₂; Mars soil is toxic for plants), not only speed.
+- Who it affects: B (specs 08 and 09: `src/minigames/oxygen-factory/*`, `src/minigames/greenhouse/*`); everyone only through new values in `balance.ts`, new keys in `i18n/*.json` and the optional `floatText` parameter.
+- Team notified?: pending (with the PR).
+
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).
