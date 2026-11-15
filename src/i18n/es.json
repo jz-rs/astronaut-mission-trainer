@@ -228,5 +228,9 @@
   "rover.soloInstruction": "¡Ahora vos solo! Tubo {current} de {total}",
   "rover.samplesSaved": "+{count} ¡guardadas!",
   "rover.tubesSealed": "🧪 Tubos sellados: {sealed}",
-  "rover.tubesLost": "Contaminados: {count} (¡entró polvo!)"
+  "rover.tubesLost": "Contaminados: {count} (¡entró polvo!)",
+  "minigame.oxygen-factory.notNitrogen": "¡N₂ no! Solo CO₂",
+  "minigame.oxygen-factory.notArgon": "¡Ar no! Solo CO₂",
+  "minigame.greenhouse.marsSoil": "Tierra\nde Marte",
+  "minigame.greenhouse.toxicSoil": "¡Tóxica!"
 }
