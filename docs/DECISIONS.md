@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).
+- Por qué: en las pruebas nadie se daba cuenta de que la guía se puede tocar.
+- A quién afecta: solo el spec 19 (`cabin/guideBubble.ts` nuevo, `CabinScene`, `guideMessage`).
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — El aterrizaje ya no muestra "Destino confirmado" (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: se saca el cartel "Destino confirmado: [lugar] / ¡Prepará a tu tripulación!" de arriba del aterrizaje. Se borran `src/scenes/landing/landingUi.ts` y las claves `landing.confirmed` y `landing.prepare` (solo las usaba ese cartel).
@@ -29,7 +36,7 @@ Formato:
 
 ## 2026-11-15 — Cabina: la ventana también abre la consola, botón Volver y botón físico de la tablet (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola un solo marco de esquinas amarillas rodea la ventana y el tablero juntos; (2) en la cabina hay un botón **◀ Volver / Back** arriba a la izquierda, con el mismo estilo que los botones de la pantalla de inicio (en color crema y con una flecha dibujada), que lleva al inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
+- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola un **halo dorado** sigue el borde del vidrio de la ventana y de la pantalla del tablero, como el brillo de la tablet (se lee la forma del vidrio desde la imagen; ya no son esquinas); (2) en la cabina hay un botón **◀ Volver / Back** arriba a la izquierda, con el mismo estilo que los botones de la pantalla de inicio (en color crema y con una flecha dibujada), que lleva al inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
 - Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
 - A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `cabin/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `cabin.back` en `i18n`.
 - ¿Avisado al equipo?: no todavía.

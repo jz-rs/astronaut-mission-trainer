@@ -27,6 +27,8 @@ import {
   drawCabinScreens,
 } from './cabinView';
 import { addFloatingItems } from './floatingItems';
+import { addGuideBubble } from './guideBubble';
+import { addHoleGlow } from './holeGlow';
 import { showGuideMessage } from './guideMessage';
 import { showWelcomeExtra, WELCOME_STEPS, type CabinTarget } from './welcomeScript';
 
@@ -129,8 +131,14 @@ export class CabinScene extends Phaser.Scene {
 
   private point(pose: CabinArtKey, target?: CabinTarget): void {
     this.moment.forEach((part) => part.destroy());
-    this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
+    this.moment = target ? [this.addTargetLight(target)] : [];
     this.guide.setTexture(pose);
+  }
+
+  /** The window and the dashboard screen glow gold along their glass; the tablet gets corners. */
+  private addTargetLight(target: CabinTarget): Phaser.GameObjects.GameObject {
+    const area = TARGET_AREAS[target];
+    return target === 'tablet' ? addHighlight(this, area) : addHoleGlow(this, 'cabin', area);
   }
 
   private addGuide(): Phaser.GameObjects.Image {
@@ -153,6 +161,7 @@ export class CabinScene extends Phaser.Scene {
       ease: 'Sine.InOut',
     });
     guide.setInteractive({ useHandCursor: true }).on('pointerup', () => this.showWelcomeStep(0));
+    addGuideBubble(this, guide, () => this.showWelcomeStep(0));
     return guide;
   }
 
