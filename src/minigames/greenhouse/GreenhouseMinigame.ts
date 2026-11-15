@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import { GREENHOUSE_BALANCE } from '../../config/balance';
-import type { Point, Rect } from '../../ui/layout';
+import type { Rect } from '../../ui/layout';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
 import { MinigameScene } from '../MinigameScene';
 import { addGasBubble } from './greenhouseIcons';
 import { GREENHOUSE_STEPS } from './greenhouseRecipe';
+import { BEDS_IN_PICTURE, IN_FRONT_OF_BEDS } from './greenhouseRoom';
 import { PlantPot, type Need } from './plantPot';
 import { Toolbox } from './toolbox';
 
@@ -20,18 +21,6 @@ import { Toolbox } from './toolbox';
  * Harsher locations = plants ask more often and wait less.
  */
 const TOOL_COLUMN_WIDTH = 76;
-/**
- * The middle of each of the 6 beds of the greenhouse room picture (every location uses the same
- * room layout), back row first so the front plants are drawn over the back ones.
- */
-const BEDS_IN_PICTURE: readonly Point[] = [
-  { x: 410, y: 361 },
-  { x: 578, y: 404 },
-  { x: 717, y: 447 },
-  { x: 305, y: 442 },
-  { x: 468, y: 490 },
-  { x: 650, y: 533 },
-];
 const OXYGEN_RISE_PX = 40;
 const OXYGEN_MS = 900;
 
@@ -58,6 +47,7 @@ export class GreenhouseMinigame extends MinigameScene {
     this.guide = new StepGuide(this, area, GREENHOUSE_STEPS);
     const toolsX = area.x + area.width - TOOL_COLUMN_WIDTH;
     this.pots = this.createPots();
+    for (const outline of IN_FRONT_OF_BEDS) this.addRoomPiece(outline);
     const toolColumn = { x: toolsX, y: area.y, width: TOOL_COLUMN_WIDTH, height: area.height };
     this.toolbox = new Toolbox(this, toolColumn, (need, x, y) => {
       const pot = this.pots.find((candidate) => candidate.contains(x, y));

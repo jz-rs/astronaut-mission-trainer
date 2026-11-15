@@ -83,6 +83,7 @@ export abstract class MinigameScene extends Phaser.Scene {
   private finished = false;
   private gamePaused = false;
   private roomScale = 1;
+  private roomKey = '';
   private timeBar: Phaser.GameObjects.Graphics | null = null;
   private closeButton: Phaser.GameObjects.Container | null = null;
 
@@ -201,7 +202,23 @@ export abstract class MinigameScene extends Phaser.Scene {
     room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
     room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);
     this.roomScale = scale;
+    this.roomKey = roomKey;
     new NightShade(this, MINIGAME_AREA, this.nightAmount);
+  }
+
+  /**
+   * Draws again, on top, the part of the room picture inside `outline` (picture pixels), so the
+   * minigame sprites can stand behind it: e.g. a plant under a lamp that hangs in front of it.
+   */
+  protected addRoomPiece(outline: readonly Point[]): Phaser.GameObjects.Image {
+    const { x, y } = this.roomPoint(0, 0);
+    const piece = this.add.image(x, y, this.roomKey).setOrigin(0).setScale(this.roomScale);
+    const shape = this.make.graphics({}, false).fillStyle(PALETTE.white, 1);
+    shape.fillPoints(
+      outline.map((point) => this.roomPoint(point.x, point.y)),
+      true,
+    );
+    return piece.setMask(shape.createGeometryMask());
   }
 
   /** Where a pixel of the room picture (e.g. its window) lands on the screen. */

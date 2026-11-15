@@ -15,10 +15,10 @@ import { addLamp, addSpriteOfHeight } from './greenhouseIcons';
 export type Need = 'water' | 'light';
 type PotState = 'healthy' | 'needy' | 'withered';
 
-/** The beds of the picture are small: the lettuces are shown a bit smaller to fit in them. */
-const PLANT_SCALE = 0.7;
+/** The back beds look small (they are farther): the lettuces are shown smaller to fit in them. */
+const PLANT_SCALE = 0.55;
 /** The soil mound of the lettuce pictures sits in the middle of its bed. */
-const PLANT_DROP = 8;
+const PLANT_DROP = 5;
 /** The touch area around a plant (bigger than the plant, for small fingers). */
 const TOUCH = { width: 76, height: 76 };
 /** The bubble sits right next to the top of the plant, so it is clearly its bubble. */
