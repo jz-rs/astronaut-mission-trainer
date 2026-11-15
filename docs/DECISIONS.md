@@ -29,6 +29,13 @@ Formato:
 
 ---
 
+## 2026-11-15 — En la cabina, los destinos se eligen en el tablero del centro (spec 18)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca no cambia.
+- Por qué: al probarlo, lo intuitivo era tocar la pantalla del centro para elegir misión.
+- A quién afecta: solo el spec 18 (`cabina-fondo.png`, `layout.ts`: `CABIN_DASHBOARD_*` reemplaza a `CABIN_MONITOR_*`, que solo usaba el spec 18; textos `cabin.manualDone` y `cabin.again`).
+- ¿Avisado al equipo?: no todavía (va en el PR #33).
+
 ## 2026-11-15 — Ajustes de la intro después de probarla (spec 18)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: al salir de una partida (resultado o ✕ en la base) se vuelve a la **nave** (cabina), no al mapa ni al monitor. El aterrizaje termina con un fundido a negro directo a la base (sin pantalla de "llegaste"). Los diálogos de la guía usan el panel y los botones normales del juego. En el monitor la pantalla grande muestra solo destino, nombre y fotos reales (el botón de la cámara pasa por **varias fotos NASA por destino**, en `src/content/locationGallery.ts`); la explicación, los objetivos y si se puede aterrizar aparecen con el botón i. La pantallita de ruta es un mini mapa de Marte. Los textos del manual son más explicativos.

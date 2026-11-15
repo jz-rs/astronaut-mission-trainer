@@ -148,11 +148,8 @@ export const GARAGE_SPOT: Point = { x: 360, y: 212 };
  * holes, so whatever is drawn behind them (photos, screen content) shows through the glass.
  */
 export const CABIN_WINDOW: Rect = { x: 261, y: 75, width: 118, height: 77 };
-export const CABIN_MONITOR_SCREENS: readonly Rect[] = [
-  { x: 538, y: 143, width: 47, height: 68 },
-  { x: 517, y: 166, width: 14, height: 26 },
-  { x: 506, y: 196, width: 16, height: 10 },
-];
+/** Center screen of the dashboard, under the window: tapping it picks the destination. */
+export const CABIN_DASHBOARD_SCREEN: Rect = { x: 301, y: 155, width: 40, height: 13 };
 export const CABIN_TABLET_SCREEN: Rect = { x: 49, y: 221, width: 79, height: 39 };
 /**
  * The tablet lies on the table in perspective: its screen is a slanted quad, measured from the
@@ -166,19 +163,9 @@ export const CABIN_TABLET_QUAD = {
 } as const;
 /** Touch areas of the objects a kid can tap in the cabin. */
 export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
-export const CABIN_MONITOR_ZONE: Rect = { x: 496, y: 108, width: 140, height: 172 };
-/** Outline of the monitor console, for its glowing edge when the guide points at it. */
-export const CABIN_MONITOR_OUTLINE: readonly Point[] = [
-  { x: 510, y: 112 },
-  { x: 628, y: 110 },
-  { x: 636, y: 126 },
-  { x: 636, y: 240 },
-  { x: 602, y: 272 },
-  { x: 497, y: 210 },
-  { x: 498, y: 200 },
-  { x: 506, y: 194 },
-  { x: 507, y: 118 },
-];
+export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 54 };
+/** Edge of the dashboard screens, for its glowing border when the guide points at it. */
+export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;

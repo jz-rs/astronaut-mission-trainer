@@ -2,8 +2,8 @@ import Phaser from 'phaser';
 import { INTRO_BALANCE } from '../../config/balance';
 import { addCoverPhoto } from '../../ui/coverPhoto';
 import {
-  CABIN_MONITOR_OUTLINE,
-  CABIN_MONITOR_SCREENS,
+  CABIN_DASHBOARD_OUTLINE,
+  CABIN_DASHBOARD_SCREEN,
   CABIN_TABLET_SCREEN,
   FONT_SIZE,
   type Rect,
@@ -25,8 +25,8 @@ const CREDIT_TEXT_SCALE = 0.6;
 const CREDIT_TEXT_RESOLUTION = 4;
 const HIGHLIGHT_MARGIN = 4;
 const SCREEN_GLOW = { dim: 0.2, bright: 0.45 } as const;
-const MONITOR_GLOW = { wide: 6, wideAlpha: 0.3, thin: 2, dimAlpha: 0.35 } as const;
-const MONITOR_GLOW_DEPTH = 15;
+const DASHBOARD_GLOW = { wide: 6, wideAlpha: 0.3, thin: 2, dimAlpha: 0.35, radius: 4 } as const;
+const DASHBOARD_GLOW_DEPTH = 15;
 
 /** The background goes on top of what is drawn behind its transparent screens. */
 export function addCabinBackground(
@@ -73,13 +73,13 @@ export function addPhotoCredit(
 }
 
 /**
- * Every small screen of the cabin (monitor and tablet) looks switched on: dark glass with a soft
+ * The cabin screens a kid can tap (dashboard and tablet) looks switched on: dark glass with a soft
  * cyan glow that breathes. Returned so the landing can put them inside its zooming layer.
  */
 export function drawCabinScreens(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   const graphics = scene.add.graphics();
   const parts: Phaser.GameObjects.GameObject[] = [graphics];
-  for (const { x, y, width, height } of [...CABIN_MONITOR_SCREENS, CABIN_TABLET_SCREEN]) {
+  for (const { x, y, width, height } of [CABIN_DASHBOARD_SCREEN, CABIN_TABLET_SCREEN]) {
     graphics.fillStyle(PALETTE.space, 1).fillRect(x - 2, y - 2, width + 4, height + 4);
     const glow = scene.add.rectangle(x, y, width, height, TECH_GLOW, SCREEN_GLOW.dim).setOrigin(0);
     scene.tweens.add({
@@ -95,17 +95,17 @@ export function drawCabinScreens(scene: Phaser.Scene): Phaser.GameObjects.GameOb
   return parts;
 }
 
-/** A breathing cyan edge around the monitor console, like the tablet's: "tap me". */
-export function addMonitorGlow(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
-  const graphics = scene.add.graphics().setDepth(MONITOR_GLOW_DEPTH);
-  const outline = CABIN_MONITOR_OUTLINE.map(({ x, y }) => new Phaser.Math.Vector2(x, y));
-  graphics
-    .lineStyle(MONITOR_GLOW.wide, TECH_GLOW, MONITOR_GLOW.wideAlpha)
-    .strokePoints(outline, true);
-  graphics.lineStyle(MONITOR_GLOW.thin, TECH_GLOW, 1).strokePoints(outline, true);
+/** A breathing cyan edge around the dashboard screens, like the tablet's: "tap me". */
+export function addDashboardGlow(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
+  const graphics = scene.add.graphics().setDepth(DASHBOARD_GLOW_DEPTH);
+  const { x, y, width, height } = CABIN_DASHBOARD_OUTLINE;
+  graphics.lineStyle(DASHBOARD_GLOW.wide, TECH_GLOW, DASHBOARD_GLOW.wideAlpha);
+  graphics.strokeRoundedRect(x, y, width, height, DASHBOARD_GLOW.radius);
+  graphics.lineStyle(DASHBOARD_GLOW.thin, TECH_GLOW, 1);
+  graphics.strokeRoundedRect(x, y, width, height, DASHBOARD_GLOW.radius);
   scene.tweens.add({
     targets: graphics,
-    alpha: MONITOR_GLOW.dimAlpha,
+    alpha: DASHBOARD_GLOW.dimAlpha,
     yoyo: true,
     repeat: -1,
     duration: INTRO_BALANCE.highlightPulseMs,
