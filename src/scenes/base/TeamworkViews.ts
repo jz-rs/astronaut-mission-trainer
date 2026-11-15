@@ -30,9 +30,12 @@ export class TeamworkViews {
     this.meetingOnScreen = meetingNow;
   }
 
+  /**
+   * Phaser draws scenes in list order and `launch` never reorders them. So every overlay goes
+   * back above the base, not only the open one: otherwise the next minigame opens hidden
+   * under the base and the player is stuck waiting for it.
+   */
   private restoreOverlays(): void {
-    for (const key of this.overlayKeys) {
-      if (this.scene.scene.isActive(key)) this.scene.scene.bringToTop(key);
-    }
+    for (const key of this.overlayKeys) this.scene.scene.bringToTop(key);
   }
 }
