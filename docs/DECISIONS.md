@@ -25,6 +25,7 @@ Formato:
 ## 2026-11-15 — De día y de noche: la barra del Sol oscurece la base y las salas
 - Quién: C (con Claude)
 - Qué se decidió: la barra del sol de arriba es el Sol cruzando el cielo. Cuando pasa la mitad del sol (`NIGHT_BALANCE.nightStarts` = 0.5) la base empieza a oscurecerse, hasta la noche cerrada en `fullNight` (0.9); el sol siguiente arranca de día. Es una capa oscura semitransparente (`src/ui/nightfall.ts`: `nightAmount`, `NightShade`) sobre el mapa y los astronautas, debajo del clima y del HUD. **Contratos:** `MinigameStartData` suma `nightAmount?` (opcional, 0 = día, 1 = noche) y `MinigameScene` oscurece la sala con la misma noche, expone `protected nightAmount` y `protected roomPoint(x, y)` (dónde cae en pantalla un píxel de la foto de la sala, por ejemplo su ventana). `BaseScene` crea la capa, la actualiza en `update` y pasa `nightAmount` al abrir un minijuego. Los minijuegos que no lo usan no cambian.
+- Además, de noche la estación prende sus luces: un brillo cálido adentro de cada sala y en el pasillo central (`src/scenes/base/StationLights.ts`, sobre la capa de noche), mientras afuera Marte queda violeta.
 - Por qué: que se note que la luz del Sol no dura todo el día, y que los paneles solares dependen de ella.
 - A quién afecta: A (spec 04, `BaseScene.ts`; `MinigameScene.ts`, solo se agrega), B (todas las salas se ven más oscuras de noche), `balance.ts` (`NIGHT_BALANCE` nuevo).
 - ¿Avisado al equipo?: sí (este documento y el PR).

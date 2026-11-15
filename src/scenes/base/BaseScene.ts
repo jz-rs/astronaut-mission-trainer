@@ -36,6 +36,7 @@ import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
 import { NightSign } from './NightSign';
 import { RoomView } from './RoomView';
+import { StationLights } from './StationLights';
 import { TaskEffectsView } from './TaskEffectsView';
 import { TutorialGuide } from './TutorialGuide';
 import { addFrost, addWeather } from './WeatherView';
@@ -60,6 +61,7 @@ export class BaseScene extends Phaser.Scene {
   private hud!: Hud;
   private nightShade!: NightShade;
   private nightSign!: NightSign;
+  private stationLights!: StationLights;
   private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
@@ -130,6 +132,7 @@ export class BaseScene extends Phaser.Scene {
   private createTopLayer(): void {
     const screen = { x: 0, y: 0, width: GAME_WIDTH, height: GAME_HEIGHT };
     this.nightShade = new NightShade(this, screen, this.currentNight());
+    this.stationLights = new StationLights(this);
     this.nightSign = new NightSign(this, 'solar-panels');
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
@@ -169,6 +172,7 @@ export class BaseScene extends Phaser.Scene {
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
     this.nightShade.setAmount(this.currentNight());
+    this.stationLights.setNight(this.currentNight());
     this.nightSign.setVisible(isAfterSunset(state));
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
