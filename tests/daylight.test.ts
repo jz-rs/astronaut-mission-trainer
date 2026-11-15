@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { planAutoBotActions } from '../src/bots/autoPilot';
-import { NIGHT_BALANCE, RUN_BALANCE } from '../src/config/balance';
+import { CREW_BALANCE, NIGHT_BALANCE, RUN_BALANCE } from '../src/config/balance';
 import { getLocation } from '../src/content/locations';
-import { canStartTask, isTooDarkFor, nightAmount } from '../src/core/daylight';
-import { createRun } from '../src/core/run';
+import { applyAction } from '../src/core/actions';
+import { canStartTask, isTooDarkFor, nightAmount, sunsetMs } from '../src/core/daylight';
+import { createRun, updateRun } from '../src/core/run';
 
 /** Day and night: the panels need the Sun, for the kid and for the bots alike. */
 const solMs = RUN_BALANCE.solDurationMs;
@@ -43,5 +44,24 @@ describe('daylight', () => {
     };
     expect(botTasksAt(0.2)).toContain('solar-panels');
     expect(botTasksAt(0.95)).not.toContain('solar-panels');
+  });
+
+  it('never sends anyone to the panels if they would still be there after sunset', () => {
+    const state = runAt(0);
+    state.solElapsedMs = sunsetMs() - CREW_BALANCE.botTaskDurationMs + 1;
+    expect(canStartTask(state, 'solar-panels')).toBe(true);
+    expect(canStartTask(state, 'solar-panels', CREW_BALANCE.botTaskDurationMs)).toBe(false);
+  });
+
+  it('brings a bot back in from the panels at sunset, without reward', () => {
+    const state = runAt(0.2);
+    const bot = state.crew.find((member) => member.isBot);
+    if (!bot) throw new Error('the run has no bots');
+    bot.autoMode = false;
+    applyAction(state, { type: 'assignTask', crewId: bot.id, taskId: 'solar-panels' });
+    expect(bot.task?.taskId).toBe('solar-panels');
+    state.solElapsedMs = sunsetMs() - 1;
+    updateRun(state, 10);
+    expect(bot.task).toBeNull();
   });
 });

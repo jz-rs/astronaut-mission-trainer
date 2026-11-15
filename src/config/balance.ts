@@ -27,6 +27,13 @@ export const NIGHT_BALANCE = {
    * the next sol. 0.75 = the last 20 % of each sol.
    */
   noSunFrom: 0.75,
+  /**
+   * The kid needs about this long for the panels (walk + minigame): they can't start them if
+   * the Sun sets before that, so they are never inside at night.
+   */
+  playerSolarWorkMs: 15_000,
+  /** At night bots on auto don't spend energy below this, so the base gets to the morning. */
+  nightReserve: 15,
 } as const;
 
 /**
@@ -50,7 +57,8 @@ export interface TaskBalance {
 
 export const TASK_BALANCE: Record<TaskId, TaskBalance> = {
   'oxygen-factory': { stat: 'oxygen', gain: 30, energyCost: 10 },
-  'solar-panels': { stat: 'energy', gain: 35, energyCost: 0 },
+  /** Higher than the rest: the panels can only be used by day (NIGHT_BALANCE.noSunFrom). */
+  'solar-panels': { stat: 'energy', gain: 45, energyCost: 0 },
   greenhouse: { stat: 'food', gain: 30, energyCost: 10 },
   'shield-wall': { stat: 'shield', gain: 30, energyCost: 10 },
 };

@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import { TASK_BALANCE } from '../../config/balance';
+import { CREW_BALANCE, NIGHT_BALANCE, TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
-import { isTooDarkFor, nightAmount } from '../../core/daylight';
+import { isAfterSunset, isTooDarkFor, nightAmount } from '../../core/daylight';
 import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
@@ -137,10 +137,15 @@ export class BaseScene extends Phaser.Scene {
     addFrost(this, this.locationId);
   }
 
-  /** At night the panels can't be used: says why, so the kid isn't left wondering. */
-  private saysNoSun(taskId: TaskId): boolean {
-    if (!isTooDarkFor(this.session.state, taskId)) return false;
-    this.showFloatingText(taskId, t('hud.noSun'), PALETTE.white);
+  /**
+   * Nobody goes to the panels if the Sun sets before they are done (`workMs`): says why, so the
+   * kid isn't left wondering.
+   */
+  private saysNoSun(taskId: TaskId, workMs: number): boolean {
+    const state = this.session.state;
+    if (!isTooDarkFor(state, taskId, workMs)) return false;
+    const message = isAfterSunset(state) ? t('hud.noSun') : t('hud.sunsetSoon');
+    this.showFloatingText(taskId, message, PALETTE.white);
     return true;
   }
 
@@ -164,7 +169,7 @@ export class BaseScene extends Phaser.Scene {
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
     this.nightShade.setAmount(this.currentNight());
-    this.nightSign.setVisible(isTooDarkFor(state, 'solar-panels'));
+    this.nightSign.setVisible(isAfterSunset(state));
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -186,7 +191,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private sendPlayer(taskId: TaskId): void {
-    if (this.playerBusy || this.saysNoSun(taskId)) return;
+    if (this.playerBusy || this.saysNoSun(taskId, NIGHT_BALANCE.playerSolarWorkMs)) return;
     if (!canAffordTask(this.session.state.stats, taskId)) {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
       return;
@@ -236,9 +241,11 @@ export class BaseScene extends Phaser.Scene {
     const bot = this.session.state.crew.find((member) => member.id === botId);
     if (bot?.task?.taskId === taskId) {
       this.showFloatingText(taskId, t('hud.botAlreadyThere'), PALETTE.sun); // why it doesn't move
-    } else if (!this.saysNoSun(taskId) && canAffordTask(this.session.state.stats, taskId)) {
+    } else if (this.saysNoSun(taskId, CREW_BALANCE.botTaskDurationMs)) {
+      // the panels wait for tomorrow's Sun; saysNoSun already told the kid why
+    } else if (canAffordTask(this.session.state.stats, taskId)) {
       this.session.dispatch({ type: 'assignTask', crewId: botId, taskId });
-    } else if (!isTooDarkFor(this.session.state, taskId)) {
+    } else {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
     }
     this.setSelectedBot(null);

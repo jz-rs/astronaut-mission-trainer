@@ -56,10 +56,10 @@ function findCrewMember(state: RunState, crewId: string): CrewMember {
 
 /**
  * Bots work on a timer; the player plays the minigame instead, so they never get a timer.
- * A task already started can finish after sunset; only starting one needs the Sun.
+ * A bot only goes to the panels if it will be done before sunset (core/daylight.ts).
  */
 function assignTask(state: RunState, member: CrewMember, taskId: TaskId): void {
-  if (!member.isBot || !canStartTask(state, taskId)) return;
+  if (!member.isBot || !canStartTask(state, taskId, CREW_BALANCE.botTaskDurationMs)) return;
   member.task = { taskId, remainingMs: CREW_BALANCE.botTaskDurationMs };
 }
 

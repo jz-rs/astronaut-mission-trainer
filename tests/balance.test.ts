@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { planAutoBotActions } from '../src/bots/autoPilot';
-import { TASK_BALANCE } from '../src/config/balance';
+import { NIGHT_BALANCE, TASK_BALANCE } from '../src/config/balance';
 import { getLocation } from '../src/content/locations';
 import { applyAction } from '../src/core/actions';
 import { createRun, PLAYER_ID, updateRun } from '../src/core/run';
@@ -24,10 +24,11 @@ interface PlayerHabit {
 }
 
 function choosePlayerTask(state: RunState): TaskId | undefined {
-  const canClean = canStartTask(state, 'solar-panels');
-  if (state.stats.energy < PLAYER_LOW_ENERGY && canClean) return 'solar-panels';
+  // Like the real kid, the panels are only possible if they finish before sunset.
+  const canDo = (taskId: TaskId) => canStartTask(state, taskId, NIGHT_BALANCE.playerSolarWorkMs);
+  if (state.stats.energy < PLAYER_LOW_ENERGY && canDo('solar-panels')) return 'solar-panels';
   const statOf = (taskId: TaskId) => state.stats[TASK_BALANCE[taskId].stat];
-  const affordable = TASK_IDS.filter((taskId) => canStartTask(state, taskId));
+  const affordable = TASK_IDS.filter(canDo);
   return affordable.sort((a, b) => statOf(a) - statOf(b))[0];
 }
 

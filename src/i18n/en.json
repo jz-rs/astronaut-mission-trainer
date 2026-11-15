@@ -54,6 +54,7 @@
   "minigame.placeholder.button": "TAP",
   "hud.noEnergy": "No energy!",
   "hud.noSun": "No Sun at night!",
+  "hud.sunsetSoon": "The Sun is setting!",
   "hud.pickRoom": "Which room?",
   "minigame.oxygen-factory.instruction": "Bring the CO₂ to MOXIE!",
   "minigame.oxygen-factory.machine": "MOXIE",
