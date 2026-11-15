@@ -14,6 +14,29 @@ export const RUN_BALANCE = {
 } as const;
 
 /**
+ * Day and night on Mars: when the sol bar passes `nightStarts`, the base and the rooms get darker
+ * until `fullNight`; the next sol starts at daylight again.
+ */
+export const NIGHT_BALANCE = {
+  nightStarts: 0.5,
+  fullNight: 0.9,
+  /** How dark full night gets on top of the violet tint (0 = no change, 1 = black). */
+  maxShade: 0.3,
+  /**
+   * From this much night on (0 to 1) the Sun has set: the solar panels can't be worked on until
+   * the next sol. 0.75 = the last 20 % of each sol.
+   */
+  noSunFrom: 0.75,
+  /**
+   * The kid needs about this long for the panels (walk + minigame): they can't start them if
+   * the Sun sets before that, so they are never inside at night.
+   */
+  playerSolarWorkMs: 15_000,
+  /** At night bots on auto don't spend energy below this, so the base gets to the morning. */
+  nightReserve: 15,
+} as const;
+
+/**
  * How much each stat drops during one full sol, before location multipliers.
  * Tuned with tests/balance.test.ts (ROADMAP T5): a kid still learning survives Jezero,
  * but bots alone are not enough.
@@ -34,7 +57,8 @@ export interface TaskBalance {
 
 export const TASK_BALANCE: Record<TaskId, TaskBalance> = {
   'oxygen-factory': { stat: 'oxygen', gain: 30, energyCost: 10 },
-  'solar-panels': { stat: 'energy', gain: 35, energyCost: 0 },
+  /** Higher than the rest: the panels can only be used by day (NIGHT_BALANCE.noSunFrom). */
+  'solar-panels': { stat: 'energy', gain: 45, energyCost: 0 },
   greenhouse: { stat: 'food', gain: 30, energyCost: 10 },
   'shield-wall': { stat: 'shield', gain: 30, energyCost: 10 },
 };
@@ -83,6 +107,12 @@ export const SOLAR_PANELS_BALANCE = {
   brushRadius: 16,
   /** Dust cells that fall back per second for each point of difficulty above 1. */
   dustReturnPerSecond: 8,
+  /** Energy bolts a spotless panel sends to the battery per second (a dusty one sends none). */
+  boltsPerSecond: 1.5,
+  /** Share of sunlight still coming through the window at full night (bolts and rays). */
+  nightLight: 0.25,
+  /** From this much night on, the mission says it is getting dark. */
+  nightWarning: 0.3,
 } as const;
 
 export const OXYGEN_FACTORY_BALANCE = {

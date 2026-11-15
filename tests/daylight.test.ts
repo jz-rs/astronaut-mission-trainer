@@ -1,0 +1,67 @@
+import { describe, expect, it } from 'vitest';
+import { planAutoBotActions } from '../src/bots/autoPilot';
+import { CREW_BALANCE, NIGHT_BALANCE, RUN_BALANCE } from '../src/config/balance';
+import { getLocation } from '../src/content/locations';
+import { applyAction } from '../src/core/actions';
+import { canStartTask, isTooDarkFor, nightAmount, sunsetMs } from '../src/core/daylight';
+import { createRun, updateRun } from '../src/core/run';
+
+/** Day and night: the panels need the Sun, for the kid and for the bots alike. */
+const solMs = RUN_BALANCE.solDurationMs;
+
+function runAt(solFraction: number) {
+  const state = createRun(getLocation('jezero'), {});
+  state.solElapsedMs = solMs * solFraction;
+  return state;
+}
+
+describe('daylight', () => {
+  it('is full day in the first half of the sol and full night near its end', () => {
+    expect(nightAmount(0)).toBe(0);
+    expect(nightAmount(solMs * NIGHT_BALANCE.nightStarts)).toBe(0);
+    expect(nightAmount(solMs * NIGHT_BALANCE.fullNight)).toBe(1);
+    expect(nightAmount(solMs)).toBe(1);
+  });
+
+  it('lets the panels be cleaned by day and at dusk, but not after sunset', () => {
+    expect(canStartTask(runAt(0.2), 'solar-panels')).toBe(true);
+    expect(isTooDarkFor(runAt(0.6), 'solar-panels')).toBe(false);
+    expect(canStartTask(runAt(0.95), 'solar-panels')).toBe(false);
+  });
+
+  it('only blocks tasks that need the Sun', () => {
+    expect(canStartTask(runAt(0.95), 'oxygen-factory')).toBe(true);
+  });
+
+  it('keeps bots on auto away from the panels at night', () => {
+    const botTasksAt = (solFraction: number) => {
+      const state = runAt(solFraction);
+      state.stats.energy = 5; // the panels are the most urgent task
+      for (const member of state.crew) member.autoMode = member.isBot;
+      return planAutoBotActions(state).map((action) =>
+        action.type === 'assignTask' ? action.taskId : null,
+      );
+    };
+    expect(botTasksAt(0.2)).toContain('solar-panels');
+    expect(botTasksAt(0.95)).not.toContain('solar-panels');
+  });
+
+  it('never sends anyone to the panels if they would still be there after sunset', () => {
+    const state = runAt(0);
+    state.solElapsedMs = sunsetMs() - CREW_BALANCE.botTaskDurationMs + 1;
+    expect(canStartTask(state, 'solar-panels')).toBe(true);
+    expect(canStartTask(state, 'solar-panels', CREW_BALANCE.botTaskDurationMs)).toBe(false);
+  });
+
+  it('brings a bot back in from the panels at sunset, without reward', () => {
+    const state = runAt(0.2);
+    const bot = state.crew.find((member) => member.isBot);
+    if (!bot) throw new Error('the run has no bots');
+    bot.autoMode = false;
+    applyAction(state, { type: 'assignTask', crewId: bot.id, taskId: 'solar-panels' });
+    expect(bot.task?.taskId).toBe('solar-panels');
+    state.solElapsedMs = sunsetMs() - 1;
+    updateRun(state, 10);
+    expect(bot.task).toBeNull();
+  });
+});

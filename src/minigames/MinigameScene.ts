@@ -7,6 +7,7 @@
  *
  * This base class does everything that is common, so a minigame only builds its little game:
  *   - dims the base and draws the panel, the one-line instruction and the time bar;
+ *   - draws the room, as dark as the base when night comes (`nightAmount`, ui/nightfall.ts);
  *   - ends the game when time runs out (or when the minigame calls `finish()`);
  *   - draws the X to leave early: no result, no reward and no energy spent (`onExit`);
  *   - optionally pauses the whole game (`pauseGame` / `resumeGame`): its own clock AND the base
@@ -35,12 +36,14 @@ import {
   HUD_HEIGHT,
   MINIGAME_AREA,
   MINIGAME_PANEL,
+  type Point,
   type Rect,
 } from '../ui/layout';
 import { addCloseButton } from '../ui/closeButton';
 import { addIconLabel } from '../ui/iconLabel';
 import { PALETTE, STAT_COLORS } from '../ui/palette';
 import { roomBackgroundKey } from '../ui/biomes';
+import { NightShade } from '../ui/nightfall';
 import { STAT_ICON_SPRITES } from '../ui/sprites';
 import { addScanlines, drawTechPanel } from '../ui/techFrame';
 
@@ -55,6 +58,8 @@ export interface MinigameStartData {
   difficulty: number;
   /** Level the base is on: its rooms show a real photo of that place through the window. */
   locationId?: string;
+  /** 0 = day, 1 = night (ui/nightfall.ts): the room is as dark as the base outside. */
+  nightAmount?: number;
   onFinish: (result: MinigameResult) => void;
   /** The kid tapped the X: the task was not done. */
   onExit?: () => void;
@@ -69,12 +74,15 @@ const ROOM_CROP_TOP = 130;
 export abstract class MinigameScene extends Phaser.Scene {
   protected taskId: TaskId = 'solar-panels';
   protected difficulty = 1;
+  /** 0 = day, 1 = night: the room is already darkened; a minigame may use it (less sunlight). */
+  protected nightAmount = 0;
   private locationId: string | undefined;
   private onFinish: MinigameStartData['onFinish'] = () => undefined;
   private onExit: () => void = () => undefined;
   private elapsedMs = 0;
   private finished = false;
   private gamePaused = false;
+  private roomScale = 1;
   private timeBar: Phaser.GameObjects.Graphics | null = null;
   private closeButton: Phaser.GameObjects.Container | null = null;
 
@@ -89,6 +97,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.taskId = data.taskId;
     this.difficulty = data.difficulty;
     this.locationId = data.locationId;
+    this.nightAmount = data.nightAmount ?? 0;
     this.onFinish = data.onFinish;
     this.onExit = data.onExit ?? (() => undefined);
     this.elapsedMs = 0;
@@ -191,6 +200,16 @@ export abstract class MinigameScene extends Phaser.Scene {
     const scale = MINIGAME_AREA.width / room.width;
     room.setCrop(0, ROOM_CROP_TOP, room.width, MINIGAME_AREA.height / scale);
     room.setScale(scale).setY(MINIGAME_AREA.y - ROOM_CROP_TOP * scale);
+    this.roomScale = scale;
+    new NightShade(this, MINIGAME_AREA, this.nightAmount);
+  }
+
+  /** Where a pixel of the room picture (e.g. its window) lands on the screen. */
+  protected roomPoint(pictureX: number, pictureY: number): Point {
+    return {
+      x: MINIGAME_AREA.x + pictureX * this.roomScale,
+      y: MINIGAME_AREA.y + (pictureY - ROOM_CROP_TOP) * this.roomScale,
+    };
   }
 
   private drawTimeBar(): void {
