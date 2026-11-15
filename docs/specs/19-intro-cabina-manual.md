@@ -1,178 +1,178 @@
-# 19 — Intro, cabina y manual de misión
+# 19 — Intro, cabin, and mission manual
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| C (Emilia) | C | P0 | Implementación | 🟡 En revisión |
+| C (Emilia) | C | P0 | Implementation | 🟡 In review |
 
-## Objetivo
-Al tocar JUGAR, entrar a una nave, recibir el contexto de la simulación y prepararse para la misión. El manual explica cómo cuidar la base; un monitor dentro de la nave permite conocer los destinos y elegir dónde aterrizar.
+## Objective
+Tapping PLAY enters a ship, introduces the simulation, and prepares the player for the mission. The manual explains how to care for the base; a monitor inside the ship introduces destinations and lets the player choose where to land.
 
-## Estado y relación con otros specs
-El equipo aprobó el rumbo general (ver `docs/DECISIONS.md`, 2026-11-14). Este documento consolida la planificación previa a generar imágenes: el guion y los detalles pendientes todavía requieren revisión.
+## Status and relationship to other specs
+The team approved the general direction (see `docs/DECISIONS.md`, 2026-11-14). This document consolidates planning before image generation: the script and pending details still require review.
 
-- Complementa el spec 11: JUGAR lleva a la cabina. La primera visita queda exceptuada de los requisitos de diez segundos y dos toques por el manual obligatorio.
-- Sustituye la presentación de selección de destinos del spec 12 por el monitor de la nave. Conserva lugares, estrellas, récords y reglas de desbloqueo.
-- Coordina contenido y fuentes con el spec 13, eventos con el 14 y rover con el 15.
-- No redefine las misiones que está implementando otra integrante ni sus minijuegos.
-- Los bocetos generados durante esta conversación y sus prompts no son referencias aprobadas. No se fija aquí una perspectiva frontal o isométrica ni una distribución visual definitiva.
-- Actualización: la cabina se explora en **vista frontal en perspectiva** (no isométrica). Bocetos, no aprobados: `docs/arte/bocetos/cabina/` (fondo de la cabina, consola del monitor, guía, objetos flotantes y tablet del manual). Ver `docs/DECISIONS.md`.
-- Actualización 2026-11-15: el manual es una **tablet de misión**, no un libro (ver `docs/DECISIONS.md`).
-- Actualización 2026-11-15: **implementado** en `src/scenes/cabin/`, `manual/`, `monitor/` y `landing/`, con el arte de los bocetos en `public/assets/sprites/cabina/`. Las decisiones que estaban abiertas están en `docs/DECISIONS.md` ("Se implementa la intro en la cabina").
+- Complements spec 11: PLAY leads to the cabin. The first visit is exempt from the ten-second/two-tap requirements because of the mandatory manual.
+- Replaces spec 12's destination selection presentation with the ship's monitor. Keeps locations, stars, records, and unlock rules.
+- Coordinates content and sources with spec 13, events with 14, rover with 15.
+- Does not redefine another team member's missions or minigames.
+- Sketches generated during this conversation and their prompts are not approved references. No front-facing/isometric perspective or final layout is fixed here.
+- Update: cabin exploration uses a **front-facing perspective view** (not isometric). Unapproved sketches: `docs/arte/bocetos/cabina/` (cabin background, monitor console, guide, floating objects, manual tablet). See `docs/DECISIONS.md`.
+- Update 2026-11-15: the manual is a **mission tablet**, not a book (see `docs/DECISIONS.md`).
+- Update 2026-11-15: **implemented** in `src/scenes/cabin/`, `manual/`, `monitor/`, and `landing/`, using sketch art in `public/assets/sprites/cabina/`. Previously open decisions are in `docs/DECISIONS.md` ("Cabin intro implemented").
 
-## Decisiones confirmadas
-- Cabina fija: se interactúa tocando objetos, sin caminar por ella.
-- Ventana que muestra el espacio y Marte mediante una imagen real, enmarcada y con fuente.
-- Astronauta que da la bienvenida y explica el contexto; introducción salteable.
-- Manual obligatorio la primera vez: basta recorrer las páginas, sin ejercicios ni cuestionarios.
-- El manual explica las cuatro barras, el rover, los eventos y las comunicaciones demoradas de la Tierra.
-- Todos los destinos se pueden explorar, incluso los bloqueados para aterrizar.
-- Selección de destino, cambio de fotografías y aterrizaje mediante botones de la nave.
-- Fotografías NASA y representación pixel art relacionadas explícitamente en el manual.
+## Confirmed decisions
+- Fixed cabin: interact by tapping objects, without walking around.
+- Window showing space and Mars through a framed, sourced real image.
+- Astronaut welcomes the player and explains context; skippable intro.
+- Manual mandatory the first time: visit its pages, no exercises or quizzes.
+- Manual explains the four bars, rover, events, and delayed Earth communications.
+- All destinations can be explored, even those locked for landing.
+- Destination selection, photo changes, and landing use ship buttons.
+- NASA photos and pixel art explicitly related in the manual.
 
-## Recorrido propuesto
-Primera visita: **JUGAR → cabina y bienvenida → manual → cabina → monitor de destinos → aterrizaje → misión**.
+## Proposed flow
+First visit: **PLAY → cabin and welcome → manual → cabin → destination monitor → landing → mission**.
 
-Saltar la bienvenida no omite el manual. La condición para aterrizar por primera vez es haber recorrido todas sus páginas. Actualización 2026-11-15: hasta completar el manual, tocar el tablero no abre la consola de destinos: la guía dice «Primero abrí el manual de misión: es la tablet.» y resalta la tablet. La primera lectura del manual no tiene X: solo se sale terminándolo (ver `docs/DECISIONS.md`).
+Skipping the welcome does not skip the manual. First landing requires visiting every page. Update 2026-11-15: until the manual is complete, tapping the dashboard does not open the destination console: the guide says "First open the mission manual: it is the tablet." and highlights the tablet. The first manual read has no X: the only exit is finishing it (see `docs/DECISIONS.md`).
 
-Visitas posteriores (propuesta): JUGAR lleva a la cabina sin repetir automáticamente la bienvenida; el manual se puede consultar nuevamente. Recordar su finalización mediante el sistema de progreso, sin alterar el progreso de las misiones.
+Later visits (proposal): PLAY leads to the cabin without automatically replaying the welcome; the manual can be consulted again. Remember completion through the progress system without changing mission progress.
 
-Las escenas que siguen describen momentos de la experiencia, no necesariamente clases de Phaser distintas.
+The following scenes describe moments in the experience, not necessarily separate Phaser classes.
 
-## Escena 1 — Cabina y bienvenida
-Se reconocen tres elementos interactivos: astronauta, manual y monitor. La ventana muestra Marte. Un elemento destacado indica el siguiente paso. No comienza el reloj de la misión durante la preparación.
+## Scene 1 — Cabin and welcome
+Three recognizable interactive elements: astronaut, manual, monitor. The window shows Mars. A highlighted element indicates the next step. The mission clock does not start during preparation.
 
-### Guion inicial propuesto
-Una intervención por vez, con controles Siguiente y Saltar bienvenida:
+### Proposed initial script
+One message at a time, with Next and Skip welcome controls:
 
-| Momento | Diálogo | Apoyo visual propuesto |
+| Moment | Dialogue | Proposed visual support |
 |---|---|---|
-| Llegada | «¡Bienvenido a bordo! Mirá por la ventana: estamos llegando a Marte.» | La astronauta señala la ventana. |
-| Contexto | «Marte, el cuarto planeta desde el Sol, es frío y tiene una atmósfera muy delgada.» | Se destaca la imagen real. |
-| Simulación | «En esta simulación, vas a dirigir una base y cuidar a su tripulación.» | Representación de la base. |
-| Realidad | «¡Prestá atención a los detalles! Todo está basado en la realidad: vas a aprender cómo sobrevive una tripulación en Marte.» | La astronauta con el pulgar arriba. |
-| Fotos y música reales | «Vas a ver fotos reales de la NASA, como la de esta ventana. ¡Y la música está hecha con sonidos reales del espacio!» | Se destaca la ventana (foto real). |
-| Variables | «Oxígeno, comida, escudo y energía: ¡las cuatro barras cuentan!» | Cuatro íconos, con sus colores. |
-| Preparación | «Antes de aterrizar, abrí el manual de misión.» | Se destaca la tablet. |
+| Arrival | "Welcome aboard! Look out the window: we are arriving at Mars." | Astronaut points to the window. |
+| Context | "Mars, the fourth planet from the Sun, is cold and has a very thin atmosphere." | Real image highlighted. |
+| Simulation | "In this simulation, you will command a base and care for its crew." | Base illustration. |
+| Reality | "Pay attention to the details! Everything is based on reality: you will learn how a crew survives on Mars." | Astronaut gives a thumbs-up. |
+| Real photos and music | "You will see real NASA photos, like the one in this window. And the music uses real sounds from space!" | Window highlighted (real photo). |
+| Variables | "Oxygen, food, shield, and energy: all four bars matter!" | Four icons in their colors. |
+| Preparation | "Before landing, open the mission manual." | Tablet highlighted. |
 
-Nombre, aspecto y voz de la astronauta pendientes. El texto debe funcionar sin audio y mantenerse breve; dividir intervenciones si no caben legiblemente en el celular.
+Astronaut name, appearance, and voice pending. Text must work without audio and stay brief; split messages if they do not fit legibly on a phone.
 
-## Escena 2 — Manual de misión
-Tablet de misión (la que está apoyada en la consola izquierda de la cabina, vista de frente y en grande) con una página por pantalla, indicador de avance y controles anterior/siguiente. La interfaz de la tablet tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas finas celestes con brillo, esquinas tipo visor, barras por segmentos y líneas de escaneo. Al tocar un control, un **destello breve** (parpadeo o brillo que se enciende con un pequeño retardo) deja claro que es un botón de pantalla. Maquetas: `docs/arte/bocetos/cabina/manual/`. Sin temporizador mínimo de lectura. La propuesta es registrar que se visitaron todas las páginas y permitir volver a la cabina al completar el recorrido. Definir el comportamiento al cerrar o recargar antes de terminar.
+## Scene 2 — Mission manual
+Mission tablet (resting on the cabin's left console, seen large and from the front), one page per screen, progress indicator, previous/next controls. Tablet UI has a **screen aesthetic**, distinct from the console's physical buttons: thin glowing light-blue lines, visor-like corners, segmented bars, scan lines. Tapping a control causes a **brief flash** (blink/glow with a short delay), making it clearly a screen button. Mockups: `docs/arte/bocetos/cabina/manual/`. No minimum reading timer. Proposal: record visits to every page and allow return to the cabin once complete. Define behavior when closing or reloading before finishing.
 
-### Contenido propuesto: diez páginas
-Los textos son borradores, sujetos a las mecánicas que efectivamente incluya el juego.
+### Proposed content: ten pages
+Draft texts, subject to mechanics actually included in the game.
 
-| Página | Mensaje y acción que debe enseñar |
+| Page | Message and action to teach |
 |---|---|
-| 1. Tu misión | «Mantené la base funcionando durante cinco días marcianos, llamados soles.» Explicar que el tiempo del juego está simplificado. |
-| 2. Oxígeno | «La tripulación necesita oxígeno. Llevá CO₂ a MOXIE para fabricarlo.» Mostrar cómo se juega la tarea (spec 08: rompé la molécula, 2 CO₂ → O₂) y que consume energía. Comparar foto real de MOXIE con la máquina del juego. |
-| 3. Comida | «Cuidá las plantas del invernadero para recuperar comida.» Mostrar la acción y su consumo de energía. |
-| 4. Escudo | «Reforzá el muro de escudo para proteger a la tripulación de la radiación.» Mostrar la acción y su consumo de energía. |
-| 5. Energía | «Limpiá los paneles para recuperar energía. Las otras tareas la consumen.» Enseñar que es un recurso compartido. |
-| 6. Tripulación | «Tu tripulación también puede hacer tareas.» Ilustrar tocar tripulante → tocar sala y explicar brevemente Auto, según spec 05. |
-| 7. Rover | «Explorá con el rover y reuní muestras. ¡La expedición consume energía!» Aclarar que la base sigue funcionando mientras se explora. El rover no es un tripulante automático. |
-| 8. Eventos | «Durante la misión pueden ocurrir tormentas y fallas. Prestá atención a las alertas y decidí qué atender primero.» Mostrar causa → efecto → acción. |
-| 9. Comunicaciones | «Revisá los mensajes de la Tierra: pueden ayudarte a prepararte. ¡Pero algunos llegan con retraso!» Mirar también las barras y lo que sucede en la base. |
-| 10. Preparación completa | «Si una barra llega a cero, la tripulación evacúa. ¡Cuidá las cuatro!» Cierre: «Coordiná a tu tripulación y prestá atención a las alertas. ¡Todo listo para elegir destino!» |
+| 1. Your mission | "Keep the base running for five Martian days, called sols." Explain simplified game time. |
+| 2. Oxygen | "The crew needs oxygen. Bring CO₂ to MOXIE to make it." Show the task (spec 08: split the molecule, 2 CO₂ → O₂) and its energy consumption. Compare a real MOXIE photo with the game machine. |
+| 3. Food | "Care for greenhouse plants to restore food." Show the action and energy consumption. |
+| 4. Shield | "Reinforce the shield wall to protect the crew from radiation." Show the action and energy consumption. |
+| 5. Energy | "Clean panels to restore energy. Other tasks consume it." Teach that it is shared. |
+| 6. Crew | "Your crew can do tasks too." Illustrate tap crew member → tap room; briefly explain Auto, per spec 05. |
+| 7. Rover | "Explore with the rover and collect samples. Expeditions consume energy!" Clarify that the base keeps running during exploration. The rover is not an automatic crew member. |
+| 8. Events | "Storms and failures can happen during the mission. Watch alerts and decide what to handle first." Show cause → effect → action. |
+| 9. Communications | "Check Earth's messages: they can help you prepare. But some arrive late!" Also watch bars and what happens in the base. |
+| 10. Preparation complete | "If a bar reaches zero, the crew evacuates. Care for all four!" Closing: "Coordinate your crew and watch alerts. Ready to choose a destination!" |
 
-Las barras disminuyen con el tiempo; cada página explica qué recupera su barra y qué la afecta. Priorizar íconos, diagramas y frases breves en lugar de párrafos. La cantidad y distribución de páginas todavía pueden ajustarse para mantener legibilidad.
+Bars decrease over time; each page explains what restores its bar and what affects it. Prioritize icons, diagrams, and brief phrases over paragraphs. Page count and layout may still change for readability.
 
-### Comparar ciencia y simulación
-En la tablet, las páginas de cada barra y del rover **deben** mostrar la foto real de NASA junto a la representación del juego (las maquetas actuales todavía no lo hacen). Propuesta de presentación: fotografía real y representación pixel art visibles juntas, con una frase breve bajo cada una. La alternativa de alternarlas con un botón sigue abierta si resulta más legible en móvil.
+### Compare science and simulation
+The tablet's bar and rover pages **must** show a real NASA photo alongside the game representation (current mockups do not yet). Proposal: real photo and pixel art visible together, with a short phrase beneath each. Alternating through a button remains an option if more readable on mobile.
 
-- Etiquetas: «En la vida real» y «En tu misión».
-- Cuando el objeto solo inspire la mecánica: «La ciencia que nos inspira» y «Nuestra versión en el simulador».
-- Ejemplos: MOXIE → fábrica de oxígeno; Veggie en la Estación Espacial → invernadero; rover NASA → rover del juego.
-- Usar el mismo arte que aparecerá durante la partida, coordinado con sus dueñas.
-- No presentar una fábrica ficticia, un escudo de videojuego o un cultivo marciano como instalaciones reales de NASA.
-- Las fotos son reales y acreditadas; las barras, costos y tiempos son reglas simplificadas del juego.
+- Labels: "In real life" and "In your mission".
+- When the object only inspires the mechanic: "The science that inspires us" and "Our simulator version".
+- Examples: MOXIE → oxygen factory; Veggie on the Space Station → greenhouse; NASA rover → game rover.
+- Use the same art as gameplay, coordinated with its owners.
+- Do not present a fictional factory, video game shield, or Martian crop as real NASA facilities.
+- Photos are real and credited; bars, costs, and times are simplified game rules.
 
-### Eventos y comunicaciones
-Ejemplos de enseñanza, que deben coincidir con el spec 14 y el contenido implementado:
+### Events and communications
+Teaching examples must match spec 14 and implemented content:
 
-| Situación | Qué debe entender la jugadora |
+| Situation | What the player should understand |
 |---|---|
-| Tormenta de polvo | Puede afectar la energía: revisar los paneles y priorizar recuperarla. |
-| Tormenta solar | Revisar la protección y atender el escudo según las acciones disponibles. |
-| Falla de equipo | Identificar el equipo afectado y la respuesta que permita esa misión. |
-| Aviso anticipado | «Se acerca una tormenta. ¡Prepará la base!» |
-| Aviso demorado | «La tormenta ya empezó. ¡Revisá las barras y actuá!» |
+| Dust storm | Can affect energy: check panels and prioritize restoring it. |
+| Solar storm | Check protection and attend to the shield using available actions. |
+| Equipment failure | Identify affected equipment and the response allowed by that mission. |
+| Early warning | "A storm is approaching. Prepare the base!" |
+| Delayed warning | "The storm has already started. Check the bars and act!" |
 
-No todos los eventos exigen la misma respuesta ni todos llegan con aviso. Los mensajes ayudan, pero no reemplazan observar la base. No prometer reparación, reunión de crisis o palanca si esas funciones aún no están disponibles. Distinguir el retraso físico de las señales de su representación temporal en la simulación; cualquier cifra real debe verificarse con NASA.
+Not all events require the same response or arrive with a warning. Messages help but do not replace observing the base. Do not promise repairs, crisis meetings, or levers if unavailable. Distinguish physical signal delay from its representation in simulation time; verify real figures with NASA.
 
-## Escena 3 — Regreso a la cabina
-Tras completar el manual, la astronauta orienta: «¡Todo listo! Tocá el monitor para elegir dónde aterrizar.» El monitor se destaca; el manual queda disponible para consulta.
+## Scene 3 — Return to the cabin
+After completing the manual, the astronaut directs: "All ready! Tap the monitor to choose where to land." Monitor highlighted; manual remains available.
 
-Futuros libros de historia o ciencia son una posibilidad, fuera del alcance inicial. No crear libros vacíos ni controles que no funcionen.
+Future history/science books are possible, outside initial scope. Do not create empty books or nonfunctional controls.
 
-## Escena 4 — Monitor de destinos
-Reemplaza la UI anterior de selección. El monitor es un objeto de la nave y abre una vista legible de sus controles y contenido.
+## Scene 4 — Destination monitor
+Replaces previous selection UI. The monitor is a ship object that opens a readable view of its controls and content.
 
-- Destino anterior/siguiente y fotografía anterior/siguiente son controles separados.
-- Nombre del destino, foto real, descripción breve, indicador de foto y acceso a más información.
-- Mostrar objetivos, estrellas, récord y condición de desbloqueo del sistema existente.
-- Todos los lugares se pueden consultar; solo se aterriza en los desbloqueados y tras completar el manual inicial.
-- ATERRIZAR confirma el destino seleccionado. Un destino bloqueado comunica el requisito real que falta.
-- Volver permite regresar a la cabina. Cambiar de foto nunca cambia el destino.
-- Galería con varias imágenes del lugar: vistas orbitales, detalles y fotos de superficie cuando existan. No usar fotos de otro lugar como si fueran de ese destino.
-- Información en fichas breves, diferenciando hechos científicos de dificultad y reglas del juego.
+- Previous/next destination and previous/next photo are separate controls.
+- Destination name, real photo, brief description, photo indicator, access to more information.
+- Show goals, stars, record, and unlock condition from the existing system.
+- All locations can be browsed; landing only at unlocked destinations after completing the initial manual.
+- LAND confirms the selected destination. A locked destination communicates the actual missing requirement.
+- Back returns to cabin. Changing photos never changes destination.
+- Gallery with several location images: orbital views, details, and surface photos where available. Do not use another location's photos as if they belonged to this destination.
+- Brief information cards distinguish scientific facts from game difficulty/rules.
 
-## Escena 5 — Aterrizaje
-~~Transición breve propuesta: «Destino confirmado: [nombre del lugar]. ¡Prepará a tu tripulación!»~~ (2026-11-15: se sacó, el aterrizaje ya muestra el lugar por la ventana). Luego se inicia la misión correspondiente mediante la navegación acordada con el equipo.
+## Scene 5 — Landing
+~~Proposed short transition: "Destination confirmed: [location name]. Prepare your crew!"~~ (2026-11-15: removed; landing already shows the location through the window). Then start the corresponding mission using team-agreed navigation.
 
-Propuesta visual (2026-11-15, maquetas: `docs/arte/bocetos/cabina/aterrizaje/aterrizaje-jezero.gif` y `aterrizaje-olympus-mons.gif`), unos 5 segundos, vista desde la cabina:
-- Las dos astronautas van **sentadas** en los asientos de piloto, de espaldas (guía a la izquierda, jugadora violeta a la derecha). Fondo: `docs/arte/bocetos/cabina/cabina-aterrizaje.png`. Conviene recortarlas como sprites para que tiemblen un poco más que la nave.
-- **El aterrizaje coincide con el destino elegido en el monitor**: la ventana empieza con Marte entero (`public/assets/nasa/marte-disco-completo.jpg`, la misma foto de la ventana de la cabina), se acerca y pasa a la foto real de ese destino (`public/assets/nasa/<id>.jpg`). En Olympus Mons y Valles Marineris la foto es desde órbita, lo que encaja con venir bajando.
-- La ventana muestra la **foto real del destino** que se agranda, como si el suelo se acercara. La foto **siempre cubre toda la ventana** (escala tipo "cover"): nunca más chica que el vidrio, sin bordes.
-- **La cámara se mete en la nave**: toda la cabina se agranda hacia la ventana durante el descenso.
-1. Entrada: brillo naranja de calor sobre toda la ventana que se apaga; temblor leve.
-2. Descenso: la foto crece, el temblor aumenta y una luz amarilla de aviso parpadea. Propuesta: el monitor muestra la altura bajando, con la estética de pantalla de la tablet.
-3. Cohetes: el polvo tapa la ventana un momento.
-4. Toque: sacudón fuerte, todo queda quieto, se ve el lugar y la guía dice «¡Llegamos a [lugar]!».
-- Dato como premio al final (por verificar con NASA antes de usarlo): aterrizar en Marte tarda unos 7 minutos.
+Visual proposal (2026-11-15, mockups: `docs/arte/bocetos/cabina/aterrizaje/aterrizaje-jezero.gif` and `aterrizaje-olympus-mons.gif`), ~5 seconds, viewed from the cabin:
+- Both astronauts are **seated** in pilot seats, backs visible (guide left, violet player right). Background: `docs/arte/bocetos/cabina/cabina-aterrizaje.png`. Crop as sprites so they can shake slightly more than the ship.
+- **Landing matches the monitor's chosen destination**: window starts with whole Mars (`public/assets/nasa/marte-disco-completo.jpg`, same cabin window photo), approaches, and transitions to that destination's real photo (`public/assets/nasa/<id>.jpg`). Olympus Mons and Valles Marineris photos are orbital, fitting the descent.
+- Window shows the **real destination photo** enlarging as though approaching the ground. Photo **always covers the whole window** ("cover" scaling): never smaller than the glass, no borders.
+- **Camera moves into the ship**: entire cabin enlarges toward the window during descent.
+1. Entry: orange heat glow across the window fades; gentle shaking.
+2. Descent: photo grows, shaking increases, yellow warning light flashes. Proposal: monitor shows decreasing altitude in the tablet's screen style.
+3. Rockets: dust briefly covers the window.
+4. Touchdown: strong shake, everything still, location visible, guide says "We have arrived at [location]!".
+- Reward fact at the end (verify with NASA before use): landing on Mars takes about 7 minutes.
 
-## Fuentes y arte
-- Seguir la guía de estilo y las referencias aprobadas del equipo. Antes de producir arte, resolver que la guía de la raíz y la versión completada en los worktrees estén alineadas.
-- Ninguna imagen generada en esta conversación queda aprobada por este spec.
-- Fotos reales dentro de ventanas, monitores o marcos, con etiqueta identificable y crédito.
-- Registrar cada dato e imagen en `docs/DATA_SOURCES.md`: URL original, crédito exacto, licencia y verificación. No asumir que todo recurso alojado por NASA es de dominio público.
-- Selección definitiva de fotos y comprobación editorial pendientes del spec 13.
-- Fuentes iniciales para revisar: [Marte](https://science.nasa.gov/mars/facts/), [MOXIE](https://www.nasa.gov/solar-system/nasas-oxygen-generating-experiment-moxie-completes-mars-mission/), [Veggie](https://science.nasa.gov/mission/veggie/), [Perseverance y Jezero](https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/nasas-perseverance-rover-deciphers-ancient-history-of-martian-lake/).
-- Faltan fuentes específicas para escudo, polvo, comunicaciones y las galerías definitivas. Esta lista no equivale a aprobar fotografías para uso.
+## Sources and art
+- Follow the style guide and approved team references. Before art production, align the root guide with completed worktree versions.
+- No image generated in this conversation is approved by this spec.
+- Real photos inside windows, monitors, or frames, with recognizable label and credit.
+- Register each fact/image in `docs/DATA_SOURCES.md`: original URL, exact credit, license, verification. Do not assume every NASA-hosted resource is public domain.
+- Final photo selection/editorial checks pending spec 13.
+- Initial sources to review: [Mars](https://science.nasa.gov/mars/facts/), [MOXIE](https://www.nasa.gov/solar-system/nasas-oxygen-generating-experiment-moxie-completes-mars-mission/), [Veggie](https://science.nasa.gov/mission/veggie/), [Perseverance and Jezero](https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/nasas-perseverance-rover-deciphers-ancient-history-of-martian-lake/).
+- Specific sources still needed for shield, dust, communications, and final galleries. This list does not approve photos for use.
 
-## Archivos y coordinación
-**Alcance actual autorizado:** documentación de este spec y referencias cruzadas. No implementar escenas ni generar assets.
+## Files and coordination
+**Currently authorized scope:** this spec's documentation and cross-references. Do not implement scenes or generate assets.
 
-**Propio de esta planificación:** `docs/specs/19-intro-cabina-manual.md`.
+**Owned by this planning task:** `docs/specs/19-intro-cabina-manual.md`.
 
-**Antes de implementar:** asignar dueña y acordar la lista concreta de archivos de escenas/UI. Coordinar con 02 y 11 la navegación; con 12 los destinos; con 13 textos/fotos; y con la dueña de guardado la finalización del manual. No se concede propiedad sobre archivos compartidos desde este borrador.
+**Before implementation:** assign owner and agree on concrete scene/UI files. Coordinate navigation with 02/11, destinations with 12, text/photos with 13, and manual completion with the storage owner. This draft grants no ownership over shared files.
 
-**Contratos involucrados:** navegación, claves de escenas, progreso, formato de lugares, i18n, paleta y layout. No alterar `GameAction`, balance ni reglas de misión para implementar la intro.
+**Contracts involved:** navigation, scene keys, progress, location format, i18n, palette, layout. Do not alter `GameAction`, balance, or mission rules for the intro.
 
-## Criterios de aceptación propuestos
-- [ ] JUGAR abre una cabina fija con astronauta, manual, monitor y ventana con imagen real de Marte.
-- [ ] La bienvenida se puede saltar sin omitir el manual obligatorio inicial.
-- [ ] Basta recorrer todas las páginas, sin prueba ni espera forzada; la finalización se recuerda.
-- [ ] El manual explica las cuatro barras, sus acciones y costos, tripulación, rover, eventos y avisos demorados.
-- [ ] La ciencia real se distingue de la representación del simulador.
-- [ ] Los ejemplos de eventos corresponden a acciones disponibles en la misión.
-- [ ] Todos los destinos permiten ver varias fotos e información; se respetan los bloqueos para aterrizar.
-- [ ] Fotos y datos tienen fuente, crédito y verificación registrados.
-- [ ] Textos ES/EN en i18n, controles de al menos 48 px de juego y prueba en celular horizontal.
-- [ ] La preparación no consume tiempo de partida ni altera las misiones de otra integrante.
-- [ ] Antes de un PR de implementación: `npm run check` pasa.
+## Proposed acceptance criteria
+- [ ] PLAY opens a fixed cabin with astronaut, manual, monitor, and window showing a real Mars image.
+- [ ] Welcome skippable without skipping the mandatory initial manual.
+- [ ] Visiting all pages suffices, no test/forced wait; completion remembered.
+- [ ] Manual explains four bars, actions/costs, crew, rover, events, delayed warnings.
+- [ ] Real science distinct from simulation representation.
+- [ ] Event examples match available mission actions.
+- [ ] All destinations offer multiple photos/information; landing locks respected.
+- [ ] Sources, credits, verification recorded for photos/facts.
+- [ ] ES/EN text in i18n, controls at least 48 game pixels, landscape phone test.
+- [ ] Preparation consumes no session time and does not alter another team member's missions.
+- [ ] Before an implementation PR: `npm run check` passes.
 
-## Pendientes para cerrar el diseño
-- Dueña y archivos de implementación; revisión del guion por el equipo.
-- Nombre, aspecto y eventual voz de la astronauta.
-- Composición visual, perspectiva y assets, todavía sin diseño aprobado.
-- Comparación simultánea o alternada en la tablet y extensión final de sus páginas.
-- Acceso al monitor antes de completar el manual, cierre anticipado y reanudación de lectura.
-- Acceso para repetir la bienvenida y retorno desde resultados a la cabina/monitor.
-- Selección de fotografías, créditos y fuentes científicas faltantes.
+## Pending design items
+- Implementation owner/files; team script review.
+- Astronaut name, appearance, possible voice.
+- Visual composition, perspective, assets: no approved design yet.
+- Simultaneous/alternating comparison on tablet, final page lengths.
+- Monitor access before completing manual, early closing, reading resumption.
+- Replay welcome access, return from results to cabin/monitor.
+- Photo selection, credits, missing scientific sources.
 
-## Aprobación
-Rumbo general aprobado por el equipo según confirmación de Emilia. Este spec detallado permanece propuesto.
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+General direction approved by the team according to Emilia's confirmation. This detailed spec remains proposed.
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

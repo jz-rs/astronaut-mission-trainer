@@ -1,54 +1,54 @@
-# 11 — Pantallas de inicio y resultado + experiencia en celu
+# 11 — Start and result screens + phone experience
 
-> Actualización de planificación: el [spec 19](19-intro-cabina-manual.md) documenta la intro, el manual inicial y la selección de destino dentro de la nave. Ver allí los cambios aprobados de recorrido y los detalles pendientes.
-
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | C | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-Que alguien abra el link en el celu y **esté jugando en menos de 10 segundos sin leer nada**, y que al terminar **quiera volver a jugar**.
+> Planning update: [spec 19](19-intro-cabina-manual.md) documents the intro, initial manual, and destination selection inside the ship. See it for approved flow changes and pending details.
 
-## Por qué importa
-Es justo donde fallan los otros proyectos del track: mucho texto y curva de aprendizaje al entrar. La primera impresión decide si el chico se queda.
+## Objective
+Let someone open the link on a phone and **be playing in under 10 seconds without reading anything**, and **want to play again** when finished.
 
-## Alcance
-**Pantalla de inicio:**
-- Título + fondo de Marte (arte del 01).
-- **Un solo botón gigante JUGAR.**
-- Selector de idioma ES / EN (banderas o siglas), se recuerda entre visitas.
-- Link chico a "Fuentes" (spec 13).
+## Why it matters
+Exactly where other track projects fail: too much text and a learning curve at entry. First impressions determine whether a child stays.
 
-**Celu:**
-- Al tocar JUGAR: pedir pantalla completa y bloquear horizontal (donde el navegador lo permita).
-- Botón de pantalla completa a media altura del borde izquierdo, para volver si se sale (Android y compañía). Solo se ve si el navegador lo soporta y no estás ya en pantalla completa ni con la app instalada.
-- iPhone no permite pantalla completa en ningún navegador (ni Safari ni Chrome): en la pantalla de inicio se muestra "📲 Pantalla completa: Compartir → Agregar a inicio", con ✕ para cerrarlo. No aparece si el juego ya se abrió desde la pantalla de inicio.
-- Instalable: `public/manifest.webmanifest` + íconos en `public/assets/icons/` (astronauta violeta), para que desde la pantalla de inicio se abra como app, sin barras.
-- Si el celu está vertical: pantalla "📱↻ Girá el celu" (necesario en iPhone, que no permite bloquear).
-- Sin zoom ni scroll accidental.
+## Scope
+**Start screen:**
+- Title + Mars background (art from 01).
+- **One huge PLAY button.**
+- ES / EN language selector (flags or abbreviations), remembered between visits.
+- Small "Sources" link (spec 13).
 
-**Pantalla de resultado:**
-- Primero las **3 estrellas** (ganadas/vacías), grandes y animadas.
-- "¡La base sobrevivió!" / "La tripulación tuvo que evacuar".
-- Puntaje + "¡Nuevo récord!" si corresponde.
-- **Por qué perdiste una estrella**, en una línea (ej. "La energía bajó del 20% en el sol 3").
-- Dato real de una línea.
-- Botones: 🔁 Reintentar (grande) y 🗺️ Mapa.
+**Phone:**
+- Tapping PLAY: request fullscreen and lock landscape (where the browser allows).
+- Fullscreen button midway down the left edge, to return after exiting (Android and others). Visible only if the browser supports it and neither fullscreen nor installed app mode is active.
+- iPhone does not allow fullscreen in any browser (Safari or Chrome): the start screen shows "📲 Fullscreen: Share → Add to Home Screen", with ✕ to dismiss. Hidden if already opened from the home screen.
+- Installable: `public/manifest.webmanifest` + icons in `public/assets/icons/` (violet astronaut), opening from the home screen as an app without browser bars.
+- If portrait: "📱↻ Rotate your phone" screen (needed on iPhone, which does not allow locking).
+- No accidental zoom or scrolling.
 
-## Criterios de aceptación
-- [ ] Probado en al menos 1 Android y 1 iPhone, en horizontal.
-- [ ] Desde que abre el link hasta que juega: ≤ 2 toques.
-- [ ] En la pantalla de resultado, el botón Reintentar es lo más visible.
-- [ ] Todo texto viene de `i18n`; cambiar idioma cambia todo.
+**Result screen:**
+- The **3 stars** first (earned/empty), large and animated.
+- "The base survived!" / "The crew had to evacuate".
+- Score + "New record!" if applicable.
+- **Why a star was lost**, in one line (e.g. "Energy dropped below 20% on sol 3").
+- One-line real fact.
+- Buttons: 🔁 Retry (large) and 🗺️ Map.
 
-## Archivos
-**Propios:** `src/scenes/MenuScene.ts`, `src/scenes/ResultScene.ts`, `src/ui/screen.ts`, `src/ui/Button.ts`, `index.html`, `public/manifest.webmanifest`, `public/assets/icons/`.
-**Contratos que usa:** `RunResult` (03), `palette.ts`, `i18n`.
+## Acceptance criteria
+- [ ] Tested on at least 1 Android and 1 iPhone, in landscape.
+- [ ] From opening the link to playing: ≤ 2 taps.
+- [ ] Retry is the most visible button on the result screen.
+- [ ] All text comes from `i18n`; changing language changes everything.
 
-## Dependencias
-**Depende de:** 01 (arte), 03 (resultado). **Bloquea a:** 12 (el botón Mapa).
+## Files
+**Owned:** `src/scenes/MenuScene.ts`, `src/scenes/ResultScene.ts`, `src/ui/screen.ts`, `src/ui/Button.ts`, `index.html`, `public/manifest.webmanifest`, `public/assets/icons/`.
+**Contracts used:** `RunResult` (03), `palette.ts`, `i18n`.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Dependencies
+**Depends on:** 01 (art), 03 (result). **Blocks:** 12 (the Map button).
+
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

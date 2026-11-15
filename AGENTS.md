@@ -1,133 +1,133 @@
-# AGENTS.md — Reglas para agentes de IA (y para humanas)
+# AGENTS.md — Rules for AI agents (and humans)
 
-Este archivo lo leen Claude, Cursor, Copilot o cualquier agente que usemos. **Las 3 trabajamos con agentes, así que estas reglas son las que hacen que el código parezca escrito por una sola persona.**
+Claude, Cursor, Copilot, and any other agent we use read this file. **All 3 of us work with agents, so these rules make the code look as though one person wrote it.**
 
-Proyecto: juego educativo para NASA Space Apps 2026, track *Junior Astronaut Mission Trainer*. Público: chicos de 7 a 12 años (pero atractivo para cualquier edad). Antes de programar, leé `docs/GDD.md` y el spec de tu tarea en `docs/specs/`.
+Project: educational game for NASA Space Apps 2026, *Junior Astronaut Mission Trainer* track. Audience: children aged 7 to 12 (but appealing to any age). Before coding, read `docs/GDD.md` and your task's spec in `docs/specs/`.
 
 ---
 
-## 1. Coordinación del equipo (LO MÁS IMPORTANTE)
+## 1. Team coordination (MOST IMPORTANT)
 
-Somos 3 personas trabajando en paralelo, cada una con su agente. El mayor riesgo es que un agente tome una decisión que rompa el trabajo de otra.
+We are 3 people working in parallel, each with an agent. The biggest risk is an agent making a decision that breaks someone else's work.
 
-### 1.1 Trabajá solo dentro de tu spec
-- Cada tarea tiene un spec en `docs/specs/` con **dueña**, **objetivo** y **archivos que toca**.
-- Solo modificá los archivos que tu spec dice que son tuyos.
-- Si para cumplir tu spec necesitás tocar algo fuera de esa lista, **pará y avisá** (ver 1.3).
+### 1.1 Work only within your spec
+- Each task has a spec in `docs/specs/` with an **owner**, **objective**, and **files it touches**.
+- Only modify files your spec assigns to you.
+- If fulfilling your spec requires touching anything outside that list, **stop and flag it** (see 1.3).
 
-### 1.2 Contratos compartidos (no se cambian sin avisar)
-Estos archivos los usan varias personas. Cambiarlos puede romper el trabajo de las demás:
+### 1.2 Shared contracts (do not change without notifying others)
+Several people use these files. Changing them can break someone else's work:
 
-| Contrato | Archivo(s) | Quién lo usa |
+| Contract | File(s) | Users |
 |---|---|---|
-| Tipos del juego (stats, tareas, tripulación) | `src/core/types.ts` | Todas |
-| Acciones del juego | `src/core/actions.ts` (`GameAction`) | Motor, bots, minijuegos |
-| Interfaz de minijuegos *(la crea el spec 06)* | `src/minigames/MinigameScene.ts`, `src/minigames/registry.ts` | Motor, minijuegos |
-| Números de balance | `src/config/balance.ts` | Todas |
-| Paleta y estilos visuales *(código: los crea el spec 02)* | `src/ui/palette.ts`, `src/ui/layout.ts`, `docs/STYLE_GUIDE.md` | Todas |
-| Arranque del juego y navegación *(los crea el spec 02)* | `src/main.ts`, `src/scenes/sceneKeys.ts` | Todas |
-| Textos e idiomas | `src/i18n/es.json`, `src/i18n/en.json` | Todas |
-| Formato de datos | `data/*.json` | Motor, contenido |
-| Dependencias y configuración | `package.json`, `tsconfig.json`, `eslint.config.js`, `vite.config.ts` | Todas |
-| Estructura de carpetas | todo el árbol | Todas |
-| Diseño del juego | `docs/GDD.md`, `docs/specs/*` | Todas |
+| Game types (stats, tasks, crew) | `src/core/types.ts` | Everyone |
+| Game actions | `src/core/actions.ts` (`GameAction`) | Engine, bots, minigames |
+| Minigame interface *(created by spec 06)* | `src/minigames/MinigameScene.ts`, `src/minigames/registry.ts` | Engine, minigames |
+| Balance values | `src/config/balance.ts` | Everyone |
+| Palette and visual styles *(code created by spec 02)* | `src/ui/palette.ts`, `src/ui/layout.ts`, `docs/STYLE_GUIDE.md` | Everyone |
+| Game startup and navigation *(created by spec 02)* | `src/main.ts`, `src/scenes/sceneKeys.ts` | Everyone |
+| Text and languages | `src/i18n/es.json`, `src/i18n/en.json` | Everyone |
+| Data format | `data/*.json` | Engine, content |
+| Dependencies and configuration | `package.json`, `tsconfig.json`, `eslint.config.js`, `vite.config.ts` | Everyone |
+| Folder structure | Entire tree | Everyone |
+| Game design | `docs/GDD.md`, `docs/specs/*` | Everyone |
 
-> Excepción: **agregar** claves nuevas en `i18n/*.json` o valores nuevos en `balance.ts` está permitido sin avisar. **Renombrar, borrar o cambiar el significado** de algo existente, no.
+> Exception: **adding** new keys to `i18n/*.json` or new values to `balance.ts` is allowed without notification. **Renaming, deleting, or changing the meaning** of an existing item is not.
 
-### 1.3 Regla obligatoria: avisar cuando una decisión afecta a otras
-Si el agente está por hacer cualquiera de estas cosas:
-- modificar un contrato compartido (tabla 1.2),
-- tocar archivos que no son de su spec,
-- tomar una decisión de diseño, mecánica o estética que **no está escrita** en el GDD o en el spec,
-- agregar una dependencia nueva,
-- hacer algo que contradice un spec (propio o ajeno),
+### 1.3 Mandatory rule: flag decisions that affect others
+If the agent is about to do any of the following:
+- modify a shared contract (table 1.2),
+- touch files outside its spec,
+- make a design, mechanics, or aesthetic decision **not written** in the GDD or spec,
+- add a new dependency,
+- do something that contradicts any spec (its own or someone else's),
 
-entonces **DEBE frenar antes de hacerlo** y mostrarle a la persona este aviso:
+it **MUST stop beforehand** and show the person this warning:
 
 ```
-⚠️ DECISIÓN QUE AFECTA AL EQUIPO
-Qué quiero hacer: …
-Por qué: …
-A quién afecta: (spec / persona / archivo) …
-Alternativa sin afectar a nadie: …
-¿Avanzo? Si avanzás, avisale al equipo y anotalo en docs/DECISIONS.md
+⚠️ DECISION AFFECTING THE TEAM
+What I want to do: …
+Why: …
+Who it affects: (spec / person / file) …
+Alternative that affects no one else: …
+Shall I proceed? If you proceed, notify the team and record it in docs/DECISIONS.md
 ```
 
-Y esperar confirmación. Si la persona confirma, el agente agrega una entrada en `docs/DECISIONS.md`.
+Then wait for confirmation. If the person confirms, the agent adds an entry to `docs/DECISIONS.md`.
 
-### 1.4 Si el spec no alcanza
-Si el spec es ambiguo o le falta información, el agente **pregunta** en lugar de inventar. Una decisión inventada en silencio es la forma más rápida de que dos personas hagan cosas incompatibles.
+### 1.4 If the spec is insufficient
+If the spec is ambiguous or missing information, the agent **asks** instead of inventing it. Silently inventing a decision is the fastest way for two people to build incompatible things.
 
 ---
 
-## 2. Código limpio y legible por humanas
+## 2. Clean, human-readable code
 
-El código lo van a leer personas (nosotras y el jurado), no solo agentes.
+People (us and the judges) will read the code, not just agents.
 
-- **Nombres completos y descriptivos, en inglés**: `oxygenLevel`, `assignTaskToBot()`. Nunca `oxL`, `tmp`, `data2`, `handleStuff`.
-- **Funciones chicas**: una función hace una sola cosa. Máximo ~30 líneas.
-- **Archivos chicos**: un concepto por archivo, máximo ~200 líneas.
-- **Nada de números mágicos**: todo valor de juego va en `src/config/balance.ts`. Todo color en `src/ui/palette.ts`.
-- **Nada de texto visible en el código**: todo texto sale de `src/i18n/*.json` con `t('clave')`.
-- **Comentarios en inglés que explican el POR QUÉ**, no el qué. Cada archivo empieza con un comentario corto de para qué existe.
-- **TypeScript estricto**: prohibido `any`, prohibido `// @ts-ignore`.
-- **Simple > ingenioso**: nada de abstracciones "por si acaso", patrones complejos ni optimizaciones prematuras. Si hay dos formas, elegí la que una persona entiende más rápido.
-- **No dejes código muerto** ni `console.log` olvidados.
-- **Antes de dar algo por terminado**: `npm run check` (lint + tipos + tests) debe pasar.
+- **Full, descriptive names in English**: `oxygenLevel`, `assignTaskToBot()`. Never `oxL`, `tmp`, `data2`, `handleStuff`.
+- **Small functions**: one function does one thing. Maximum ~30 lines.
+- **Small files**: one concept per file, maximum ~200 lines.
+- **No magic numbers**: all game values go in `src/config/balance.ts`. All colors go in `src/ui/palette.ts`.
+- **No visible text in code**: all text comes from `src/i18n/*.json` through `t('clave')`.
+- **English comments explaining WHY**, not what. Each file starts with a short comment describing its purpose.
+- **Strict TypeScript**: no `any`, no `// @ts-ignore`.
+- **Simple > clever**: no abstractions “just in case”, complex patterns, or premature optimization. If there are two ways, choose the one a person understands faster.
+- **Leave no dead code** or forgotten `console.log` calls.
+- **Before declaring anything done**: `npm run check` (lint + types + tests) must pass.
 
-## 3. Arquitectura
+## 3. Architecture
 
 ```
 src/
-  core/        Lógica pura del juego. PROHIBIDO importar Phaser. Se testea con Vitest.
-  bots/        Decisiones de los bots. Mandan GameAction, igual que una persona.
-  config/      balance.ts: todos los números del juego.
-  content/     Carga de data/*.json.
-  scenes/      Escenas de Phaser (lo visual). Leen el estado, mandan acciones.
-  minigames/   Un minijuego por carpeta. Todos extienden MinigameScene.
-  ui/          Componentes visuales reutilizables, paleta, tipografía.
-  i18n/        Textos en es.json / en.json.
-  services/    Guardado del progreso (localStorage).
-data/          Contenido editable sin programar (lugares, eventos, datos).
-public/assets/ Imágenes, sonidos, fotos NASA.
-docs/          GDD, plan, specs, guía de estilo, fuentes, decisiones.
-tests/         Tests de src/core y src/bots.
+  core/        Pure game logic. NEVER import Phaser. Tested with Vitest.
+  bots/        Bot decisions. Send GameAction, just like a human.
+  config/      balance.ts: all game numbers.
+  content/     Loads data/*.json.
+  scenes/      Phaser scenes (visuals). Read state, send actions.
+  minigames/   One minigame per folder. All extend MinigameScene.
+  ui/          Reusable visual components, palette, typography.
+  i18n/        Text in es.json / en.json.
+  services/    Progress storage (localStorage).
+data/          Content editable without coding (locations, events, facts).
+public/assets/ Images, sounds, NASA photos.
+docs/          GDD, plan, specs, style guide, sources, decisions.
+tests/         Tests for src/core and src/bots.
 ```
 
-Reglas:
-- **La lógica no sabe nada de lo visual.** `core/` no importa Phaser; las escenas no calculan reglas del juego. Así podremos llevar la lógica a un servidor multijugador.
-- **Bots y humanos mandan las mismas `GameAction`.** Nunca un atajo especial para bots.
-- **Cada minijuego vive en su carpeta** y solo se conecta al resto a través de `MinigameScene` y `registry.ts`.
+Rules:
+- **Logic knows nothing about visuals.** `core/` does not import Phaser; scenes do not calculate game rules. This lets us move logic to a multiplayer server later.
+- **Bots and humans send the same `GameAction`.** No special shortcuts for bots.
+- **Each minigame lives in its own folder** and connects to the rest only through `MinigameScene` and `registry.ts`.
 
-## 4. Diseño para chicos de 7 a 12 años
+## 4. Design for children aged 7 to 12
 
-- **Cero curva de aprendizaje**: al entrar se tiene que saber qué tocar. Un botón principal grande por pantalla.
-- **Íconos antes que texto.** Textos de una línea. Nunca un bloque de texto corrido antes de jugar.
-  - Excepción: un minijuego puede abrir con una **tarjeta de explicación** cuando la mecánica enseña cómo funciona algo real (ej.: MOXIE en la Fábrica de oxígeno). Tiene que ser en pasos con dibujitos, una línea por paso (máximo 4), y un botón grande para empezar. Mientras se ve, el juego queda en pausa (`pauseGame()` / `resumeGame()` de `MinigameScene`).
-- **Botones táctiles de 48 px de juego como mínimo.**
-- **Toda acción tiene respuesta visual (y sonora cuando haya audio).**
-- **Lo educativo llega después de la acción, como premio**, en una línea (salvo la tarjeta de explicación de arriba).
-- **Mobile first, horizontal.** Probar siempre en el celu o en modo dispositivo del navegador.
+- **Zero learning curve**: players must know what to tap immediately. One large primary button per screen.
+- **Icons before text.** One-line text. Never a continuous block of text before playing.
+  - Exception: a minigame may open with an **explanation card** when the mechanic teaches how something real works (e.g. MOXIE in the Oxygen Factory). Use illustrated steps, one line per step (maximum 4), and a large start button. Pause the game while it is visible (`pauseGame()` / `resumeGame()` from `MinigameScene`).
+- **Touch buttons at least 48 game pixels across.**
+- **Every action has visual feedback (and sound when audio is available).**
+- **Educational content comes after the action, as a reward**, in one line (except for the explanation card above).
+- **Mobile first, landscape.** Always test on a phone or in browser device mode.
 
-## 5. Estética
+## 5. Visual style
 
-- Seguí `docs/STYLE_GUIDE.md`. Solo colores de la paleta.
-- Lo generado es pixel art. **Las imágenes reales de la NASA van siempre enmarcadas** (ventana, monitor, foto) y con su crédito en `docs/DATA_SOURCES.md`.
+- Follow `docs/STYLE_GUIDE.md`. Use only palette colors.
+- Generated images are pixel art. **Real NASA images are always framed** (window, monitor, photo) and credited in `docs/DATA_SOURCES.md`.
 
 ## 6. Git
 
-- Una rama por spec: `spec-07-paneles`, `spec-03-nucleo`.
-- **Todo lo que queda en el repo va en inglés** (regla de NASA Space Apps): mensajes de commit, nombres de rama, títulos y descripciones de PR, comentarios y reviews en GitHub, y comentarios del código. Commits chicos y descriptivos.
-  - Excepción: los textos del juego en `src/i18n/es.json` siguen en español (es la traducción del juego).
-  - Lo que ya está en español (commits viejos, docs) no se reescribe: nunca se reescribe la historia de git.
-- Nada entra a `main` sin un Pull Request revisado por otra integrante.
-- Nunca `push --force` a `main`.
+- One branch per spec: `spec-07-paneles`, `spec-03-nucleo`.
+- **Everything added to the repo goes in English** (NASA Space Apps rule): commit messages, branch names, PR titles and descriptions, GitHub comments and reviews, and code comments. Keep commits small and descriptive.
+  - Exception: game text in `src/i18n/es.json` stays in Spanish (it is the game's translation).
+  - Existing Spanish content (old commits, docs) is not rewritten: never rewrite Git history.
+- Nothing enters `main` without a Pull Request reviewed by another team member.
+- Never `push --force` to `main`.
 
-## 7. Comandos
+## 7. Commands
 
 ```bash
-npm install       # una vez
-npm run dev       # juego en http://localhost:5173 (y en el celu por la IP de la red)
-npm run check     # lint + tipos + tests: tiene que pasar antes de cada PR
-npm run build     # build para publicar
+npm install       # once
+npm run dev       # game at http://localhost:5173 (and on a phone via the LAN IP)
+npm run check     # lint + types + tests: must pass before each PR
+npm run build     # production build
 ```

@@ -1,70 +1,70 @@
-# 01 — Dirección de arte y set de imágenes
+# 01 — Art direction and image set
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C | P0 | 0 → 1 | ⚪ Propuesto |
+| _(name)_ | C | P0 | 0 → 1 | ⚪ Proposed |
 
-## Objetivo
-Que las 3 nos pongamos de acuerdo en **cómo se ve el juego** antes de producir, y que después cualquiera pueda generar imágenes nuevas que se vean del mismo estilo.
+## Objective
+Agree among all 3 team members on **how the game looks** before production, then enable anyone to generate new images in the same style.
 
-## Por qué importa
-- La estética es lo primero que ve el jurado y lo que engancha a los chicos.
-- Las 3 vamos a generar imágenes con IA: sin reglas claras, cada una saca un estilo distinto.
-- La mezcla **pixel art + fotos reales de NASA** es nuestro diferencial.
+## Why it matters
+- Visual style is the first thing judges see and what draws children in.
+- All 3 will generate AI images: without clear rules, each produces a different style.
+- Mixing **pixel art + real NASA photos** sets us apart.
 
-## Alcance
+## Scope
 
-### Etapa 1 — Propuestas de estilo (fase 0, ~1 h)
-Generar **3 propuestas de estilo distintas** (por ejemplo: pixel art 16 bits colorido / pixel art estilo Among Us más redondeado / pixel art más "retro NASA"). Cada propuesta incluye las mismas 4 piezas, para poder compararlas:
-1. Un astronauta (de frente).
-2. Una sala de la base por dentro (ej.: invernadero).
-3. La vista general de la base desde arriba.
-4. **Prueba de mezcla**: una ventana o monitor pixel art mostrando una **foto real de NASA** (ej.: el cráter Gale desde Curiosity).
+### Stage 1 — Style proposals (phase 0, ~1 h)
+Generate **3 different style proposals** (e.g. colorful 16-bit pixel art / rounder Among Us-style pixel art / more "retro NASA" pixel art). Each proposal includes the same 4 pieces for comparison:
+1. An astronaut (front view).
+2. A base room interior (e.g. greenhouse).
+3. The base overview from above.
+4. **Mixing test**: a pixel art window or monitor showing a **real NASA photo** (e.g. Gale crater from Curiosity).
 
-→ **Votación entre las 3.** Gana una propuesta (o una combinación explícita).
+→ **All 3 vote.** One proposal wins (or an explicit combination).
 
-### Etapa 2 — Guía de estilo (fase 0)
-Completar `docs/STYLE_GUIDE.md` con lo que ganó: paleta final, tamaños (tile, astronauta), tipografía, **plantilla de prompt** que funcionó, y herramienta para ajustar las imágenes a la paleta.
+### Stage 2 — Style guide (phase 0)
+Complete `docs/STYLE_GUIDE.md` with the winning choice: final palette, sizes (tile, astronaut), typography, a working **prompt template**, and a tool for mapping images to the palette.
 
-### Etapa 3 — Set de imágenes del juego (fase 1)
-| Asset | Detalle | Prioridad |
+### Stage 3 — Game image set (phase 1)
+| Asset | Details | Priority |
 |---|---|---|
-| Astronauta | 4 colores (violeta jugadora, rojo, verde, amarillo). Quieto + caminando (2–4 frames) | P0 |
-| Mapa de la base | Vista cenital con 4 salas + pasillo central | P0 |
-| Íconos de las 4 barras | 💨 🥬 ☢️ ⚡ en pixel art | P0 |
-| Fondo del menú | Marte + título | P0 |
-| Botón | Normal y apretado | P0 |
-| Elementos de minijuegos | Lo que pida cada spec de minijuego (07–10), coordinado con B | P0 |
-| Marco para fotos NASA | Ventana / monitor reutilizable | P1 |
-| Rover | Vista lateral o cenital | P1 |
-| Mapa de Marte | Para el spec 12 | P1 |
-| Estrellas | Ganada / vacía | P1 |
+| Astronaut | 4 colors (violet player, red, green, yellow). Idle + walking (2–4 frames) | P0 |
+| Base map | Overhead view with 4 rooms + central corridor | P0 |
+| 4 bar icons | 💨 🥬 ☢️ ⚡ in pixel art | P0 |
+| Menu background | Mars + title | P0 |
+| Button | Normal and pressed | P0 |
+| Minigame elements | Whatever each minigame spec (07–10) needs, coordinated with B | P0 |
+| NASA photo frame | Reusable window / monitor | P1 |
+| Rover | Side or overhead view | P1 |
+| Mars map | For spec 12 | P1 |
+| Stars | Earned / empty | P1 |
 
-**No incluye:** animaciones complejas, sonido, programar escenas (solo entregar imágenes).
+**Excludes:** complex animations, sound, programming scenes (deliver images only).
 
-## Criterios de aceptación
-- [ ] 3 propuestas generadas con las 4 piezas cada una, guardadas en `docs/arte/propuesta-1|2|3/` (afuera de `public/` para que no se publiquen).
-- [ ] Votación hecha; resultado anotado en `docs/DECISIONS.md`.
-- [ ] `docs/STYLE_GUIDE.md` sin ningún 🔲 pendiente.
-- [ ] La plantilla de prompt está escrita y probada: otra integrante la usa y obtiene algo del mismo estilo.
-- [ ] Assets P0 del set en `public/assets/sprites/` y `public/assets/tiles/`, con fondo transparente y ajustados a la paleta.
-- [ ] Las fotos reales usadas están registradas en `docs/DATA_SOURCES.md` con crédito y licencia.
-- [ ] Se ven bien en un celu real (no solo en la compu).
+## Acceptance criteria
+- [ ] 3 proposals generated with 4 pieces each, saved in `docs/arte/propuesta-1|2|3/` (outside `public/` so they are not published).
+- [ ] Vote completed; result recorded in `docs/DECISIONS.md`.
+- [ ] No pending 🔲 items in `docs/STYLE_GUIDE.md`.
+- [ ] Prompt template written and tested: another team member uses it and gets the same style.
+- [ ] P0 assets in `public/assets/sprites/` and `public/assets/tiles/`, with transparent backgrounds and mapped to the palette.
+- [ ] Real photos used are registered in `docs/DATA_SOURCES.md` with credit and license.
+- [ ] Looks good on a real phone (not just a computer).
 
-## Archivos
-**Propios:** `public/assets/**`, `docs/STYLE_GUIDE.md`.
-**Contratos que usa:** `src/ui/palette.ts` (lo crea A en el spec 02 con la paleta propuesta) — al votar la paleta final, **avisar** (afecta a todas) y actualizarlo junto con A.
+## Files
+**Owned:** `public/assets/**`, `docs/STYLE_GUIDE.md`.
+**Contracts used:** `src/ui/palette.ts` (A creates it in spec 02 with the proposed palette) — when voting on the final palette, **notify everyone** (it affects all) and update it with A.
 
-## Dependencias
-**Depende de:** nada — es lo primero.
-**Bloquea a:** reemplazo de placeholders en 04, 07–10, 11, 12.
-*(Nadie se bloquea mientras tanto: se programa con rectángulos de color y se reemplazan después.)*
+## Dependencies
+**Depends on:** nothing — this comes first.
+**Blocks:** replacing placeholders in 04, 07–10, 11, 12.
+*(No one is blocked meanwhile: program with colored rectangles and replace them later.)*
 
-## Preguntas abiertas
-- ¿Vista cenital (como Among Us) o lateral para la base? Recomendado: cenital.
-- ~~¿Nombre definitivo del juego?~~ Decidido: **Astronaut Mission Trainer**.
+## Open questions
+- Overhead view (like Among Us) or side view for the base? Recommended: overhead.
+- ~~Final game name?~~ Decided: **Astronaut Mission Trainer**.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

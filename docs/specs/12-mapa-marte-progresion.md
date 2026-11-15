@@ -1,40 +1,40 @@
-# 12 — Mapa de Marte y progresión
+# 12 — Mars map and progression
 
-> Actualización de planificación: el [spec 19](19-intro-cabina-manual.md) documenta la intro, el manual inicial y la selección de destino dentro de la nave. Ver allí los cambios aprobados de recorrido y los detalles pendientes.
-
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C | P1 | 2 | ⚪ Propuesto |
+| _(name)_ | C | P1 | 2 | ⚪ Proposed |
 
-## Objetivo
-Un **mapa de Marte con 5 lugares reales** donde aterrizar, con estrellas y candados, para que la jugadora **siempre tenga un próximo objetivo** y ganas de volver.
+> Planning update: [spec 19](19-intro-cabina-manual.md) documents the intro, initial manual, and destination selection inside the ship. See it for approved flow changes and pending details.
 
-## Por qué importa
-Es el gancho de rejugabilidad (junto con el entrenamiento de bots). Y enseña geografía real de Marte: cada lugar es difícil por una razón científica.
+## Objective
+A **Mars map with 5 real landing locations**, stars, and locks, so the player **always has a next goal** and a reason to return.
 
-## Alcance
-**Incluye:**
-- Pantalla con Marte (imagen real de Mars Trek enmarcada, o pixel art basado en ella) y 5 puntos: Jezero, Gale, Olympus Mons, casquete polar, Valles Marineris.
-- Cada lugar muestra: nombre, estrellas conseguidas (0–3), récord, o 🔒 con las estrellas que faltan.
-- Tocar un lugar → tarjeta breve: foto real + **por qué es difícil** (una línea) + **los 3 objetivos con íconos** + botón ATERRIZAR.
-- Datos de cada lugar en `data/locations.json` (dificultad, objetivo de muestras, desafío, estrellas para desbloquear).
+## Why it matters
+The replay hook (along with bot training). Teaches real Mars geography: each location is hard for a scientific reason.
 
-**No incluye:** más de 5 lugares, trajes/figuritas (P2).
+## Scope
+**Includes:**
+- Screen with Mars (a framed real Mars Trek image, or pixel art based on it) and 5 points: Jezero, Gale, Olympus Mons, polar cap, Valles Marineris.
+- Each location shows: name, stars earned (0–3), record, or 🔒 with remaining stars needed.
+- Tap a location → brief card: real photo + **why it is difficult** (one line) + **3 goals with icons** + LAND button.
+- Location data in `data/locations.json` (difficulty, sample target, challenge, stars to unlock).
 
-## Criterios de aceptación
-- [ ] La primera vez solo Jezero está abierto y es obvio que hay que tocarlo.
-- [ ] Desbloquear un lugar tiene una animación/festejo.
-- [ ] Las fotos usadas están en `DATA_SOURCES.md`.
-- [ ] El inicio (11) lleva al mapa, y "🗺️ Mapa" en resultado vuelve acá.
+**Excludes:** more than 5 locations, suits/stickers (P2).
 
-## Archivos
-**Propios:** `src/scenes/MarsMapScene.ts` (nuevo), contenido de `data/locations.json`.
-**Contratos:** el **formato** de `data/locations.json` es de A (03) → si hace falta un campo nuevo, **avisar a A**.
+## Acceptance criteria
+- [ ] Only Jezero is open initially, and it is obvious to tap it.
+- [ ] Unlocking a location has an animation/celebration.
+- [ ] Photos used are in `DATA_SOURCES.md`.
+- [ ] Start (11) leads to the map, and "🗺️ Map" on the result screen returns here.
 
-## Dependencias
-**Depende de:** 01, 03, 11.
+## Files
+**Owned:** `src/scenes/MarsMapScene.ts` (new), `data/locations.json` content.
+**Contracts:** A (03) owns the **format** of `data/locations.json` → **notify A** if a new field is needed.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Dependencies
+**Depends on:** 01, 03, 11.
+
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

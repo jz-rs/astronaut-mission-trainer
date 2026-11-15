@@ -1,64 +1,64 @@
-# 17 — Deploy y demo
+# 17 — Deployment and demo
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C | P0 | 4 (configurar en fase 1) | ⚪ Propuesto |
+| _(name)_ | C | P0 | 4 (configure in phase 1) | ⚪ Proposed |
 
-## Objetivo
-Que el jurado y cualquier persona puedan **jugar desde un link público en el celu**, y que la entrega del hackathon esté completa a tiempo.
+## Objective
+Let judges and anyone else **play from a public link on a phone**, and complete the hackathon submission on time.
 
-## Por qué importa
-Un juego que no se puede abrir no existe para el jurado.
+## Why it matters
+A game that cannot be opened does not exist for the judges.
 
-## Alcance
-**Incluye:**
-- Publicación automática en cada push a `main` (GitHub Pages o Vercel). **Configurarlo temprano (fase 1)**, no al final.
-- Verificar que el link funciona en Android y iPhone.
-- QR del link para la presentación.
-- Revisar los requisitos de entrega en la página oficial del challenge (video, descripción, uso de datos NASA, etc.) y hacer la checklist.
-- Preparar el material de la demo (capturas, video corto de una partida).
+## Scope
+**Includes:**
+- Automatic publishing on every push to `main` (GitHub Pages or Vercel). **Configure early (phase 1)**, not at the end.
+- Verify the link works on Android and iPhone.
+- QR code for the presentation link.
+- Review submission requirements on the official challenge page (video, description, NASA data usage, etc.) and make the checklist.
+- Prepare demo materials (screenshots, short session video).
 
-## Criterios de aceptación
-- [ ] Link público funcionando y actualizándose solo.
-- [ ] Checklist de entrega del hackathon completa (anotada en este spec).
-- [ ] Probado en ≥ 2 celus distintos.
+## Acceptance criteria
+- [ ] Public link works and updates automatically.
+- [ ] Hackathon submission checklist complete (recorded in this spec).
+- [ ] Tested on ≥ 2 different phones.
 
-## Archivos
-**Propios:** `.github/workflows/*` (o config de Vercel), material de la entrega.
-**Contratos:** `vite.config.ts` → avisar si se cambia.
+## Files
+**Owned:** `.github/workflows/*` (or Vercel config), submission materials.
+**Contracts:** `vite.config.ts` → notify others if changed.
 
-## Dependencias
-**Depende de:** 02 (repo en GitHub).
+## Dependencies
+**Depends on:** 02 (GitHub repo).
 
-## Checklist de entrega
-Armada con la [guía oficial de entrega de proyectos](https://www.spaceappschallenge.org/resources/project-submission-guide/) (versión 2025, la última publicada al 2026-11-14). **Confirmar contra la guía 2026 cuando salga**: los números pueden cambiar.
+## Submission checklist
+Based on the [official project submission guide](https://www.spaceappschallenge.org/resources/project-submission-guide/) (2025 version, latest published as of 2026-11-14). **Confirm against the 2026 guide when available**: numbers may change.
 
-**Demo (obligatoria, se elige UNA opción):**
-- [ ] Video de **máximo 30 segundos**, con **subtítulos en inglés**, que arranque presentando al equipo, **o**
-- [ ] Presentación de diapositivas **en inglés** (la guía 2020 ponía un máximo de 7; confirmar el límite actual).
-- [ ] La demo se sube a otra plataforma (YouTube, Drive, etc.) con **link público**: la web de Space Apps no acepta archivos.
-- [ ] Imágenes claras y textos legibles.
+**Demo (required; choose ONE option):**
+- [ ] Video **no longer than 30 seconds**, with **English subtitles**, starting with a team introduction, **or**
+- [ ] Slide presentation **in English** (the 2020 guide specified a maximum of 7; confirm the current limit).
+- [ ] Upload the demo to another platform (YouTube, Drive, etc.) with a **public link**: the Space Apps website does not accept files.
+- [ ] Clear images and readable text.
 
-**Proyecto:**
-- [ ] Link público al juego funcionando (este spec) y link al repositorio.
-- [ ] Descripción del proyecto y del uso de **datos de NASA** (ver `docs/DATA_SOURCES.md`).
-- [ ] Lista de recursos y referencias usados (la pantalla de Fuentes del juego ya los lista).
-- [ ] Revisar si la guía 2026 pide declarar el uso de herramientas de IA.
+**Project:**
+- [ ] Working public game link (this spec) and repository link.
+- [ ] Project description and **NASA data** usage (see `docs/DATA_SOURCES.md`).
+- [ ] List of resources and references used (already listed on the game's Sources screen).
+- [ ] Check whether the 2026 guide requires disclosure of AI tool use.
 
-**Antes de entregar:**
-- [ ] Probar el link en ≥ 2 celus (Android y iPhone), en horizontal.
-- [ ] QR del link para la presentación.
-- [ ] Capturas y un video corto de una partida para la demo.
+**Before submitting:**
+- [ ] Test the link on ≥ 2 phones (Android and iPhone), in landscape.
+- [ ] QR code for the presentation link.
+- [ ] Screenshots and a short session video for the demo.
 
-## Estado del deploy (2026-11-14)
-- **Publicamos con GitHub Pages**: `.github/workflows/deploy-pages.yml` corre `npm run check`, hace el build y lo publica en cada push a `main`.
-- Link público: https://memocayar.github.io/astronaut-mission-trainer/
-- **Vercel quedó descartado**: el plan gratis bloquea los deploys de commits hechos por integrantes que no son miembros del proyecto en Vercel (pasó con los merges de `main`).
-- El repo ahora es público, así que Pages funciona en la cuenta gratis.
-- `vite.config.ts` ya usa `base: './'`, así que el build funciona en la subruta de Pages.
-- Ojo: GitHub Actions sigue bloqueado por la facturación de la cuenta (ver `docs/DECISIONS.md`). Hasta que soporte lo resuelva, el workflow de Pages no corre.
+## Deployment status (2026-11-14)
+- **Published with GitHub Pages**: `.github/workflows/deploy-pages.yml` runs `npm run check`, builds, and publishes on every push to `main`.
+- Public link: https://memocayar.github.io/astronaut-mission-trainer/
+- **Vercel was ruled out**: its free plan blocks deployments of commits by contributors who are not Vercel project members (happened with `main` merges).
+- The repo is now public, so Pages works on the free account.
+- `vite.config.ts` already uses `base: './'`, so the build works under the Pages subpath.
+- Note: GitHub Actions is still blocked by account billing (see `docs/DECISIONS.md`). The Pages workflow will not run until support resolves it.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

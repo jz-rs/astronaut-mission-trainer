@@ -1,18 +1,18 @@
-# 20 — Cambiar de idioma dentro del juego 🌐
+# 20 — Change language inside the game 🌐
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C | _(a definir)_ | _(a definir)_ | ⚪ Propuesto |
+| _(name)_ | C | _(to be defined)_ | _(to be defined)_ | ⚪ Proposed |
 
-## Problema
-Hoy el idioma (español / inglés) **solo se puede elegir en la pantalla de inicio** (`MenuScene`). Una vez que se toca **JUGAR** y se entra a la nave (cabina, tablet con el manual, consola de destinos, base y minijuegos), **no hay ninguna forma de cambiarlo**.
+## Problem
+Currently, language (Spanish / English) **can only be selected on the start screen** (`MenuScene`). After tapping **PLAY** and entering the ship (cabin, manual tablet, destination console, base, and minigames), **there is no way to change it**.
 
-- ~~Desde la cabina no hay un botón para volver a la pantalla de inicio~~. Actualización 2026-11-15: ahora la cabina tiene un botón **Volver** que lleva al inicio, donde se puede cambiar el idioma. Pero hay que salir de la nave para hacerlo, y en la consola, la tablet y la base sigue sin haber forma.
-- Un chico que entró en el idioma equivocado (o que comparte el juego con alguien que habla otro idioma) queda atrapado en ese idioma.
+- ~~No button to return to the start screen from the cabin~~. Update 2026-11-15: the cabin now has a **Back** button leading to the start, where language can be changed. But this requires leaving the ship, and the console, tablet, and base still have no way to do it.
+- A child entering in the wrong language (or sharing with someone speaking another language) is stuck with it.
 
-> Por ahora este spec **solo describe el problema**. El objetivo, la solución y los criterios de aceptación se definen después, cuando el equipo lo revise.
+> For now, this spec **only describes the problem**. The objective, solution, and acceptance criteria will be defined after team review.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_
