@@ -50,7 +50,7 @@ export interface ManualPage {
 const SPENDS_ENERGY: PageEffect = { stat: 'energy', change: -1 };
 const STORY: readonly LineKind[] = ['problem', 'science', 'play'];
 
-/** The three lines of a page, keyed "manual.<page>.line1..3", in the kinds given. */
+/** The lines of a page, keyed "manual.<page>.line1, line2…", one per kind given. */
 function pageLines(page: string, kinds: readonly LineKind[] = STORY): readonly ManualLine[] {
   return kinds.map((kind, index) => ({
     kind,
@@ -88,8 +88,7 @@ export const MANUAL_PAGES: readonly ManualPage[] = [
   },
   {
     title: 'manual.shield.title',
-    lines: pageLines('shield'),
-    fact: 'manual.shield.fact',
+    lines: pageLines('shield', ['science', 'science', 'problem', 'play']),
     color: STAT_COLORS.shield,
     icon: 'iconShield',
     art: 'shield',
