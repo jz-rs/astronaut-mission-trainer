@@ -26,6 +26,8 @@ export const WELCOME_STEPS: readonly WelcomeStep[] = [
   { text: 'cabin.welcome.arrival', pose: 'guidePointRight', highlight: 'window' },
   { text: 'cabin.welcome.context', pose: 'guidePointRight', highlight: 'window' },
   { text: 'cabin.welcome.simulation', pose: 'guideWave', extra: 'base' },
+  { text: 'cabin.welcome.realism', pose: 'guideThumbsUp' },
+  { text: 'cabin.welcome.realPhotos', pose: 'guidePointRight', highlight: 'window' },
   { text: 'cabin.welcome.bars', pose: 'guideThumbsUp', extra: 'bars' },
   { text: 'cabin.welcome.preparation', pose: 'guidePointDown', highlight: 'tablet' },
 ];
