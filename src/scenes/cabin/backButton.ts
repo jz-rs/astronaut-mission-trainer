@@ -10,9 +10,9 @@ import { PALETTE } from '../../ui/palette';
  * glyph comes out tiny in the pixel font).
  */
 const DEPTH = 40;
-const ARROW = { inset: 14, halfHeight: 5, width: 6 } as const;
+const ARROW = { inset: 10, halfHeight: 4, width: 5 } as const;
 /** The word moves right to leave room for the arrow. */
-const LABEL_SHIFT = 6;
+const LABEL_SHIFT = 5;
 /** How far the button face sinks when pressed (same as `createButton`). */
 const PRESS_DEPTH = 3;
 
