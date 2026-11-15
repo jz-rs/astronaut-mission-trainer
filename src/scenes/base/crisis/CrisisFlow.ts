@@ -20,6 +20,9 @@ import { drawIntroScreen } from './crisisIntroScreen';
 import { drawPhotoScreen } from './crisisPhotoScreen';
 import { drawVoteScreen, type VoteScreen } from './crisisVoteScreen';
 
+/** Above the base and its banners. */
+const TABLET_DEPTH = 60;
+
 /**
  * Spec 16 — Which crisis screen the tablet shows, read from the run state:
  *   1. the message arrives and 2. the crew votes (the core pauses the base meanwhile);
@@ -27,9 +30,6 @@ import { drawVoteScreen, type VoteScreen } from './crisisVoteScreen';
  *   5. once the storm is over, a reward photo, until the kid taps GO ON.
  * Steps 3 and 5 pause the base from here (`pausesGame`), so nothing is missed while reading.
  */
-/** Above the base and its banners. */
-const TABLET_DEPTH = 60;
-
 type PhotoCard = { kind: 'result' | 'reward'; event: ScheduledEvent };
 
 export class CrisisFlow {
