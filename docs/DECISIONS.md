@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — El aterrizaje ya no muestra "Destino confirmado" (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: se saca el cartel "Destino confirmado: [lugar] / ¡Prepará a tu tripulación!" de arriba del aterrizaje. Se borran `src/scenes/landing/landingUi.ts` y las claves `landing.confirmed` y `landing.prepare` (solo las usaba ese cartel).
+- Por qué: no hace falta; el aterrizaje ya muestra el lugar por la ventana.
+- A quién afecta: solo el spec 19 (`LandingScene`, i18n).
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — En la base, la X roja de salir pasa a ser "◀ VOLVER"
 - Quién: C (Emilia), con Claude
 - Qué se decidió: el botón de arriba a la izquierda de la base (salir de la partida, con la pregunta de confirmación de siempre) deja de ser una X roja y pasa a ser **◀ VOLVER / BACK**, oscuro con borde gris, del mismo tamaño que el de la cabina. Los dos salen de un componente compartido nuevo, `src/ui/backButton.ts` (versión clara para la cabina, oscura para la base). La clave de texto pasa a ser `hud.back`. La X roja de los minijuegos y de la tarjeta del mapa no cambia.

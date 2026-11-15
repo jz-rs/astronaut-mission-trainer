@@ -189,8 +189,6 @@
   "monitor.stars": "ESTRELLAS",
   "monitor.record": "Récord",
   "monitor.goals": "OBJETIVOS",
-  "landing.confirmed": "Destino confirmado: {place}",
-  "landing.prepare": "¡Prepará a tu tripulación!",
   "landing.altitude": "ALT",
   "monitor.challenge.oxygen": "El oxígeno no debe bajar de {minimum}",
   "monitor.challenge.food": "La comida no debe bajar de {minimum}",

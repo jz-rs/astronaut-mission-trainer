@@ -189,8 +189,6 @@
   "monitor.stars": "STARS",
   "monitor.record": "Record",
   "monitor.goals": "GOALS",
-  "landing.confirmed": "Destination confirmed: {place}",
-  "landing.prepare": "Get your crew ready!",
   "landing.altitude": "ALT",
   "monitor.challenge.oxygen": "Oxygen must not drop below {minimum}",
   "monitor.challenge.food": "Food must not drop below {minimum}",
