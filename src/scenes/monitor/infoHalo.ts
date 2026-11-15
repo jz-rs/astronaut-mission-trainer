@@ -4,7 +4,8 @@ import { TECH_GLOW } from '../../ui/palette';
 
 /**
  * Spec 19 — A small cyan halo around the console's "i" button, breathing like the tablet's, so
- * kids notice there is more to read about the place (WebGL only).
+ * kids notice there is more to read about the place. It beats with the LAND glow, same speed
+ * and started on the same frame, so the two never drift apart (WebGL only).
  */
 const HALO = { strength: 2, quality: 0.1, distance: 4 } as const;
 
@@ -23,7 +24,7 @@ export function addInfoHalo(scene: Phaser.Scene, button: Phaser.GameObjects.Imag
     outerStrength: 0,
     yoyo: true,
     repeat: -1,
-    duration: INTRO_BALANCE.highlightPulseMs,
+    duration: INTRO_BALANCE.landGlowPulseMs,
     ease: 'Sine.InOut',
   });
 }
