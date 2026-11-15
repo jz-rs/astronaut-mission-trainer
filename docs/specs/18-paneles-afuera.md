@@ -19,7 +19,7 @@ The workspace owner approved implementation across specs 04 and 06 (see `docs/DE
 - Shared types moved to `minigameTypes.ts` and remain re-exported from `MinigameScene.ts` for compatibility.
 - Integrated the latest main: how-to/results use the mission tablet, crisis busy-state handling stays intact, and the result tablet closes before the outdoor return transition.
 - Added lifecycle regression tests covering explanation pauses, result return transitions and cancellation without rewards.
-- Automated validation: `npm run check` (56 tests) and production build. Existing lint size warnings remain in base/UI files.
+- Automated validation after integrating main: `npm run check` (63 tests) and production build passed on a clean copy of the committed tree. Non-blocking lint size warnings remain.
 - Pending manual acceptance: landscape phone input, children’s playtest, and final in-game visual review of the map overlay. The standalone preview is a composition review, not a substitute for that acceptance.
 
 | Dueña | Rol | Prioridad | Fase | Estado |
