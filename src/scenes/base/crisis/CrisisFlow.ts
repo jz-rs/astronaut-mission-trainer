@@ -6,6 +6,7 @@ import type { GameSession } from '../../../core/GameSession';
 import { PLAYER_ID } from '../../../core/run';
 import type { CrisisMeeting, RunState, ScheduledEvent } from '../../../core/types';
 import { t } from '../../../i18n';
+import { MissionTablet } from '../../../ui/MissionTablet';
 import { PALETTE } from '../../../ui/palette';
 import { crisisPhotoTexture } from './crisisArt';
 import {
@@ -17,8 +18,10 @@ import {
 } from './crisisContent';
 import { drawIntroScreen } from './crisisIntroScreen';
 import { drawPhotoScreen } from './crisisPhotoScreen';
-import { CrisisTablet } from './CrisisTablet';
 import { drawVoteScreen, type VoteScreen } from './crisisVoteScreen';
+
+/** Above the base and its banners. */
+const TABLET_DEPTH = 60;
 
 /**
  * Spec 16 — Which crisis screen the tablet shows, read from the run state:
@@ -30,7 +33,7 @@ import { drawVoteScreen, type VoteScreen } from './crisisVoteScreen';
 type PhotoCard = { kind: 'result' | 'reward'; event: ScheduledEvent };
 
 export class CrisisFlow {
-  private readonly tablet: CrisisTablet;
+  private readonly tablet: MissionTablet;
   private newsRead = 0;
   private readonly cards: PhotoCard[] = [];
   private cardOnScreen: PhotoCard | null = null;
@@ -41,7 +44,7 @@ export class CrisisFlow {
     private readonly scene: Phaser.Scene,
     private readonly session: GameSession,
   ) {
-    this.tablet = new CrisisTablet(scene);
+    this.tablet = new MissionTablet(scene, TABLET_DEPTH);
   }
 
   get isOnScreen(): boolean {

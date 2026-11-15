@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import type { LocationPhoto } from '../../../content/locationPhotos';
+import { TABLET_TEXTURE } from '../../../ui/MissionTablet';
 
 /**
  * Spec 16 — Art of the crisis tablet: the same tablet as the mission manual, and the real NASA
@@ -20,8 +21,6 @@ export const CRISIS_PHOTOS = {
 } as const satisfies Record<string, LocationPhoto>;
 
 export type CrisisPhotoKey = keyof typeof CRISIS_PHOTOS;
-
-export const TABLET_TEXTURE = 'tablet';
 
 export function crisisPhotoTexture(key: CrisisPhotoKey): string {
   return `crisis-${key}`;

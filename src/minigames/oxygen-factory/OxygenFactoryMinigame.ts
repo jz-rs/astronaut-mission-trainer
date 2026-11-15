@@ -82,7 +82,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
       startKey: 'minigame.oxygen-factory.start',
       steps: OXYGEN_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.startPlaying(station));
+    showHowToCard(this, howTo, () => this.startPlaying(station));
   }
 
   /** After the intro: the game goes on and a ghost finger shows the first move. */

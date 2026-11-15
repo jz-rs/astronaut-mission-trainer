@@ -84,7 +84,7 @@ export class ShieldWallMinigame extends MinigameScene {
       startKey: 'minigame.shield-wall.start',
       steps: SHIELD_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.startPlaying());
+    showHowToCard(this, howTo, () => this.startPlaying());
   }
 
   /** After the intro: the game goes on and a ghost finger shows the first move. */
