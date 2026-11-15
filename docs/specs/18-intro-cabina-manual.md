@@ -119,7 +119,7 @@ Transición breve propuesta: «Destino confirmado: [nombre del lugar]. ¡Prepar�
 
 Propuesta visual (2026-11-15, maquetas: `docs/arte/bocetos/cabina/aterrizaje/aterrizaje-jezero.gif` y `aterrizaje-olympus-mons.gif`), unos 5 segundos, vista desde la cabina:
 - Las dos astronautas van **sentadas** en los asientos de piloto, de espaldas (guía a la izquierda, jugadora violeta a la derecha). Fondo: `docs/arte/bocetos/cabina/cabina-aterrizaje.png`. Conviene recortarlas como sprites para que tiemblen un poco más que la nave.
-- **El aterrizaje coincide con el destino elegido en el monitor**: la ventana empieza con Marte entero (`public/assets/nasa/marte-valles-marineris-hemisferio.jpg`, la misma foto de la ventana de la cabina), se acerca y pasa a la foto real de ese destino (`public/assets/nasa/<id>.jpg`). En Olympus Mons y Valles Marineris la foto es desde órbita, lo que encaja con venir bajando.
+- **El aterrizaje coincide con el destino elegido en el monitor**: la ventana empieza con Marte entero (`public/assets/nasa/marte-disco-completo.jpg`, la misma foto de la ventana de la cabina), se acerca y pasa a la foto real de ese destino (`public/assets/nasa/<id>.jpg`). En Olympus Mons y Valles Marineris la foto es desde órbita, lo que encaja con venir bajando.
 - La ventana muestra la **foto real del destino** que se agranda, como si el suelo se acercara. La foto **siempre cubre toda la ventana** (escala tipo "cover"): nunca más chica que el vidrio, sin bordes.
 - **La cámara se mete en la nave**: toda la cabina se agranda hacia la ventana durante el descenso.
 1. Entrada: brillo naranja de calor sobre toda la ventana que se apaga; temblor leve.

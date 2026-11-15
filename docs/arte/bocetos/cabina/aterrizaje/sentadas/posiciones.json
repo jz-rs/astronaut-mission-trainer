@@ -1,0 +1,13 @@
+{
+  "fondo": "docs/arte/bocetos/cabina/cabina-fondo.png (1376x768, asientos vacíos)",
+  "sprites": {
+    "astronauta-guia-sentada": {
+      "x": 460,
+      "y": 250
+    },
+    "astronauta-violeta-sentada": {
+      "x": 732,
+      "y": 255
+    }
+  }
+}
