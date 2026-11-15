@@ -15,7 +15,7 @@ Formato:
 
 ## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: en la barra de arriba de la base, al lado de VOLVER, hay una tablet chiquita con "MANUAL". Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.
+- Qué se decidió: abajo a la derecha de la base flota la tablet de la nave en chiquito (`public/assets/sprites/cabina/tablet-boton.png`, achicada de `tablet.png`) con "MANUAL" en la pantalla. Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.
 - Por qué: poder consultar el manual mientras jugás sin perder tiempo.
 - A quién afecta: dueña de la base y el HUD (spec 04): `BaseScene.ts` suma `openManual()` y el botón nuevo `src/scenes/base/ManualButton.ts`; `layout.ts` suma `BASE_MANUAL_BUTTON`. `ManualScene` acepta `{ onClose }` para abrirse encima de otra escena.
 - ¿Avisado al equipo?: no todavía.

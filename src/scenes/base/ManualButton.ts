@@ -3,47 +3,45 @@ import { t } from '../../i18n';
 import { BASE_MANUAL_BUTTON } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
 import { addGlowText } from '../../ui/screenUi';
+import { SPRITE_SCALE } from '../../ui/sprites';
 
 /**
- * Spec 19 — A little tablet with "MANUAL" on its screen in the base's top bar: the same mission
- * manual as in the ship, to look something up while playing. The base pauses while it is open.
+ * Spec 19 — The ship's tablet, small, floating in the base's bottom right corner with "MANUAL" on
+ * its screen: the same mission manual as in the ship, to look something up while playing.
+ * The base pauses while it is open.
  */
-const FRAME_RADIUS = 4;
-const BEZEL = 3;
-/** The round button on the right side of the tablet, like the big one. */
-const HOME = { inset: 4, radius: 1.5 } as const;
-const LABEL_SCALE = 1;
-const LABEL_RESOLUTION = 4;
+const TEXTURE = 'manual-tablet-button';
+/** The glass inside the frame, in game pixels from the tablet's center (the art has it see-through). */
+const SCREEN = { width: 76, height: 42, shiftX: -2 } as const;
+const FLOAT = { distance: 2, durationMs: 900 } as const;
 const PRESSED_SCALE = 0.92;
+const LABEL_RESOLUTION = 2;
+
+export function preloadManualButton(scene: Phaser.Scene): void {
+  scene.load.image(TEXTURE, 'assets/sprites/cabina/tablet-boton.png');
+}
 
 export function addManualButton(scene: Phaser.Scene, onPress: () => void): void {
   const { x, y, width, height } = BASE_MANUAL_BUTTON;
-  const tablet = scene.add.graphics();
-  drawTablet(tablet, width, height);
-  const label = addGlowText(scene, -HOME.inset / 2, 0, t('cabin.tablet'), { color: TECH_GLOW });
-  label.setResolution(LABEL_RESOLUTION).setScale(LABEL_SCALE);
-  const button = scene.add.container(x + width / 2, y + height / 2, [tablet, label]);
-  // The whole height of the bar can be tapped, so a finger finds it easily.
-  button.setSize(width, height + BEZEL * 4).setInteractive({ useHandCursor: true });
+  const screen = scene.add.rectangle(SCREEN.shiftX, 0, SCREEN.width, SCREEN.height, PALETTE.night);
+  const frame = scene.add.image(0, 0, TEXTURE).setScale(SPRITE_SCALE);
+  const label = addGlowText(scene, SCREEN.shiftX, 0, t('cabin.tablet'), { color: TECH_GLOW });
+  label.setResolution(LABEL_RESOLUTION);
+  const button = scene.add.container(x + width / 2, y + height / 2, [screen, frame, label]);
+  button.setSize(width, height).setInteractive({ useHandCursor: true });
+  // Bobs gently, like things float in a spaceship: it reads as something to pick up.
+  scene.tweens.add({
+    targets: button,
+    y: button.y - FLOAT.distance,
+    duration: FLOAT.durationMs,
+    yoyo: true,
+    repeat: -1,
+    ease: 'Sine.InOut',
+  });
   button.on('pointerdown', () => button.setScale(PRESSED_SCALE));
   button.on('pointerout', () => button.setScale(1));
   button.on('pointerup', () => {
     button.setScale(1);
     onPress();
   });
-}
-
-function drawTablet(graphics: Phaser.GameObjects.Graphics, width: number, height: number): void {
-  const left = -width / 2;
-  const top = -height / 2;
-  graphics.fillStyle(PALETTE.metalLight, 1).fillRoundedRect(left, top, width, height, FRAME_RADIUS);
-  graphics
-    .lineStyle(1, PALETTE.metalDark, 1)
-    .strokeRoundedRect(left, top, width, height, FRAME_RADIUS);
-  const screenWidth = width - BEZEL * 2 - HOME.inset * 2;
-  graphics
-    .fillStyle(PALETTE.night, 1)
-    .fillRect(left + BEZEL, top + BEZEL, screenWidth, height - BEZEL * 2);
-  graphics.fillStyle(PALETTE.metalDark, 1);
-  graphics.fillCircle(width / 2 - BEZEL - HOME.inset / 2, 0, HOME.radius);
 }

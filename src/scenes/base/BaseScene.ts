@@ -28,7 +28,7 @@ import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
 import { ExitRunView } from './ExitRunView';
-import { addManualButton } from './ManualButton';
+import { addManualButton, preloadManualButton } from './ManualButton';
 import { GarageView } from './GarageView';
 import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
@@ -94,6 +94,7 @@ export class BaseScene extends Phaser.Scene {
   /** The images of this level (map, rooms, frost); the rest of the kit was loaded at boot. */
   preload(): void {
     preloadBiome(this, this.locationId);
+    preloadManualButton(this);
   }
 
   create(): void {
@@ -220,6 +221,7 @@ export class BaseScene extends Phaser.Scene {
     if (this.minigameOpen || this.runEnded || this.exitRun.isAsking) return;
     const data: ManualSceneData = { onClose: () => this.scene.resume() };
     this.scene.launch(SCENE_KEYS.manual, data);
+    this.scene.bringToTop(SCENE_KEYS.manual); // scene order can change, the tablet goes on top
     this.scene.pause();
   }
 
