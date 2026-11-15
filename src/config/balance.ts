@@ -160,6 +160,9 @@ export const INTRO_BALANCE = {
   guideFloatMs: 1_800,
   highlightPulseMs: 600,
   landingDurationMs: 6_000,
+  /** After touchdown: a still moment, then a fade to black into the base. */
+  landingStillMs: 700,
+  landingFadeMs: 500,
   /** How much the whole cabin grows toward the window while landing. */
   landingCameraZoom: 1.35,
   /** Starting altitude shown on the cabin monitor while landing, in meters (simplified). */

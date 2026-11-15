@@ -130,7 +130,7 @@ function drawBars(scene: Phaser.Scene, area: Rect): Parts {
     for (let segment = 0; segment < BAR_SEGMENTS; segment += 1) {
       const alpha = segment < filled ? 1 : 0.2;
       graphics.fillStyle(segment < filled ? color : PALETTE.metal, alpha);
-      graphics.fillRect(area.x + 40 + segment * 13, y - 5, 10, 10);
+      graphics.fillRect(area.x + 40 + segment * 11, y - 4, 9, 9);
     }
   });
   return parts;

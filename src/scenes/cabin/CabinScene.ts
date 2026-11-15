@@ -10,12 +10,14 @@ import {
   CABIN_WINDOW,
   type Rect,
 } from '../../ui/layout';
+import { PALETTE } from '../../ui/palette';
 import { addScanlines } from '../../ui/techFrame';
 import { SCENE_KEYS } from '../sceneKeys';
 import { INTRO_PHOTOS, preloadCabinArt, type CabinArtKey } from './cabinArt';
 import {
   addCabinBackground,
   addHighlight,
+  addMonitorGlow,
   addPhotoCredit,
   addWindowPhoto,
   drawCabinScreens,
@@ -41,6 +43,7 @@ const TARGET_AREAS: Record<CabinTarget, Rect> = {
 };
 const GUIDE_FLOAT_PX = 6;
 const GUIDE_DEPTH = 20;
+const GUIDE_HALO = { strength: 3, quality: 0.1, distance: 8 } as const;
 
 export class CabinScene extends Phaser.Scene {
   private guide!: Phaser.GameObjects.Image;
@@ -116,7 +119,8 @@ export class CabinScene extends Phaser.Scene {
 
   private point(pose: CabinArtKey, target?: CabinTarget): void {
     this.moment.forEach((part) => part.destroy());
-    this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
+    if (target === 'monitor') this.moment = [addMonitorGlow(this)];
+    else this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
     this.guide.setTexture(pose);
   }
 
@@ -125,6 +129,9 @@ export class CabinScene extends Phaser.Scene {
       .image(0, 0, 'guidePointRight')
       .setOrigin(0.5, 0)
       .setScale(CABIN_GUIDE_SCALE);
+    // A dark halo separates the white suit from the white cabin walls (WebGL only).
+    const { strength, quality, distance } = GUIDE_HALO;
+    guide.preFX?.addGlow(PALETTE.night, strength, 0, false, quality, distance);
     guide
       .setPosition(CABIN_GUIDE_SPOT.x + guide.displayWidth / 2, CABIN_GUIDE_SPOT.y)
       .setDepth(GUIDE_DEPTH);

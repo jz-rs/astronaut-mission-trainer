@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { allGalleryPhotos, galleryTextureKey } from '../../content/locationGallery';
 import { LOCATION_PHOTOS, photoTextureKey, type LocationPhoto } from '../../content/locationPhotos';
 
 /**
@@ -39,7 +40,7 @@ export const LAND_LOCKED_TEXTURE = 'consoleButton-aterrizar-bloqueado';
 export const INTRO_PHOTOS = {
   marsGlobe: { file: 'marte-disco-completo.jpg', credit: 'NASA/JPL/USGS' },
   moxie: { file: 'moxie-dentro-de-perseverance.jpg', credit: 'NASA/JPL-Caltech' },
-  veggie: { file: 'veggie-cosecha-lechuga.jpg', credit: 'NASA' },
+  veggie: { file: 'veggie-lechugas-en-la-estacion.jpg', credit: 'NASA' },
   perseverance: { file: 'perseverance-selfie-ingenuity.jpg', credit: 'NASA/JPL-Caltech/MSSS' },
 } as const satisfies Record<string, LocationPhoto>;
 
@@ -65,6 +66,8 @@ export function preloadCabinArt(load: Phaser.Loader.LoaderPlugin): void {
   for (const [locationId, photo] of Object.entries(LOCATION_PHOTOS)) {
     if (photo) load.image(photoTextureKey(locationId), `assets/nasa/${photo.file}`);
   }
+  for (const photo of allGalleryPhotos())
+    load.image(galleryTextureKey(photo), `assets/nasa/${photo.file}`);
   load.once(Phaser.Loader.Events.COMPLETE, () => smoothPhotos(load.textureManager));
 }
 
@@ -72,6 +75,7 @@ function smoothPhotos(textures: Phaser.Textures.TextureManager): void {
   const photoKeys = [
     ...Object.keys(INTRO_PHOTOS),
     ...Object.keys(LOCATION_PHOTOS).map((locationId) => photoTextureKey(locationId)),
+    ...allGalleryPhotos().map(galleryTextureKey),
   ];
   for (const key of photoKeys) {
     if (textures.exists(key)) textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);

@@ -12,11 +12,16 @@ import { SPRITE_SCALE } from '../../ui/sprites';
 import { consoleButtonTexture, LAND_LOCKED_TEXTURE, preloadCabinArt } from '../cabin/cabinArt';
 import { SCENE_KEYS } from '../sceneKeys';
 import { createConsoleButton, type ConsoleButton } from './consoleButton';
-import { drawMonitorScreens, type BigScreenView, type MonitorState } from './monitorScreens';
+import {
+  drawMonitorScreens,
+  galleryLength,
+  type BigScreenView,
+  type MonitorState,
+} from './monitorScreens';
 
 /**
  * Spec 18, scene 4 — The destination console, seen up close. Physical buttons browse the
- * places (every one can be explored), show the photo in big or the goals, and LAND.
+ * places (every one can be explored), change the real photo, show the info (i) and LAND.
  * LAND only works after the first manual and on unlocked places; otherwise the screen says
  * what is still missing. It replaces the old Mars map as the way to pick a destination.
  */
@@ -27,7 +32,8 @@ let lastLocationIndex: number | null = null;
 
 export class MonitorScene extends Phaser.Scene {
   private locationIndex = 0;
-  private view: BigScreenView = 'summary';
+  private view: BigScreenView = 'photo';
+  private photoIndex = 0;
   private screenParts: Phaser.GameObjects.GameObject[] = [];
   private landButton!: ConsoleButton;
 
@@ -41,14 +47,15 @@ export class MonitorScene extends Phaser.Scene {
 
   create(): void {
     this.locationIndex = lastLocationIndex ?? this.nextLocationToPlay();
-    this.view = 'summary';
+    this.view = 'photo';
+    this.photoIndex = 0;
     this.screenParts = [];
     this.add.image(0, 0, 'console').setOrigin(0).setScale(SPRITE_SCALE).setDepth(10);
     createConsoleButton(this, 'back', () => this.scene.start(SCENE_KEYS.cabin)).sprite.setDepth(11);
     createConsoleButton(this, 'previous', () => this.browse(-1)).sprite.setDepth(11);
     createConsoleButton(this, 'next', () => this.browse(1)).sprite.setDepth(11);
-    createConsoleButton(this, 'photo', () => this.toggleView('photo')).sprite.setDepth(11);
-    createConsoleButton(this, 'info', () => this.toggleView('goals')).sprite.setDepth(11);
+    createConsoleButton(this, 'photo', () => this.nextPhoto()).sprite.setDepth(11);
+    createConsoleButton(this, 'info', () => this.toggleInfo()).sprite.setDepth(11);
     this.landButton = createConsoleButton(this, 'land', () => this.land());
     this.landButton.sprite.setDepth(11);
     addScanlines(this);
@@ -69,13 +76,22 @@ export class MonitorScene extends Phaser.Scene {
   private browse(direction: -1 | 1): void {
     this.locationIndex = Phaser.Math.Wrap(this.locationIndex + direction, 0, LOCATIONS.length);
     lastLocationIndex = this.locationIndex;
-    this.view = 'summary';
+    this.view = 'photo';
+    this.photoIndex = 0;
     this.refresh();
   }
 
-  /** Pressing PHOTO or INFO again goes back to the summary. */
-  private toggleView(view: BigScreenView): void {
-    this.view = this.view === view ? 'summary' : view;
+  /** Each press shows the next real photo of the place (from the info view, the current one). */
+  private nextPhoto(): void {
+    const total = galleryLength(this.currentState().location.id);
+    if (this.view === 'photo') this.photoIndex = Phaser.Math.Wrap(this.photoIndex + 1, 0, total);
+    this.view = 'photo';
+    this.refresh();
+  }
+
+  /** Pressing i again goes back to the photo. */
+  private toggleInfo(): void {
+    this.view = this.view === 'info' ? 'photo' : 'info';
     this.refresh();
   }
 
@@ -89,6 +105,7 @@ export class MonitorScene extends Phaser.Scene {
       order: this.locationIndex + 1,
       total: LOCATIONS.length,
       view: this.view,
+      photoIndex: this.photoIndex,
       blocker: landingBlocker(location, totalStars, progress.manualDone),
       stars: progress.starsByLocation[location.id] ?? 0,
       record: progress.bestScoreByLocation[location.id],
@@ -117,8 +134,8 @@ export class MonitorScene extends Phaser.Scene {
 
   /** The red line on the screen blinks and the button shakes: "not yet, and this is why". */
   private showWhyBlocked(): void {
-    if (this.view !== 'summary') {
-      this.view = 'summary';
+    if (this.view !== 'info') {
+      this.view = 'info';
       this.refresh();
     }
     const status = this.screenParts.find((part) => part.name === 'status');

@@ -157,10 +157,22 @@ export const CABIN_TABLET_SCREEN: Rect = { x: 49, y: 221, width: 79, height: 39 
 /** Touch areas of the objects a kid can tap in the cabin. */
 export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
 export const CABIN_MONITOR_ZONE: Rect = { x: 496, y: 108, width: 140, height: 172 };
+/** Outline of the monitor console, for its glowing edge when the guide points at it. */
+export const CABIN_MONITOR_OUTLINE: readonly Point[] = [
+  { x: 510, y: 112 },
+  { x: 628, y: 110 },
+  { x: 636, y: 126 },
+  { x: 636, y: 240 },
+  { x: 602, y: 272 },
+  { x: 497, y: 210 },
+  { x: 498, y: 200 },
+  { x: 506, y: 194 },
+  { x: 507, y: 118 },
+];
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;
-export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 274, width: 490, height: 76 };
+export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };
 
 /** The tablet fills the screen; pages are drawn on its glass. */
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };

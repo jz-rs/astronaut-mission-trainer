@@ -12,8 +12,9 @@ import { drawPageArt } from './manualArt';
 import type { ManualPage, PageEffect } from './manualPages';
 
 /**
- * Spec 18 — Draws one page of the manual on the tablet glass: title, counter, the picture
- * (or real photo next to the game's version) and one short line, plus the bars it changes.
+ * Spec 18 — Draws one page of the manual on the tablet glass: title, the bars this action changes
+ * and the counter on top; then the picture (or the real photo next to the simulation's version)
+ * and a short explanation, a bit longer than a tutorial line so kids learn the science behind it.
  * The tablet scene adds the arrows, the X and the progress dashes around it.
  */
 type Parts = Phaser.GameObjects.GameObject[];
@@ -22,11 +23,20 @@ const SCREEN = TABLET_SCREEN;
 const LEFT = SCREEN.x + 14;
 const RIGHT = SCREEN.x + SCREEN.width - 14;
 const HEADER_LINE_Y = SCREEN.y + 32;
-const SINGLE_ART: Rect = { x: LEFT, y: SCREEN.y + 42, width: 196, height: 128 };
+/** Lowest point the text may reach: the arrows and dashes live below it. */
+const TEXT_BOTTOM = SCREEN.y + SCREEN.height - 36;
+const SINGLE_ART: Rect = {
+  x: LEFT,
+  y: SCREEN.y + 42,
+  width: 160,
+  height: TEXT_BOTTOM - SCREEN.y - 42,
+};
 const COMPARE_TOP = SCREEN.y + 52;
 const COMPARE_WIDTH = 208;
-const COMPARE_HEIGHT = 92;
+const COMPARE_HEIGHT = 72;
 const EFFECT_SPACING = 34;
+/** The bar effects sit in the header, just left of the page counter. */
+const EFFECTS_RIGHT = RIGHT - 140;
 
 export function drawManualPage(
   scene: Phaser.Scene,
@@ -62,6 +72,10 @@ function drawHeader(scene: Phaser.Scene, page: ManualPage, index: number, total:
   const line = scene.add.graphics();
   glowStroke(line).line(LEFT, HEADER_LINE_Y, RIGHT, HEADER_LINE_Y);
   parts.push(title.setOrigin(0, 0.5), counter.setOrigin(1, 0.5), line);
+  const effects = page.effects ?? [];
+  parts.push(
+    ...drawEffects(scene, effects, EFFECTS_RIGHT - effects.length * EFFECT_SPACING, SCREEN.y + 17),
+  );
   return parts;
 }
 
@@ -69,11 +83,8 @@ function drawSingle(scene: Phaser.Scene, page: ManualPage): Parts {
   const corners = scene.add.graphics();
   drawVisorCorners(corners, SINGLE_ART);
   const textX = SINGLE_ART.x + SINGLE_ART.width + 16;
-  const text = bodyText(scene, page, textX, SINGLE_ART.y + 6, RIGHT - textX);
-  const parts: Parts = [corners, ...drawPageArt(scene, page.art, SINGLE_ART), text];
-  if (page.effects)
-    parts.push(...drawEffects(scene, page.effects, textX, text.y + text.height + 18));
-  return parts;
+  const text = bodyText(scene, page, textX, SINGLE_ART.y + 4, RIGHT - textX);
+  return [corners, ...drawPageArt(scene, page.art, SINGLE_ART), text];
 }
 
 /** Real photo on the left, the game's version on the right, one label above each. */
@@ -87,8 +98,8 @@ function drawCompare(scene: Phaser.Scene, page: ManualPage): Parts {
   const frames = scene.add.graphics();
   drawVisorCorners(frames, real);
   drawVisorCorners(frames, game);
-  const textTop = COMPARE_TOP + COMPARE_HEIGHT + 10;
-  const text = bodyText(scene, page, LEFT, textTop, 300);
+  const textTop = COMPARE_TOP + COMPARE_HEIGHT + 8;
+  const text = bodyText(scene, page, LEFT, textTop, RIGHT - LEFT);
   return [
     addCoverPhoto(scene, photo, real),
     ...addPhotoCredit(scene, real, INTRO_PHOTOS[photo].credit),
@@ -103,7 +114,6 @@ function drawCompare(scene: Phaser.Scene, page: ManualPage): Parts {
     ),
     ...drawPageArt(scene, page.art, game),
     text,
-    ...drawEffects(scene, page.effects ?? [], RIGHT - 100, textTop + 8),
   ];
 }
 

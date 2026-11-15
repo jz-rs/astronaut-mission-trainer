@@ -124,10 +124,10 @@ export class ResultScene extends Phaser.Scene {
       y: 328,
       width: 112,
       height: 40,
-      label: `🗺️ ${t('result.map')}`,
+      label: `🚀 ${t('result.ship')}`,
       fontSize: FONT_SIZE.small,
       color: PALETTE.metalLight,
-      onPress: () => this.scene.start(SCENE_KEYS.monitor),
+      onPress: () => this.scene.start(SCENE_KEYS.cabin),
     });
   }
 }

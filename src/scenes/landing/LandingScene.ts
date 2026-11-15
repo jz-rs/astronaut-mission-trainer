@@ -20,7 +20,7 @@ import { drawCabinScreens } from '../cabin/cabinView';
 import { locationText } from '../map/locationText';
 import { SCENE_KEYS } from '../sceneKeys';
 import { describeLanding, type LandingFrame } from './landingTimeline';
-import { addLandingBanner, addStartButton } from './landingUi';
+import { addLandingBanner } from './landingUi';
 
 /**
  * Spec 18, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
@@ -149,15 +149,23 @@ export class LandingScene extends Phaser.Scene {
     return amount > 0 ? Phaser.Math.FloatBetween(-amount, amount) : 0;
   }
 
+  /** Everything stays still for a moment, the screen goes black and the base fades in. */
   private touchDown(): void {
     this.landed = true;
     this.drawFrame(describeLanding(1));
-    const place = locationText(this.locationId, 'name');
-    this.ui.add(addLandingBanner(this, t('landing.arrived', { place })));
-    this.ui.add(
-      addStartButton(this, () =>
-        this.scene.start(SCENE_KEYS.base, { locationId: this.locationId }),
-      ),
+    this.time.delayedCall(INTRO_BALANCE.landingStillMs, () => {
+      this.cameras.cameras.forEach((camera) => camera.fadeOut(INTRO_BALANCE.landingFadeMs));
+      this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () =>
+        this.openBase(),
+      );
+    });
+  }
+
+  private openBase(): void {
+    const base = this.scene.get(SCENE_KEYS.base);
+    base.events.once(Phaser.Scenes.Events.CREATE, () =>
+      base.cameras.main.fadeIn(INTRO_BALANCE.landingFadeMs),
     );
+    this.scene.start(SCENE_KEYS.base, { locationId: this.locationId });
   }
 }

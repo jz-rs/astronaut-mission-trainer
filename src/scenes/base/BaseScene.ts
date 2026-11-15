@@ -268,11 +268,11 @@ export class BaseScene extends Phaser.Scene {
     });
   }
 
-  /** The X of the base: back to the destination console, without saving this run's result. */
+  /** The X of the base: back to the ship, without saving this run's result. */
   private leaveRun(): void {
     this.runEnded = true;
     OVERLAY_KEYS.forEach((key) => this.scene.stop(key));
-    this.scene.start(SCENE_KEYS.monitor);
+    this.scene.start(SCENE_KEYS.cabin);
   }
 
   private endRun(): void {
