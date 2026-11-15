@@ -10,7 +10,7 @@ import { STAT_ICON_SPRITES } from '../../ui/sprites';
 import type { PageArt } from './manualPages';
 
 /**
- * Spec 18 — The picture of each manual page, drawn with the same sprites the mission uses
+ * Spec 19 — The picture of each manual page, drawn with the same sprites the mission uses
  * (so the manual shows exactly what the kid will see while playing).
  */
 type Parts = Phaser.GameObjects.GameObject[];

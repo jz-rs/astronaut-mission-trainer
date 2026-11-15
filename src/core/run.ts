@@ -5,6 +5,7 @@ import { updateEvents } from './events';
 import { applyDecay, createStartingStats, findEmptyStat, updateLowestStats } from './stats';
 import { getBotEfficiency } from './training';
 import type { CrewMember, LocationConfig, RunState, ScheduledEvent, TrainingLevels } from './types';
+import { sendBotsInAtSunset } from './daylight';
 
 export const PLAYER_ID = 'player';
 export const BOT_IDS = ['bot-red', 'bot-green', 'bot-yellow'] as const;
@@ -55,6 +56,7 @@ export function updateRun(state: RunState, deltaMs: number): void {
   advanceBotTasks(state, deltaMs);
   updateLowestStats(state.lowestStats, state.stats);
   advanceClock(state, deltaMs);
+  sendBotsInAtSunset(state);
   updateEvents(state);
   checkEvacuation(state);
 }

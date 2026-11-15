@@ -1,7 +1,7 @@
 import { LOCATION_PHOTOS, type LocationPhoto } from './locationPhotos';
 
 /**
- * Spec 18 — Every real NASA photo of each destination, for the photo button of the ship's monitor.
+ * Spec 19 — Every real NASA photo of each destination, for the photo button of the ship's monitor.
  * The first one is the location's main photo (locationPhotos.ts); the rest show the same place
  * from other angles (from orbit, from the ground, details). Never a photo of another place.
  * Each file is registered in docs/DATA_SOURCES.md.

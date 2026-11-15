@@ -5,7 +5,7 @@ import { cssColor, PALETTE, TECH_GLOW } from './palette';
 import { addText, type TextOptions } from './text';
 
 /**
- * Spec 18 — "Screen look" for everything digital in the ship (tablet, guide's radio, monitors):
+ * Spec 19 — "Screen look" for everything digital in the ship (tablet, guide's radio, monitors):
  * thin glowing cyan lines, visor corners, segmented bars and scanlines. It is deliberately
  * different from the chunky physical buttons, so a kid can tell a screen from a real button.
  * Screen buttons light up and act a moment later, like a touch screen.

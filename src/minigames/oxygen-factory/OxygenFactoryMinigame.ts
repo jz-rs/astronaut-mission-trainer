@@ -5,10 +5,11 @@ import { floatText } from '../../ui/floatingText';
 import type { Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import { showGestureHint } from '../gestureHint';
+import { showHowToCard } from '../howTo/howToCard';
+import { StepGuide } from '../howTo/stepGuide';
 import { MinigameScene } from '../MinigameScene';
 import { MoxieWindow } from './moxieWindow';
-import { OxygenGuide } from './oxygenGuide';
-import { showOxygenIntro } from './oxygenIntro';
+import { OXYGEN_STEPS } from './oxygenRecipe';
 import { OxygenStation } from './oxygenStation';
 import { createPiece, floatPieces, type Piece } from './pieces';
 
@@ -38,7 +39,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
   private oxygenStored = 0;
   private station: OxygenStation | null = null;
   private moxie: MoxieWindow | null = null;
-  private guide: OxygenGuide | null = null;
+  private guide: StepGuide | null = null;
   private playArea = new Phaser.Geom.Rectangle();
 
   constructor() {
@@ -57,7 +58,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
     const station = new OxygenStation(this, area);
     this.station = station;
     this.moxie = new MoxieWindow(this, station);
-    this.guide = new OxygenGuide(this, area);
+    this.guide = new StepGuide(this, area, OXYGEN_STEPS);
     const playWidth = station.machine.left - this.guide.right - PLAY_MARGIN;
     this.playArea.setTo(this.guide.right, area.y, playWidth, area.height);
     for (let index = 0; index < OXYGEN_FACTORY_BALANCE.moleculesOnScreen; index += 1) {
@@ -66,7 +67,12 @@ export class OxygenFactoryMinigame extends MinigameScene {
     this.input.on('drag', this.handleDrag, this);
     this.input.on('dragend', this.handleDrop, this);
     this.pauseGame();
-    showOxygenIntro(this, area, () => this.startPlaying(station));
+    const howTo = {
+      titleKey: 'minigame.oxygen-factory.introTitle',
+      startKey: 'minigame.oxygen-factory.start',
+      steps: OXYGEN_STEPS,
+    } as const;
+    showHowToCard(this, area, howTo, () => this.startPlaying(station));
   }
 
   /** After the intro: the game goes on and a ghost finger shows the first move. */

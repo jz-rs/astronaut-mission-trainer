@@ -10,7 +10,7 @@ import {
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
 
 /**
- * Spec 18, scene 4 — The small route screen of the console: a tiny flat map of Mars with the
+ * Spec 19, scene 4 — The small route screen of the console: a tiny flat map of Mars with the
  * five destinations in the same places as the big Mars map (spec 12). The selected one blinks.
  * The cabin dashboard shows it too, with nothing selected.
  */

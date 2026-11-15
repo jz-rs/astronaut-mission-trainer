@@ -2,25 +2,24 @@ import type Phaser from 'phaser';
 import type { Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
-import { addFormula, OXYGEN_RECIPE } from './oxygenRecipe';
+import type { HowToStep } from './howToCard';
 
 /**
- * Spec 08 — The side panel while playing: the same 4 steps of the intro card, only as pictures,
+ * The side panel while playing: the same picture steps of the how-to card, without the text,
  * so the kid can glance at it without reading. The current step is framed and bright, the steps
  * already done stay half lit and the next ones are dim. It only moves forward.
  */
-export type GuideStep = 1 | 2 | 3 | 4;
-
 const WIDTH = 124;
 const MARGIN = 6;
-const FORMULA_SCALE = 0.62;
+const PICTURE_SCALE = 0.62;
 const ROW_FRAME_PADDING = 4;
 const DONE_ALPHA = 0.6;
 const NEXT_ALPHA = 0.25;
-const POP_MS = 150;
+const POP_MS = 300;
 
-export class OxygenGuide {
-  private step: GuideStep = 1;
+export class StepGuide {
+  /** Steps are counted from 1, like the kid would. */
+  private step = 1;
   private readonly rect: Rect;
   private readonly rows: Phaser.GameObjects.Container[];
   private readonly frame: Phaser.GameObjects.Graphics;
@@ -29,15 +28,18 @@ export class OxygenGuide {
   constructor(
     private readonly scene: Phaser.Scene,
     area: Rect,
+    steps: readonly HowToStep[],
   ) {
     const height = area.height - MARGIN * 2;
     this.rect = { x: area.x + MARGIN, y: area.y + MARGIN, width: WIDTH, height };
     drawTechPanel(scene.add.graphics(), this.rect, PALETTE.cyan);
     this.frame = scene.add.graphics();
-    const rowHeight = height / OXYGEN_RECIPE.length;
-    this.rows = OXYGEN_RECIPE.map(({ formula }, index) => {
+    const rowHeight = height / steps.length;
+    this.rows = steps.map(({ picture }, index) => {
       const centerY = this.rect.y + rowHeight * (index + 0.5);
-      return addFormula(scene, this.rect.x + WIDTH / 2, centerY, formula, FORMULA_SCALE);
+      return picture(scene)
+        .setPosition(this.rect.x + WIDTH / 2, centerY)
+        .setScale(PICTURE_SCALE);
     });
     this.render();
   }
@@ -48,18 +50,18 @@ export class OxygenGuide {
   }
 
   /** Steps never go back, so a kid who is ahead is not shown an older step again. */
-  show(step: GuideStep): void {
+  show(step: number): void {
     if (step <= this.step) return;
     this.step = step;
     this.render();
     const current = this.rows[step - 1];
     if (!current) return;
-    current.setScale(FORMULA_SCALE * 1.3);
-    this.scene.tweens.add({ targets: current, scale: FORMULA_SCALE, duration: POP_MS * 2 });
+    current.setScale(PICTURE_SCALE * 1.3);
+    this.scene.tweens.add({ targets: current, scale: PICTURE_SCALE, duration: POP_MS });
   }
 
   private render(): void {
-    const rowHeight = this.rect.height / OXYGEN_RECIPE.length;
+    const rowHeight = this.rect.height / this.rows.length;
     this.rows.forEach((row, index) => {
       const stepNumber = index + 1;
       row.setAlpha(stepNumber === this.step ? 1 : stepNumber < this.step ? DONE_ALPHA : NEXT_ALPHA);

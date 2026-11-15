@@ -8,7 +8,7 @@ import { addSpriteSized, STAT_ICON_SPRITES } from '../../ui/sprites';
 import type { CabinArtKey } from './cabinArt';
 
 /**
- * Spec 18, scene 1 — The guide's welcome, one line at a time (script from the spec).
+ * Spec 19, scene 1 — The guide's welcome, one line at a time (script from the spec).
  * Each step says which pose the guide takes, what gets highlighted and what picture
  * appears above the message.
  */

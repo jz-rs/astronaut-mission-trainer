@@ -28,7 +28,7 @@ import { showGuideMessage } from './guideMessage';
 import { showWelcomeExtra, WELCOME_STEPS, type CabinTarget } from './welcomeScript';
 
 /**
- * Spec 18, scenes 1 and 3 — The ship cabin, fixed: nothing walks, a kid taps objects.
+ * Spec 19, scenes 1 and 3 — The ship cabin, fixed: nothing walks, a kid taps objects.
  * The window shows real Mars; the guide welcomes the player the first time; the tablet opens
  * the mission manual and the dashboard under the window opens the destination console. Tapping the guide replays
  * the welcome. Nothing here uses mission time.

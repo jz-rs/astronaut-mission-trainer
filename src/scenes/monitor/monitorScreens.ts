@@ -21,7 +21,7 @@ import { locationText } from '../map/locationText';
 import { drawRouteMap } from './routeMap';
 
 /**
- * Spec 18, scene 4 — What the screens of the destination console show. They are drawn behind
+ * Spec 19, scene 4 — What the screens of the destination console show. They are drawn behind
  * the console art, which has transparent glass, so the bezel crops them for free.
  * Big screen: the place's name and its real photos ("photo" view, the photo button changes
  * the photo), or why it is hard, its goals and whether the ship can land ("info" view, i button).

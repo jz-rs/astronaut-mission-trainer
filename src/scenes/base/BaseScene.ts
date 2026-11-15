@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
-import { TASK_BALANCE } from '../../config/balance';
+import { CREW_BALANCE, NIGHT_BALANCE, TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
 import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
+import { isAfterSunset, isTooDarkFor, nightAmount } from '../../core/daylight';
 import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
@@ -32,7 +33,9 @@ import { TeamworkViews } from './TeamworkViews';
 import { createPickRoomHint } from './pickRoomHint';
 import { launchRoverTrip } from './roverTrip';
 import { Hud } from './Hud';
+import { NightSign } from './NightSign';
 import { RoomView } from './RoomView';
+import { StationLights } from './StationLights';
 import { TaskEffectsView } from './TaskEffectsView';
 import { TutorialGuide } from './TutorialGuide';
 import { addFrost, addWeather } from './WeatherView';
@@ -55,6 +58,8 @@ export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
+  private nightSign!: NightSign;
+  private stationLights!: StationLights;
   private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
@@ -92,6 +97,8 @@ export class BaseScene extends Phaser.Scene {
   create(): void {
     this.session = this.createSession();
     this.mapStatus = drawBaseMap(this, this.locationId);
+    this.stationLights = new StationLights(this); // night goes under the signs and astronauts
+    this.stationLights.setNight(this.currentNight());
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
@@ -120,10 +127,28 @@ export class BaseScene extends Phaser.Scene {
 
   /** Weather falls over the base, the HUD goes on top, and the pole's frost covers even the HUD. */
   private createTopLayer(): void {
+    this.nightSign = new NightSign(this, 'solar-panels');
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
     addFrost(this, this.locationId);
+  }
+
+  /**
+   * Nobody goes to the panels if the Sun sets before they are done (`workMs`): says why, so the
+   * kid isn't left wondering.
+   */
+  private saysNoSun(taskId: TaskId, workMs: number): boolean {
+    const state = this.session.state;
+    if (!isTooDarkFor(state, taskId, workMs)) return false;
+    const message = isAfterSunset(state) ? t('hud.noSun') : t('hud.sunsetSoon');
+    this.showFloatingText(taskId, message, PALETTE.white);
+    return true;
+  }
+
+  /** After half the sol it gets dark (core/daylight.ts). */
+  private currentNight(): number {
+    return nightAmount(this.session.state.solElapsedMs);
   }
 
   private createSession(): GameSession {
@@ -140,6 +165,8 @@ export class BaseScene extends Phaser.Scene {
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
+    this.stationLights.setNight(this.currentNight());
+    this.nightSign.setVisible(isAfterSunset(state));
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -161,7 +188,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private sendPlayer(taskId: TaskId): void {
-    if (this.playerBusy) return;
+    if (this.playerBusy || this.saysNoSun(taskId, NIGHT_BALANCE.playerSolarWorkMs)) return;
     if (!canAffordTask(this.session.state.stats, taskId)) {
       this.showFloatingText(taskId, t('hud.noEnergy'), PALETTE.alert);
       return;
@@ -178,6 +205,7 @@ export class BaseScene extends Phaser.Scene {
       taskId,
       difficulty: this.session.state.location.decayMultiplier[stat] ?? 1,
       locationId: this.locationId,
+      nightAmount: this.currentNight(),
       onFinish: (result) => this.handleMinigameFinished(result),
       onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
     };
@@ -210,6 +238,8 @@ export class BaseScene extends Phaser.Scene {
     const bot = this.session.state.crew.find((member) => member.id === botId);
     if (bot?.task?.taskId === taskId) {
       this.showFloatingText(taskId, t('hud.botAlreadyThere'), PALETTE.sun); // why it doesn't move
+    } else if (this.saysNoSun(taskId, CREW_BALANCE.botTaskDurationMs)) {
+      // the panels wait for tomorrow's Sun; saysNoSun already told the kid why
     } else if (canAffordTask(this.session.state.stats, taskId)) {
       this.session.dispatch({ type: 'assignTask', crewId: botId, taskId });
     } else {

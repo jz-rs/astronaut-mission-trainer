@@ -35,6 +35,8 @@ const SPRITE_FILES = {
   bubbleCarbon: 'oxigeno/burbuja-co2.png',
   bubbleOxygen: 'oxigeno/burbuja-o2.png',
   popFlash: 'oxigeno/destello-pop.png',
+  lettuceSprout: 'invernadero/lechuga-brote.png',
+  lettuceYoung: 'invernadero/lechuga-joven.png',
   lettuceHealthy: 'invernadero/lechuga-grande.png',
   lettuceThirsty: 'invernadero/lechuga-sedienta.png',
   lettuceWithered: 'invernadero/lechuga-seca.png',

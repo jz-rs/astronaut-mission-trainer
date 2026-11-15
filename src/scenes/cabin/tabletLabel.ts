@@ -4,7 +4,7 @@ import { CABIN_TABLET_QUAD, CABIN_TABLET_ZONE, FONT_FAMILY, type Point } from '.
 import { cssColor, TECH_GLOW } from '../../ui/palette';
 
 /**
- * Spec 18 — "MANUAL" printed on the tablet's screen, lying flat in perspective like the tablet.
+ * Spec 19 — "MANUAL" printed on the tablet's screen, lying flat in perspective like the tablet.
  * Phaser texts can only turn, not lean, so the word is drawn on a canvas with the same slant as
  * the screen (a 2D transform built from the screen's two sides).
  */

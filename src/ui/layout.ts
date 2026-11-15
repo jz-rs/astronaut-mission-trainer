@@ -143,7 +143,7 @@ export const GARAGE_RECT: Rect = { x: 242, y: 318, width: 112, height: 30 };
 export const GARAGE_SPOT: Point = { x: 360, y: 212 };
 
 /**
- * Spec 18 — Ship cabin, mission tablet, destination console and landing.
+ * Spec 19 — Ship cabin, mission tablet, destination console and landing.
  * The art (`sprites/cabina/`) is 1280×720 shown at SPRITE_SCALE; its screens are transparent
  * holes, so whatever is drawn behind them (photos, screen content) shows through the glass.
  */

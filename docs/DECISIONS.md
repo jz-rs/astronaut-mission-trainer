@@ -13,12 +13,74 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — En la cabina, los destinos se eligen en el tablero del centro (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca no cambia.
+- Por qué: al probarlo, lo intuitivo era tocar la pantalla del centro para elegir misión.
+- A quién afecta: solo el spec 19 (`cabina-fondo.png`, `layout.ts`: `CABIN_DASHBOARD_*` reemplaza a `CABIN_MONITOR_*`, que solo usaba el spec 19; textos `cabin.manualDone` y `cabin.again`).
+- ¿Avisado al equipo?: no todavía (va en el PR #33).
+
+## 2026-11-15 — La intro en la cabina pasa a ser el spec 19
+- Quién: memocayar
+- Qué se decidió: la intro en la cabina (PR #33) y "Paneles solares afuera" (PR #31) se crearon las dos como spec 18. Paneles queda como 18 porque se abrió antes, y la cabina pasa a `docs/specs/19-intro-cabina-manual.md`. El 19 estaba libre: el "invernadero sin tierra" se descartó antes de mergearse. Se actualizaron los comentarios "Spec 18" del código de la cabina y las referencias en los docs.
+- Por qué: dos specs con el mismo número confunden a las personas y a los agentes.
+- A quién afecta: spec 19 (cabina). El spec 18 (paneles) no cambia.
+- ¿Avisado al equipo?: pendiente (avisar a maviflora y jz-rs).
+
+## 2026-11-15 — Misión del escudo: por qué hay radiación en Marte y el medidor RAD
+- Quién: C (con Claude)
+- Qué se decidió: el muro de escudo (spec 10) mantiene "arrastrar bloques de agua y regolito a los huecos", pero ahora explica por qué. Tarjeta de 3 pasos antes de jugar (con pausa): la Tierra tiene un escudo magnético y Marte lo perdió, así que la radiación llega al suelo; el agua y el regolito la frenan; el rover Curiosity la mide con su instrumento RAD. Panel de pasos a la izquierda, como en las otras misiones. A la derecha hay un **medidor RAD** que sube mientras queden huecos abiertos (se pone rojo cerca del final y dice "¡Mucha radiación!" si se llena): así se ve la radiación, que en la vida real es invisible. Dentro del hábitat hay dos astronautas, que son los que el muro protege. Cada bloque bien puesto corta el rayo debajo del muro y dice "¡Bloqueado!". **Rendimiento:** huecos tapados / huecos + `lowRadiationBonus` (0.2) si el medidor no se llenó; antes era + bonus por velocidad. **Balance:** `SHIELD_WALL_BALANCE.wallSlots` baja de 10 a 8 (para que entren el panel de pasos y el medidor) y se agregan `radiationPerHolePerSecond` (0.035) y `lowRadiationBonus` (0.2). Cambian los textos de `minigame.shield-wall.instruction` y `task.shield-wall.why`, y hay claves nuevas.
+- Por qué: que la mecánica enseñe lo real. Respaldo NASA: Marte perdió su campo magnético global y tiene una atmósfera muy fina (MAVEN); el instrumento RAD de Curiosity mide la radiación en la superficie; el agua y el regolito sirven de blindaje; en Artemis, la tripulación de Orion arma un refugio con las provisiones de a bordo si llega una tormenta solar.
+- A quién afecta: B (spec 10, `src/minigames/shield-wall/*`), `balance.ts` (`SHIELD_WALL_BALANCE`: cambia `wallSlots`, se agregan 2 valores), i18n.
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
+## 2026-11-15 — Misión del invernadero: agua y luz LED, como Veggie de la NASA
+- Quién: C (con Claude)
+- Qué se decidió: el invernadero (spec 09) deja de ser solo "regar plantas con sed". Seis lechugas crecen en los 6 canteros de la sala, en tierra traída de la Tierra (la tierra de Marte es tóxica), bajo las lámparas LED rosas de la sala. (Primero probamos con almohadas de Veggie dibujadas, pero no se entendían: se cambió a los canteros.) Cada planta va en el centro de la tierra de su cantero (medido por el color marrón de la foto), y las dos lámparas bajas y la columna verde de la sala se vuelven a dibujar por encima, para que las plantas crezcan debajo de la luz y detrás de la columna. **Contrato:** `MinigameScene` suma `protected addRoomPiece(outline)` (solo se agrega): redibuja encima una parte de la foto de la sala, para que los sprites queden detrás de ella. Al azar una planta pide **agua** (se pone amarilla, con una gota arriba) o **luz** (su cantero se oscurece, como si se apagara la lámpara, y se pone pálida, con una lámpara arriba). A la derecha hay dos herramientas grandes, **Agua** y **Luz**: se arrastra la herramienta a la planta, o se toca la herramienta y después la planta. La correcta hace crecer la planta (brote → joven → grande) y suelta una burbuja azul de O₂; la equivocada no hace nada y la burbuja tiembla. Si nadie la ayuda a tiempo, se marchita. Igual que oxígeno y paneles: tarjeta de 3 pasos antes de jugar (con pausa) y panel de pasos a la izquierda. Colores: verde = comida, rosa = luz LED, azul = O₂. Dato final: "Las plantas de la base no necesitan el Sol: crecen con luces LED, ¡también de noche!". Rendimiento = ayudas / pedidos + bonus si ninguna se marchitó (igual que antes). **Balance:** en `GREENHOUSE_BALANCE` se sacan `columns` y `rows` (las plantas van en los canteros de la foto de la sala) y se reemplazan `thirstEveryMs` y `thirstyForMs` por `needEveryMs` (1800), `needLastsMs` (4500) y `lightNeedShare` (0.5): ahora cada ayuda son dos gestos, así que hay un poco más de tiempo. Sprites nuevos registrados: `lettuceSprout`, `lettuceYoung` (ya estaban en `public/assets`). Cambia el texto de `minigame.greenhouse.instruction` y de `task.greenhouse.why`.
+- Por qué: que la mecánica enseñe lo real. Respaldo NASA: el suelo de Marte tiene percloratos, tóxicos para las plantas, por eso se cultivaría en tierra traída de la Tierra (como el sustrato que usa Veggie en la Estación Espacial); Veggie cultiva lechuga con luces LED rojas y azules (por eso se ven rosas); las plantas toman CO₂ y liberan O₂.
+- A quién afecta: B (spec 09, `src/minigames/greenhouse/*`), A y B (`MinigameScene.ts`, solo se agrega `addRoomPiece`), `balance.ts` (claves renombradas de `GREENHOUSE_BALANCE`, solo las usa este minijuego), `src/ui/sprites.ts` (2 claves nuevas), i18n.
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
+## 2026-11-15 — De noche no se pueden usar los paneles solares
+- Quién: C (con Claude)
+- Qué se decidió: de noche **nadie** está en los paneles solares. El Sol se pone en `NIGHT_BALANCE.noSunFrom` (0.75 de noche = el 80 % de cada sol) y desde ahí hasta el sol siguiente nadie puede usarlos. Además, nadie empieza los paneles si no termina antes de que se ponga el Sol: los bots necesitan `botTaskDurationMs` (20 s) y la persona `NIGHT_BALANCE.playerSolarWorkMs` (15 s: caminar + minijuego). Si igual queda un bot ahí al ponerse el Sol, vuelve adentro sin premio (`sendBotsInAtSunset` en `updateRun`). Al tocar la sala sale "¡Ya se pone el Sol!" (si no llega a terminar) o "¡Sin Sol de noche!" (ya es de noche), y de noche hay una lunita sobre la sala. La noche es violeta: la misma imagen teñida (capa violeta que multiplica los colores) más un poco de oscuridad. **Contratos:** la regla vive en `src/core/daylight.ts` (`nightAmount`, `sunsetMs`, `isAfterSunset`, `isTooDarkFor`, `canStartTask`, `sendBotsInAtSunset`); `actions.ts` (`assignTask`) y `bots/autoPilot.ts` usan `canStartTask`. `nightAmount` pasa de `ui/nightfall.ts` a `core/daylight.ts`. **Equilibrio:** con menos horas de paneles la base se quedaba sin energía, así que (1) los bots en automático, cuando ya no hay Sol para cargar, no gastan la batería por debajo de `NIGHT_BALANCE.nightReserve` (15), como una tripulación real que guarda energía para la noche, y (2) `TASK_BALANCE['solar-panels'].gain` sube de 35 a 45. Con eso los tests de equilibrio siguen pasando (el chico que aprende sobrevive en Jezero, los bots solos no alcanzan, Gale es más difícil), y el chico simulado también respeta la noche. Hay tests nuevos en `tests/daylight.test.ts`.
+- Por qué: es real (sin Sol los paneles no dan energía; las misiones de la NASA cargan baterías de día para pasar la noche) y enseña a juntar energía mientras hay Sol.
+- A quién afecta: A (`src/core`, `src/bots`, `BaseScene.ts`, `tests/balance.test.ts`), `balance.ts` (`NIGHT_BALANCE`, ganancia de los paneles 35 → 45), i18n (`hud.noSun`, `hud.sunsetSoon`).
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
+## 2026-11-15 — De día y de noche: la barra del Sol oscurece la base y las salas
+- Quién: C (con Claude)
+- Qué se decidió: la barra del sol de arriba es el Sol cruzando el cielo. Cuando pasa la mitad del sol (`NIGHT_BALANCE.nightStarts` = 0.5) la base empieza a oscurecerse, hasta la noche cerrada en `fullNight` (0.9); el sol siguiente arranca de día. Es una capa oscura semitransparente (`src/ui/nightfall.ts`: `nightAmount`, `NightShade`) sobre el mapa y los astronautas, debajo del clima y del HUD. **Contratos:** `MinigameStartData` suma `nightAmount?` (opcional, 0 = día, 1 = noche) y `MinigameScene` oscurece la sala con la misma noche, expone `protected nightAmount` y `protected roomPoint(x, y)` (dónde cae en pantalla un píxel de la foto de la sala, por ejemplo su ventana). `BaseScene` crea la capa, la actualiza en `update` y pasa `nightAmount` al abrir un minijuego. Los minijuegos que no lo usan no cambian.
+- Además, de noche la estación prende sus luces (`src/scenes/base/StationLights.ts`): afuera Marte se tiñe de violeta, y adentro de las salas y los pasillos (su forma vista desde arriba, calcada del mapa) el piso conserva sus colores con una luz cálida. La noche va **debajo** de los carteles de las salas, las barras y los astronautas, para que se sigan leyendo bien. En la base reemplaza a `NightShade`, que se sigue usando en las salas de los minijuegos.
+- Por qué: que se note que la luz del Sol no dura todo el día, y que los paneles solares dependen de ella.
+- A quién afecta: A (spec 04, `BaseScene.ts`; `MinigameScene.ts`, solo se agrega), B (todas las salas se ven más oscuras de noche), `balance.ts` (`NIGHT_BALANCE` nuevo).
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
+## 2026-11-15 — Misión de paneles: el Sol, la luz que el polvo tapa y la batería
+- Quién: C (con Claude)
+- Qué se decidió: el minijuego de paneles (spec 07) mantiene "limpiar como raspadita", pero ahora se ve de dónde sale la energía. La luz del Sol entra por la ventana de la sala (no hay un Sol dibujado adentro) y llega en rayos amarillos a los 3 paneles: el rayo es débil donde hay polvo y fuerte donde el panel está limpio. De noche la ventana se oscurece y entra poca luz ("¡Es de noche: poca luz!"): llegan menos rayitos a la batería, pero el puntaje sigue siendo cuánto limpió. Cada panel manda rayitos de energía por un cable hasta una batería, tantos como limpio esté, y la batería se llena con lo limpio (el mismo número que el rendimiento). Cuando un panel queda impecable sale "¡+energía!". Igual que en oxígeno: tarjeta de 3 pasos antes de jugar (con pausa) y panel de pasos a la izquierda. Colores: amarillo = luz y energía (el de la barra de energía), marrón-naranja = polvo de Marte. **Código compartido nuevo:** la tarjeta y el panel de pasos pasan a `src/minigames/howTo/` (`showHowToCard`, `StepGuide`, `pictureRow`) para que cualquier minijuego los use; la misión de oxígeno ya los usa. `src/ui/plateLabel.ts` es la etiqueta sobre placa oscura. En `balance.ts` se agrega `SOLAR_PANELS_BALANCE.boltsPerSecond`, y hay claves nuevas de i18n.
+- Por qué: que la mecánica enseñe que la luz del Sol es la energía de la base y que el polvo la tapa. Respaldo: a Marte llega como máximo ~45 % de la luz que a la Tierra (NASA Mars Facts); el polvo apagó a Opportunity (2018) y a InSight (2022) (NASA/JPL).
+- A quién afecta: B (spec 07, `src/minigames/solar-panels/*`), los minijuegos que quieran explicar antes de jugar (`src/minigames/howTo/`), `balance.ts`, `i18n`.
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
 ## 2026-11-15 — Se permite una tarjeta de explicación antes de un minijuego
 - Quién: memocayar
 - Qué se decidió: `AGENTS.md` §4 decía "nunca un bloque de texto antes de jugar". Ahora un minijuego puede abrir con una tarjeta de explicación cuando la mecánica enseña algo real: pasos con dibujitos, una línea por paso (máximo 4), un botón grande para empezar y el juego en pausa mientras se ve.
 - Por qué: la Misión de oxígeno (PR #29) usa una tarjeta así para explicar MOXIE, y nos gustó cómo quedó.
 - A quién afecta: todas (reglas de diseño, `AGENTS.md` §4).
 - ¿Avisado al equipo?: pendiente (avisar a maviflora y jz-rs).
+
+---
 
 ## 2026-11-14 — Misión de oxígeno: "Rompé la molécula", como MOXIE
 - Quién: C (con Claude)
@@ -29,21 +91,14 @@ Formato:
 
 ---
 
-## 2026-11-15 — En la cabina, los destinos se eligen en el tablero del centro (spec 18)
-- Quién: C (Emilia), con Claude
-- Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca no cambia.
-- Por qué: al probarlo, lo intuitivo era tocar la pantalla del centro para elegir misión.
-- A quién afecta: solo el spec 18 (`cabina-fondo.png`, `layout.ts`: `CABIN_DASHBOARD_*` reemplaza a `CABIN_MONITOR_*`, que solo usaba el spec 18; textos `cabin.manualDone` y `cabin.again`).
-- ¿Avisado al equipo?: no todavía (va en el PR #33).
-
-## 2026-11-15 — Ajustes de la intro después de probarla (spec 18)
+## 2026-11-15 — Ajustes de la intro después de probarla (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: al salir de una partida (resultado o ✕ en la base) se vuelve a la **nave** (cabina), no al mapa ni al monitor. El aterrizaje termina con un fundido a negro directo a la base (sin pantalla de "llegaste"). Los diálogos de la guía usan el panel y los botones normales del juego. En el monitor la pantalla grande muestra solo destino, nombre y fotos reales (el botón de la cámara pasa por **varias fotos NASA por destino**, en `src/content/locationGallery.ts`); la explicación, los objetivos y si se puede aterrizar aparecen con el botón i. La pantallita de ruta es un mini mapa de Marte. Los textos del manual son más explicativos.
 - Por qué: pedido de C al probar la intro.
-- A quién afecta: navegación (`ResultScene.ts`, `BaseScene.ts`: cambian a dónde vuelven), `i18n` (claves nuevas y textos del manual reescritos; se borraron `landing.arrived` y `landing.start`, que solo usaba el spec 18).
+- A quién afecta: navegación (`ResultScene.ts`, `BaseScene.ts`: cambian a dónde vuelven), `i18n` (claves nuevas y textos del manual reescritos; se borraron `landing.arrived` y `landing.start`, que solo usaba el spec 19).
 - ¿Avisado al equipo?: no todavía (va en el PR #33).
 
-## 2026-11-15 — Se implementa la intro en la cabina (spec 18)
+## 2026-11-15 — Se implementa la intro en la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: se programa la intro con los bocetos de la cabina como arte del juego (`public/assets/sprites/cabina/`), aunque el spec decía "no implementar". Escenas nuevas: `CabinScene` (cabina, bienvenida de la guía), `ManualScene` (tablet, 10 páginas), `MonitorScene` (consola de destinos) y `LandingScene` (aterrizaje). Decisiones que el spec dejaba abiertas:
   - **JUGAR lleva a la cabina**, no al mapa. Salir de la base y el botón "Mapa" de resultados llevan al **monitor**. `MarsMapScene` queda registrada pero ya no se llega a ella.
@@ -57,25 +112,25 @@ Formato:
 - A quién afecta: spec 11 y 02 (navegación desde JUGAR, `main.ts`, `sceneKeys.ts`), spec 12 (el monitor reemplaza al mapa), spec 05/04 (salida de la base), progreso guardado (`progressStorage.ts`), i18n, `layout.ts` y `balance.ts` (solo se agregaron valores).
 - ¿Avisado al equipo?: no todavía.
 
-## 2026-11-15 — El manual de misión es una tablet, no un libro (spec 18)
+## 2026-11-15 — El manual de misión es una tablet, no un libro (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: el manual se muestra en una **tablet de misión** (la que está apoyada en la consola izquierda de la cabina, vista de frente y en grande; ya no flota una tablet aparte), una página por pantalla. Su interfaz tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas celestes finas con brillo, esquinas tipo visor, barras por segmentos, líneas de escaneo y un destello breve al tocar. Las páginas de cada barra y del rover deben comparar la foto real de NASA con la representación del juego. La página de oxígeno sigue la nueva misión de MOXIE (spec 08). Maquetas en `docs/arte/bocetos/cabina/manual/` (no aprobadas).
 - Por qué: el libro abierto no convenció; en una tablet, con texto claro sobre fondo oscuro, la letra chica se lee mejor y encaja con "objetos de hoy" de la guía de estilo.
-- A quién afecta: spec 18 (escenas 1, 2 y 3; el libro de la cabina pasa a ser la tablet) y spec 13 (fotos para comparar).
+- A quién afecta: spec 19 (escenas 1, 2 y 3; el libro de la cabina pasa a ser la tablet) y spec 13 (fotos para comparar).
 - ¿Avisado al equipo?: no todavía.
 
-## 2026-11-14 — Primer boceto de la cabina (spec 18): vista frontal inmersiva
+## 2026-11-14 — Primer boceto de la cabina (spec 19): vista frontal inmersiva
 - Quién: C (Emilia), con Claude
-- Qué se decidió: se empieza a explorar el arte de la cabina aunque el spec 18 decía "no generar assets". El boceto vive en `docs/arte/bocetos/` (fuera de `public/`, el juego no lo usa) y no es arte aprobado. La cabina va en **vista frontal en perspectiva con punto de fuga**, más inmersiva, como `docs/arte/propuesta-3/2-sala.png`, y **no isométrica** como la base. Mismo estilo de pixel art y paleta que el kit. La ventana y el monitor tienen el vidrio/pantalla en magenta para poner después la foto real de Marte y la interfaz. La astronauta va aparte, como sprite, para que flote en gravedad cero.
+- Qué se decidió: se empieza a explorar el arte de la cabina aunque el spec 19 decía "no generar assets". El boceto vive en `docs/arte/bocetos/` (fuera de `public/`, el juego no lo usa) y no es arte aprobado. La cabina va en **vista frontal en perspectiva con punto de fuga**, más inmersiva, como `docs/arte/propuesta-3/2-sala.png`, y **no isométrica** como la base. Mismo estilo de pixel art y paleta que el kit. La ventana y el monitor tienen el vidrio/pantalla en magenta para poner después la foto real de Marte y la interfaz. La astronauta va aparte, como sprite, para que flote en gravedad cero.
 - Por qué: la cabina es una escena fija donde se tocan objetos; una vista frontal la hace más inmersiva y deja el centro libre para la astronauta flotando.
-- A quién afecta: spec 18 (perspectiva, que estaba pendiente), spec 11 (JUGAR lleva a la cabina), spec 13 (falta una foto real de Marte entero para la ventana).
+- A quién afecta: spec 19 (perspectiva, que estaba pendiente), spec 11 (JUGAR lleva a la cabina), spec 13 (falta una foto real de Marte entero para la ventana).
 - ¿Avisado al equipo?: no todavía.
 
 ## 2026-11-14 — Consolidar la intro antes de producir imágenes
 - Quién: Emilia.
-- Qué se decidió: volver a la planificación previa a generar imágenes y documentarla en el spec 18. Incluir comparación de fotos NASA con pixel art, eventos y comunicaciones demoradas. Los bocetos y prompts posteriores no constituyen arte aprobado; perspectiva y composición quedan pendientes.
+- Qué se decidió: volver a la planificación previa a generar imágenes y documentarla en el spec 19. Incluir comparación de fotos NASA con pixel art, eventos y comunicaciones demoradas. Los bocetos y prompts posteriores no constituyen arte aprobado; perspectiva y composición quedan pendientes.
 - Por qué: cerrar el recorrido y el contenido antes de retomar la producción visual.
-- A quién afecta: specs 01, 11, 12, 13 y nuevo spec 18. No se implementan cambios en misiones.
+- A quién afecta: specs 01, 11, 12, 13 y nuevo spec 19. No se implementan cambios en misiones.
 - ¿Avisado al equipo?: pendiente compartir el spec detallado; el rumbo general ya había sido aprobado.
 
 ## 2026-11-14 — Intro y preparación de misión dentro de la nave
