@@ -18,7 +18,12 @@ import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
 import { showRoverResult } from './roverResult';
-import { drawTripTimeBar, flyTubeToCounter, sayAboveRover } from './driveFeedback';
+import {
+  drawTripTimeBar,
+  flyTubeToCounter,
+  sayAboveRover,
+  showSavedSamples,
+} from './driveFeedback';
 import { ROVER_STEPS } from './roverRecipe';
 import { TripInstruction } from './tripInstruction';
 import { RoverTrack } from './RoverTrack';
@@ -199,15 +204,18 @@ export class RoverExpeditionScene extends Phaser.Scene {
 
   /**
    * The X: the rover comes back at once with everything it has so far (rocks caught and tubes
-   * already sealed; a tube still open does not count), and the base never stays paused.
+   * already sealed; a tube still open does not count), and the base never stays paused. The
+   * samples are saved right away; a big "+3 saved!" stays a moment so the kid sees it.
    */
   private exit(): void {
     if (this.phase === 'done') return;
-    const tubes = this.storage?.stop();
+    const total = this.totalSamples(this.storage?.stop());
     this.phase = 'done';
     this.resumeBase();
-    this.onFinish(this.totalSamples(tubes));
-    this.scene.stop();
+    this.onFinish(total);
+    this.closeButton.setVisible(false);
+    if (total > 0) showSavedSamples(this, total, () => this.scene.stop());
+    else this.scene.stop();
   }
 
   private totalSamples(tubes: StorageResult = { sealed: 0, contaminated: 0 }): number {

@@ -227,6 +227,7 @@
   "rover.fact": "Perseverance carries 43 tubes, and each sample is the size of a piece of chalk.",
   "rover.sandStuck": "Soft sand!",
   "rover.soloInstruction": "Now on your own! Tube {current} of {total}",
+  "rover.samplesSaved": "+{count} saved!",
   "rover.tubesSealed": "🧪 Sealed tubes: {sealed}",
   "rover.tubesLost": "Ruined by dust: {count}"
 }
