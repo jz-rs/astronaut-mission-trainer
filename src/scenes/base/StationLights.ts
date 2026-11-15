@@ -29,9 +29,9 @@ const OUTLINES: readonly (readonly number[])[] = [
   ],
 ];
 /** How much of the outside night still reaches the inside (the walls block part of it). */
-const INSIDE_NIGHT = 0.3;
+const INSIDE_NIGHT = 0.45;
 /** The warm lamp light added inside at full night. */
-const LAMP_ALPHA = 0.18;
+const LAMP_ALPHA = 0.08;
 
 export class StationLights {
   private readonly outsideTint: Phaser.GameObjects.Rectangle;
