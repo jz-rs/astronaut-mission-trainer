@@ -20,6 +20,13 @@ Formato:
 - Affects: spec 19 only (`CabinScene.ts`, `ManualScene.ts`, `docs/specs/19-intro-cabina-manual.md`). It uses an existing i18n key; no shared contract changes.
 - Team notified?: not yet (goes in the PR).
 
+## 2026-11-15 — Everything new in the repo goes in English
+- Who: the team, with Claude
+- What was decided: from now on commit messages, branch names, PR titles and descriptions, GitHub comments and reviews, and code comments are written in English (NASA Space Apps rule). Game texts in `src/i18n/es.json` stay in Spanish. Git history is not rewritten. Rule added to `AGENTS.md` §2 and §6.
+- Why: the hackathon requires the repo content to be in English.
+- Affects: everyone and every agent (`AGENTS.md`).
+- Team notified?: yes (with this PR).
+
 ## 2026-11-15 — Las barras de cada sala pasan a ser de bloques
 - Quién: C (Emilia), con Claude
 - Qué se decidió: la barra de cada sala (la tarjeta de `RoomView`, las únicas barras de stats del juego) deja de ser una barra continua y pasa a ser de **10 bloques**, como las del manual de la tablet: bloques encendidos en el color de la stat hasta el valor y bloques apagados después. Si la stat está por encima de 0 se ve al menos un bloque. Cuando la barra está baja, los bloques encendidos titilan en rojo como antes y los apagados se ven rojizos. La cantidad de bloques es una sola constante (`STAT_BAR_SEGMENTS` en `layout.ts`) para la base y el manual.
