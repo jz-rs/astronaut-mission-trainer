@@ -31,6 +31,9 @@ export function rectCenter(rect: Rect): Point {
 
 /** Top band of the base screen with the 4 bars. */
 export const HUD_HEIGHT = 44;
+/** Stat bars are drawn as this many separate blocks (rooms and the manual), easy to count. */
+export const STAT_BAR_SEGMENTS = 10;
+export const STAT_BAR_SEGMENT_GAP = 2;
 
 /** Astronaut sprites are 54×80 files shown at half size (~27×40), like the rest of the kit. */
 export const ASTRONAUT_SCALE = 0.5;
@@ -148,11 +151,8 @@ export const GARAGE_SPOT: Point = { x: 360, y: 212 };
  * holes, so whatever is drawn behind them (photos, screen content) shows through the glass.
  */
 export const CABIN_WINDOW: Rect = { x: 261, y: 75, width: 118, height: 77 };
-export const CABIN_MONITOR_SCREENS: readonly Rect[] = [
-  { x: 538, y: 143, width: 47, height: 68 },
-  { x: 517, y: 166, width: 14, height: 26 },
-  { x: 506, y: 196, width: 16, height: 10 },
-];
+/** Center screen of the dashboard, under the window: tapping it picks the destination. */
+export const CABIN_DASHBOARD_SCREEN: Rect = { x: 301, y: 155, width: 40, height: 13 };
 export const CABIN_TABLET_SCREEN: Rect = { x: 49, y: 221, width: 79, height: 39 };
 /**
  * The tablet lies on the table in perspective: its screen is a slanted quad, measured from the
@@ -166,20 +166,21 @@ export const CABIN_TABLET_QUAD = {
 } as const;
 /** Touch areas of the objects a kid can tap in the cabin. */
 export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
-export const CABIN_MONITOR_ZONE: Rect = { x: 496, y: 108, width: 140, height: 172 };
-/** Outline of the monitor console, for its glowing edge when the guide points at it. */
-export const CABIN_MONITOR_OUTLINE: readonly Point[] = [
-  { x: 510, y: 112 },
-  { x: 628, y: 110 },
-  { x: 636, y: 126 },
-  { x: 636, y: 240 },
-  { x: 602, y: 272 },
-  { x: 497, y: 210 },
-  { x: 498, y: 200 },
-  { x: 506, y: 194 },
-  { x: 507, y: 118 },
-];
+export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 54 };
+/** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
+export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
+/** Loose things floating in zero gravity: where each one starts its drift. */
+export const CABIN_FLOATING_ITEMS = [
+  { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
+  { key: 'floatingWater', x: 255, y: 300, angle: -12 },
+  { key: 'floatingPen', x: 405, y: 312, angle: -20 },
+  { key: 'floatingWrench', x: 112, y: 44, angle: 30 },
+] as const;
+/** The floating things are drawn about this many game pixels tall. */
+export const CABIN_FLOATING_ITEM_SIZE = 34;
+/** Where the floating things can drift: the whole cabin, from the ceiling down to the floor. */
+export const CABIN_FLOATING_AREA: Rect = { x: 30, y: 30, width: 580, height: 300 };
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;
 export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };
@@ -187,7 +188,16 @@ export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86
 /** The tablet fills the screen; pages are drawn on its glass. */
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
 
-/** Destination console: its 3 screens and the physical buttons (top-left corners). */
+/**
+ * Destination console: the dashboard under the cockpit window, seen up close from the seat. The
+ * bottom of the windshield shows at the top and the cabin walls at the sides; then its 3 screens
+ * and the physical buttons (top-left corners).
+ */
+export const CONSOLE_WINDOW: Rect = { x: 132, y: 0, width: 371, height: 60 };
+/** Through the windshield, close up: the lower half of the planet. */
+export const CONSOLE_WINDOW_PHOTO_FOCUS_Y = 0.7;
+/** The windshield has round corners: the photo credit sits inside them. */
+export const CONSOLE_WINDOW_CREDIT_AREA: Rect = { x: 172, y: 0, width: 291, height: 57 };
 export const CONSOLE_BIG_SCREEN: Rect = { x: 193, y: 110, width: 254, height: 141 };
 export const CONSOLE_STARS_SCREEN: Rect = { x: 62, y: 193, width: 80, height: 66 };
 export const CONSOLE_ROUTE_SCREEN: Rect = { x: 37, y: 291, width: 79, height: 27 };

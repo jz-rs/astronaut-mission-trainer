@@ -18,6 +18,10 @@ const CABIN_FILES = {
   guideSeated: 'cabina/astronauta-guia-sentada.png',
   playerSeated: 'cabina/astronauta-violeta-sentada.png',
   dustCloud: 'energia/nube-polvo.png',
+  floatingPen: 'cabina/flotantes/birome.png',
+  floatingWater: 'cabina/flotantes/bolsa-agua.png',
+  floatingWrench: 'cabina/flotantes/llave.png',
+  floatingSnack: 'cabina/flotantes/snack.png',
 } as const;
 
 export type CabinArtKey = keyof typeof CABIN_FILES;

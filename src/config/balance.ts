@@ -195,7 +195,18 @@ export const INTRO_BALANCE = {
   /** Frames of a physical console button going down and back up. */
   consolePressFrameMs: 50,
   guideFloatMs: 1_800,
+  /**
+   * Zero gravity: loose things keep a slow, steady drift in a straight line (game px per second)
+   * and only change direction when they bump softly into a wall.
+   */
+  itemDriftMinPxPerSecond: 4,
+  itemDriftMaxPxPerSecond: 9,
+  /** One full slow turn of a floating thing, at most and at least. */
+  itemSpinMinMs: 20_000,
+  itemSpinMaxMs: 40_000,
   highlightPulseMs: 600,
+  /** The glow of the LAND button breathes while the ship can land (half a breath). */
+  landGlowPulseMs: 900,
   landingDurationMs: 6_000,
   /** After touchdown: a still moment, then a fade to black into the base. */
   landingStillMs: 700,

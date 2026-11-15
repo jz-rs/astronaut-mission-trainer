@@ -9,9 +9,22 @@ import {
 import { loadProgress } from '../../services/progressStorage';
 import { addScanlines } from '../../ui/techFrame';
 import { SPRITE_SCALE } from '../../ui/sprites';
-import { consoleButtonTexture, LAND_LOCKED_TEXTURE, preloadCabinArt } from '../cabin/cabinArt';
+import {
+  consoleButtonTexture,
+  INTRO_PHOTOS,
+  LAND_LOCKED_TEXTURE,
+  preloadCabinArt,
+} from '../cabin/cabinArt';
+import { addPhotoCredit } from '../cabin/cabinView';
+import { addCoverPhoto } from '../../ui/coverPhoto';
+import {
+  CONSOLE_WINDOW,
+  CONSOLE_WINDOW_CREDIT_AREA,
+  CONSOLE_WINDOW_PHOTO_FOCUS_Y,
+} from '../../ui/layout';
 import { SCENE_KEYS } from '../sceneKeys';
 import { createConsoleButton, type ConsoleButton } from './consoleButton';
+import { addLandHint, type LandHint } from './landHint';
 import {
   drawMonitorScreens,
   galleryLength,
@@ -20,7 +33,8 @@ import {
 } from './monitorScreens';
 
 /**
- * Spec 19, scene 4 — The destination console, seen up close. Physical buttons browse the
+ * Spec 19, scene 4 — The destination console: the dashboard under the cockpit window, seen up
+ * close from the seat. Physical buttons browse the
  * places (every one can be explored), change the real photo, show the info (i) and LAND.
  * LAND only works after the first manual and on unlocked places; otherwise the screen says
  * what is still missing. It replaces the old Mars map as the way to pick a destination.
@@ -36,6 +50,7 @@ export class MonitorScene extends Phaser.Scene {
   private photoIndex = 0;
   private screenParts: Phaser.GameObjects.GameObject[] = [];
   private landButton!: ConsoleButton;
+  private landHint!: LandHint;
 
   constructor() {
     super(SCENE_KEYS.monitor);
@@ -50,6 +65,9 @@ export class MonitorScene extends Phaser.Scene {
     this.view = 'photo';
     this.photoIndex = 0;
     this.screenParts = [];
+    // The bottom of the cockpit window: the same real Mars the cabin window shows.
+    addCoverPhoto(this, 'marsGlobe', CONSOLE_WINDOW, 1, CONSOLE_WINDOW_PHOTO_FOCUS_Y);
+    addPhotoCredit(this, CONSOLE_WINDOW_CREDIT_AREA, INTRO_PHOTOS.marsGlobe.credit);
     this.add.image(0, 0, 'console').setOrigin(0).setScale(SPRITE_SCALE).setDepth(10);
     createConsoleButton(this, 'back', () => this.scene.start(SCENE_KEYS.cabin)).sprite.setDepth(11);
     createConsoleButton(this, 'previous', () => this.browse(-1)).sprite.setDepth(11);
@@ -58,6 +76,7 @@ export class MonitorScene extends Phaser.Scene {
     createConsoleButton(this, 'info', () => this.toggleInfo()).sprite.setDepth(11);
     this.landButton = createConsoleButton(this, 'land', () => this.land());
     this.landButton.sprite.setDepth(11);
+    this.landHint = addLandHint(this, this.landButton.sprite);
     addScanlines(this);
     this.refresh();
   }
@@ -120,6 +139,7 @@ export class MonitorScene extends Phaser.Scene {
     this.landButton.setRestingTexture(
       state.blocker ? LAND_LOCKED_TEXTURE : consoleButtonTexture('aterrizar'),
     );
+    this.landHint.setReady(!state.blocker);
   }
 
   private land(): void {

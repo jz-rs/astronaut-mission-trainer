@@ -3,7 +3,7 @@ import { RUN_BALANCE } from '../../config/balance';
 import { STAT_IDS } from '../../core/types';
 import { t } from '../../i18n';
 import { astronautFrameKey, type SuitColor } from '../../ui/astronautFrames';
-import { FONT_SIZE, rectCenter, type Rect } from '../../ui/layout';
+import { FONT_SIZE, rectCenter, STAT_BAR_SEGMENTS, type Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS, TECH_GLOW } from '../../ui/palette';
 import { addGlowText } from '../../ui/screenUi';
 import { STAT_ICON_SPRITES } from '../../ui/sprites';
@@ -19,7 +19,6 @@ type ArtDrawer = (scene: Phaser.Scene, area: Rect) => Parts;
 const CREW: readonly SuitColor[] = ['violet', 'red', 'green', 'yellow'];
 /** The "ready" page shows the four bars, one of them almost empty. */
 const READY_BAR_FILLS = [0.8, 0.9, 0.7, 0.2] as const;
-const BAR_SEGMENTS = 10;
 
 /** Any loaded texture (kit sprite, astronaut frame or cabin art), its longest side `size` pixels. */
 function sprite(scene: Phaser.Scene, x: number, y: number, key: string, size: number) {
@@ -125,9 +124,9 @@ function drawBars(scene: Phaser.Scene, area: Rect): Parts {
   STAT_IDS.forEach((stat, index) => {
     const y = area.y + rowHeight * (index + 1);
     parts.push(sprite(scene, area.x + 22, y, STAT_ICON_SPRITES[stat], 16));
-    const filled = Math.round(READY_BAR_FILLS[index] * BAR_SEGMENTS);
+    const filled = Math.round(READY_BAR_FILLS[index] * STAT_BAR_SEGMENTS);
     const color = filled <= 2 ? PALETTE.alert : STAT_COLORS[stat];
-    for (let segment = 0; segment < BAR_SEGMENTS; segment += 1) {
+    for (let segment = 0; segment < STAT_BAR_SEGMENTS; segment += 1) {
       const alpha = segment < filled ? 1 : 0.2;
       graphics.fillStyle(segment < filled ? color : PALETTE.metal, alpha);
       graphics.fillRect(area.x + 40 + segment * 11, y - 4, 9, 9);

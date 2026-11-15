@@ -5,30 +5,33 @@ import { loadProgress, saveProgress } from '../../services/progressStorage';
 import {
   CABIN_GUIDE_SCALE,
   CABIN_GUIDE_SPOT,
-  CABIN_MONITOR_ZONE,
+  CABIN_DASHBOARD_OUTLINE,
+  CABIN_DASHBOARD_SCREEN,
+  CABIN_DASHBOARD_ZONE,
   CABIN_TABLET_ZONE,
   CABIN_WINDOW,
   type Rect,
 } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addScanlines } from '../../ui/techFrame';
+import { drawRouteMap } from '../monitor/routeMap';
 import { SCENE_KEYS } from '../sceneKeys';
 import { INTRO_PHOTOS, preloadCabinArt, type CabinArtKey } from './cabinArt';
 import {
   addCabinBackground,
   addHighlight,
-  addMonitorGlow,
   addPhotoCredit,
   addWindowPhoto,
   drawCabinScreens,
 } from './cabinView';
+import { addFloatingItems } from './floatingItems';
 import { showGuideMessage } from './guideMessage';
 import { showWelcomeExtra, WELCOME_STEPS, type CabinTarget } from './welcomeScript';
 
 /**
  * Spec 19, scenes 1 and 3 — The ship cabin, fixed: nothing walks, a kid taps objects.
  * The window shows real Mars; the guide welcomes the player the first time; the tablet opens
- * the mission manual and the monitor opens the destination console. Tapping the guide replays
+ * the mission manual and the dashboard under the window opens the destination console. Tapping the guide replays
  * the welcome. Nothing here uses mission time.
  */
 export interface CabinSceneData {
@@ -39,7 +42,7 @@ export interface CabinSceneData {
 const TARGET_AREAS: Record<CabinTarget, Rect> = {
   window: CABIN_WINDOW,
   tablet: CABIN_TABLET_ZONE,
-  monitor: CABIN_MONITOR_ZONE,
+  monitor: CABIN_DASHBOARD_OUTLINE,
 };
 const GUIDE_FLOAT_PX = 6;
 const GUIDE_DEPTH = 20;
@@ -61,11 +64,13 @@ export class CabinScene extends Phaser.Scene {
   create(data: CabinSceneData = {}): void {
     addWindowPhoto(this, 'marsGlobe', CABIN_WINDOW);
     drawCabinScreens(this);
+    drawRouteMap(this, -1, CABIN_DASHBOARD_SCREEN);
     addCabinBackground(this, 'cabin');
     addPhotoCredit(this, CABIN_WINDOW, INTRO_PHOTOS.marsGlobe.credit);
+    addFloatingItems(this);
     this.guide = this.addGuide();
     this.addTouchZone(CABIN_TABLET_ZONE, () => this.openManual());
-    this.addTouchZone(CABIN_MONITOR_ZONE, () => this.scene.start(SCENE_KEYS.monitor));
+    this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.scene.start(SCENE_KEYS.monitor));
     addScanlines(this);
     this.startMoment(data);
   }
@@ -119,8 +124,7 @@ export class CabinScene extends Phaser.Scene {
 
   private point(pose: CabinArtKey, target?: CabinTarget): void {
     this.moment.forEach((part) => part.destroy());
-    if (target === 'monitor') this.moment = [addMonitorGlow(this)];
-    else this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
+    this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
     this.guide.setTexture(pose);
   }
 

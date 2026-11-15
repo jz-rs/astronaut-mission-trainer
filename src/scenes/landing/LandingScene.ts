@@ -4,14 +4,14 @@ import { photoTextureKey } from '../../content/locationPhotos';
 import { t } from '../../i18n';
 import { setCoverPhoto } from '../../ui/coverPhoto';
 import {
-  CABIN_MONITOR_SCREENS,
+  CABIN_DASHBOARD_SCREEN,
   GAME_HEIGHT,
   GAME_WIDTH,
   LANDING_SEATED_GUIDE,
   LANDING_SEATED_PLAYER,
   LANDING_WINDOW,
 } from '../../ui/layout';
-import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { PALETTE } from '../../ui/palette';
 import { addGlowText } from '../../ui/screenUi';
 import { SPRITE_SCALE } from '../../ui/sprites';
 import { addScanlines } from '../../ui/techFrame';
@@ -33,6 +33,9 @@ export interface LandingSceneData {
 }
 
 const SEATED_EXTRA_SHAKE = 0.6;
+/** The altitude is small and sharp, to fit the dashboard's little screen. */
+const ALTITUDE_TEXT = { scale: 0.6, resolution: 4 } as const;
+const ALTITUDE_TOP_SHARE = 0.3;
 
 export class LandingScene extends Phaser.Scene {
   private locationId = '';
@@ -90,9 +93,13 @@ export class LandingScene extends Phaser.Scene {
 
   private buildCabin(): void {
     this.buildWindow();
-    const screen = CABIN_MONITOR_SCREENS[0] ?? LANDING_WINDOW;
+    const screen = CABIN_DASHBOARD_SCREEN;
     const screens = drawCabinScreens(this);
-    this.altitude = this.addAltitude(screen.x + screen.width / 2, screen.y + screen.height / 2);
+    // On the upper half of the dashboard screen: the joystick covers the lower half.
+    this.altitude = this.addAltitude(
+      screen.x + screen.width / 2,
+      screen.y + ALTITUDE_TOP_SHARE * screen.height,
+    );
     const cabin = this.add.image(0, 0, 'cabin').setOrigin(0).setScale(SPRITE_SCALE);
     this.seated = [
       this.add.image(LANDING_SEATED_GUIDE.x, LANDING_SEATED_GUIDE.y, 'guideSeated'),
@@ -103,7 +110,8 @@ export class LandingScene extends Phaser.Scene {
   }
 
   private addAltitude(x: number, y: number): Phaser.GameObjects.Text {
-    return addGlowText(this, x, y, '', { color: TECH_GLOW });
+    const text = addGlowText(this, x, y, '', { color: PALETTE.white });
+    return text.setResolution(ALTITUDE_TEXT.resolution).setScale(ALTITUDE_TEXT.scale);
   }
 
   /** The cabin zooms toward the window; texts and buttons stay put on their own camera. */
