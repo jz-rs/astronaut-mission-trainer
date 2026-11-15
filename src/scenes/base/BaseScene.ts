@@ -20,6 +20,7 @@ import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
 import { addScanlines } from '../../ui/techFrame';
 import { finishRun } from '../runEnd';
+import type { ManualSceneData } from '../manual/ManualScene';
 import { SCENE_KEYS } from '../sceneKeys';
 import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
@@ -27,6 +28,7 @@ import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
 import { EventAnnouncer } from './EventAnnouncer';
 import { ExitRunView } from './ExitRunView';
+import { addManualButton } from './ManualButton';
 import { GarageView } from './GarageView';
 import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
@@ -131,6 +133,7 @@ export class BaseScene extends Phaser.Scene {
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
+    addManualButton(this, () => this.openManual());
     addFrost(this, this.locationId);
   }
 
@@ -210,6 +213,14 @@ export class BaseScene extends Phaser.Scene {
       onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
     };
     this.scene.launch(MINIGAME_REGISTRY[taskId].key, data);
+  }
+
+  /** The mission manual over the base. The whole base pauses (time, bars, taps) until it closes. */
+  private openManual(): void {
+    if (this.minigameOpen || this.runEnded || this.exitRun.isAsking) return;
+    const data: ManualSceneData = { onClose: () => this.scene.resume() };
+    this.scene.launch(SCENE_KEYS.manual, data);
+    this.scene.pause();
   }
 
   private freePlayer(): void {

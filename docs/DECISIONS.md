@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: en la barra de arriba de la base, al lado de VOLVER, hay una tablet chiquita con "MANUAL". Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.
+- Por qué: poder consultar el manual mientras jugás sin perder tiempo.
+- A quién afecta: dueña de la base y el HUD (spec 04): `BaseScene.ts` suma `openManual()` y el botón nuevo `src/scenes/base/ManualButton.ts`; `layout.ts` suma `BASE_MANUAL_BUTTON`. `ManualScene` acepta `{ onClose }` para abrirse encima de otra escena.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — El manual usa la lámpara LED de la misión del invernadero (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: la página Comida del manual dibuja la lámpara LED rosa de la misión del invernadero sobre la lechuga, importando `addLamp` de `src/minigames/greenhouse/greenhouseIcons.ts`. Es una excepción a la regla de que los minijuegos solo se conectan por `MinigameScene`/`registry` (AGENTS.md §3): si cambia esa función, cambia también el manual. Además, el Escudo se explica más fácil en 4 renglones (qué es la radiación, qué es el campo magnético, por qué Marte no lo tiene, qué hacés), sin recuadro de dato porque lo explica la misión.
