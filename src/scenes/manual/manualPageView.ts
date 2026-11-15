@@ -12,7 +12,7 @@ import { drawPageArt } from './manualArt';
 import type { ManualPage, PageEffect } from './manualPages';
 
 /**
- * Spec 18 — Draws one page of the manual on the tablet glass: title, the bars this action changes
+ * Spec 19 — Draws one page of the manual on the tablet glass: title, the bars this action changes
  * and the counter on top; then the picture (or the real photo next to the simulation's version)
  * and a short explanation, a bit longer than a tutorial line so kids learn the science behind it.
  * The tablet scene adds the arrows, the X and the progress dashes around it.

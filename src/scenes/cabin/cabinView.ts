@@ -16,7 +16,7 @@ import type { CabinArtKey } from './cabinArt';
 import { addTabletLabel } from './tabletLabel';
 
 /**
- * Spec 18 — Pieces shared by the cabin and the landing: the ship background with its glass holes,
+ * Spec 19 — Pieces shared by the cabin and the landing: the ship background with its glass holes,
  * the real photo in the window (always covering it, with its credit) and the yellow brackets that
  * point at the next thing to tap.
  */

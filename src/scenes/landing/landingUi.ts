@@ -4,7 +4,7 @@ import { PALETTE, TECH_GLOW } from '../../ui/palette';
 import { addGlowText, drawScreenPanel } from '../../ui/screenUi';
 
 /**
- * Spec 18, scene 5 — The ship's screen line at the top of the landing ("Destination confirmed").
+ * Spec 19, scene 5 — The ship's screen line at the top of the landing ("Destination confirmed").
  */
 const BANNER: Rect = { x: 120, y: 14, width: 400, height: 44 };
 

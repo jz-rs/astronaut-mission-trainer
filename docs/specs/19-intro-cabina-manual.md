@@ -1,4 +1,4 @@
-# 18 — Intro, cabina y manual de misión
+# 19 — Intro, cabina y manual de misión
 
 | Dueña | Rol | Prioridad | Fase | Estado |
 |---|---|---|---|---|
@@ -141,7 +141,7 @@ Propuesta visual (2026-11-15, maquetas: `docs/arte/bocetos/cabina/aterrizaje/ate
 ## Archivos y coordinación
 **Alcance actual autorizado:** documentación de este spec y referencias cruzadas. No implementar escenas ni generar assets.
 
-**Propio de esta planificación:** `docs/specs/18-intro-cabina-manual.md`.
+**Propio de esta planificación:** `docs/specs/19-intro-cabina-manual.md`.
 
 **Antes de implementar:** asignar dueña y acordar la lista concreta de archivos de escenas/UI. Coordinar con 02 y 11 la navegación; con 12 los destinos; con 13 textos/fotos; y con la dueña de guardado la finalización del manual. No se concede propiedad sobre archivos compartidos desde este borrador.
 

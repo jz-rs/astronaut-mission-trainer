@@ -1,10 +1,10 @@
 import Phaser from 'phaser';
 import { OXYGEN_FACTORY_BALANCE } from '../../config/balance';
-import { t } from '../../i18n';
-import { FONT_SIZE, type Point, type Rect } from '../../ui/layout';
+import { t, type TranslationKey } from '../../i18n';
+import type { Point, Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import { addSprite } from '../../ui/sprites';
-import { addText } from '../../ui/text';
+import { addPlateLabel } from '../../ui/plateLabel';
 
 /**
  * Spec 08 — The right side of the oxygen minigame: MOXIE, the grey pipe where the leftover CO
@@ -16,8 +16,6 @@ const TANK_WIDTH = 44;
 const TANK_GAP = 22;
 const TANK_SLOT_HEIGHT = 30;
 const TANK_PADDING = 4;
-const PLATE_PADDING = 4;
-const PLATE_ALPHA = 0.8;
 const LABEL_GAP = 12;
 const PIPE_WIDTH = 10;
 /** Dark edge around the pipes so they stand out over the room picture. */
@@ -143,45 +141,19 @@ export class OxygenStation {
   }
 
   private addLabels(): void {
-    const { machine, tank, ventExit } = this;
-    this.addLabel(
+    const { scene, machine, tank, ventExit } = this;
+    const label = (x: number, y: number, key: TranslationKey, color: number) =>
+      addPlateLabel(scene, x, y, t(key), color);
+    label(
       machine.centerX,
       machine.top - LABEL_GAP,
-      t('minigame.oxygen-factory.machine'),
+      'minigame.oxygen-factory.machine',
       PALETTE.cyan,
     );
-    this.addLabel(
-      machine.centerX,
-      machine.bottom + LABEL_GAP,
-      t('minigame.oxygen-factory.oven'),
-      PALETTE.sun,
-    );
-    this.addLabel(
-      tank.centerX,
-      tank.top - LABEL_GAP,
-      t('minigame.oxygen-factory.tank'),
-      STAT_COLORS.oxygen,
-    );
-    const outside = t('minigame.oxygen-factory.outside');
-    this.addLabel(
-      ventExit.x - outside.length * 4 - PIPE_WIDTH,
-      ventExit.y + 8,
-      outside,
-      PALETTE.metalLight,
-    );
-  }
-
-  /** A short label on a dark plate, so it stays readable over the busy room picture. */
-  private addLabel(x: number, y: number, content: string, color: number): void {
-    const label = addText(this.scene, x, y, content, { size: FONT_SIZE.small, color }).setDepth(2);
-    const width = label.width + PLATE_PADDING * 2;
-    const plate = this.scene.add.rectangle(
-      x,
-      y,
-      width,
-      label.height + PLATE_PADDING * 2,
-      PALETTE.night,
-    );
-    plate.setAlpha(PLATE_ALPHA).setDepth(1);
+    label(machine.centerX, machine.bottom + LABEL_GAP, 'minigame.oxygen-factory.oven', PALETTE.sun);
+    label(tank.centerX, tank.top - LABEL_GAP, 'minigame.oxygen-factory.tank', STAT_COLORS.oxygen);
+    const outsideWidth = t('minigame.oxygen-factory.outside').length * 4;
+    const outsideX = ventExit.x - outsideWidth - PIPE_WIDTH;
+    label(outsideX, ventExit.y + 8, 'minigame.oxygen-factory.outside', PALETTE.metalLight);
   }
 }

@@ -5,7 +5,7 @@ import type { SpriteKey } from '../../ui/sprites';
 import type { IntroPhotoKey } from '../cabin/cabinArt';
 
 /**
- * Spec 18, scene 2 — The ten pages of the mission manual, as data.
+ * Spec 19, scene 2 — The ten pages of the mission manual, as data.
  * A "compare" page puts a real NASA photo next to the game's version of the same thing, so kids
  * can tell science from simulation. Labels say "inspiration" when the game only borrows the idea.
  */

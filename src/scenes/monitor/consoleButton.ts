@@ -10,7 +10,7 @@ import {
 } from '../cabin/cabinArt';
 
 /**
- * Spec 18 — A physical button of the destination console: it sinks in three frames while the
+ * Spec 19 — A physical button of the destination console: it sinks in three frames while the
  * finger is down and pops back up before acting (it fires only if the finger lifts on it).
  * Unlike the tablet's screen buttons, these feel like real, chunky hardware.
  */

@@ -23,7 +23,7 @@ import { describeLanding, type LandingFrame } from './landingTimeline';
 import { addLandingBanner } from './landingUi';
 
 /**
- * Spec 18, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
+ * Spec 19, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
  * to the real photo of the chosen place, the cabin grows toward the window, the ship shakes,
  * a warning light blinks, the rockets raise dust, and then everything stops: we are there.
  * Every number of the sequence comes from landingTimeline.ts; this scene only draws it.

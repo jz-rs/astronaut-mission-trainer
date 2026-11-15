@@ -19,7 +19,7 @@ import { MANUAL_PAGES } from './manualPages';
 import { drawManualPage } from './manualPageView';
 
 /**
- * Spec 18, scene 2 — The mission manual on the tablet, one page per screen.
+ * Spec 19, scene 2 — The mission manual on the tablet, one page per screen.
  * There is no reading timer: seeing every page is enough. The first time the last page is
  * reached the manual counts as done and the guide sends the kid to the monitor.
  * Closing early keeps the page, so reopening the tablet continues where the kid left off.

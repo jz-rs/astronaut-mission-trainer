@@ -3,7 +3,7 @@ import { allGalleryPhotos, galleryTextureKey } from '../../content/locationGalle
 import { LOCATION_PHOTOS, photoTextureKey, type LocationPhoto } from '../../content/locationPhotos';
 
 /**
- * Spec 18 — Art of the ship intro (cabin, tablet, console, landing), loaded by the scenes that
+ * Spec 19 — Art of the ship intro (cabin, tablet, console, landing), loaded by the scenes that
  * use it. Phaser skips files already loaded, so every intro scene can call `preloadCabinArt`.
  * Real NASA photos are drawn much smaller than their files, so they get smooth scaling.
  */

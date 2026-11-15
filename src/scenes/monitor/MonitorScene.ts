@@ -20,7 +20,7 @@ import {
 } from './monitorScreens';
 
 /**
- * Spec 18, scene 4 — The destination console, seen up close. Physical buttons browse the
+ * Spec 19, scene 4 — The destination console, seen up close. Physical buttons browse the
  * places (every one can be explored), change the real photo, show the info (i) and LAND.
  * LAND only works after the first manual and on unlocked places; otherwise the screen says
  * what is still missing. It replaces the old Mars map as the way to pick a destination.

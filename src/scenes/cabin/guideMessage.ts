@@ -7,7 +7,7 @@ import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
 
 /**
- * Spec 18 — The guide talks in a regular game panel at the bottom, with the same chunky buttons
+ * Spec 19 — The guide talks in a regular game panel at the bottom, with the same chunky buttons
  * as the rest of the game: NEXT and (during the welcome) Skip. The tail points at the guide.
  * Only the tablet and the ship's screens use the "screen look".
  */

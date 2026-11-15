@@ -1,7 +1,7 @@
 import { INTRO_BALANCE } from '../../config/balance';
 
 /**
- * Spec 18, scene 5 — The landing as a pure function of progress (0 → 1), so the scene only
+ * Spec 19, scene 5 — The landing as a pure function of progress (0 → 1), so the scene only
  * draws and the whole sequence can be tuned here. Phases, as shares of the landing:
  *   entry   (0 – 0.25): orange heat over the window fades, the ship shakes a little;
  *   descent (0.2 – 0.88): the whole planet grows, turns into the photo of the place, the
