@@ -1,79 +1,79 @@
-# Specs — tareas del proyecto
+# Specs — project tasks
 
-Cada spec es **una tarea individual con una sola dueña**. Dice **qué hay que lograr** (objetivo y criterios de aceptación), no necesariamente cómo.
+Each spec is **an individual task with one owner**. It describes **what must be achieved** (objective and acceptance criteria), not necessarily how.
 
-## Cómo se usan
-1. **Leer** los specs (los propios y los ajenos que dependen de los tuyos).
-2. **Aprobar**: en la sección "Aprobación" de cada spec, cada una marca su ✅. Si no estás de acuerdo, comentalo en el chat del equipo **antes** de que se empiece.
-3. **Empezar** solo cuando el spec está aprobado por las 3. Cambiar el estado a 🔵 En curso.
-4. **Terminar**: todos los criterios de aceptación tildados + `npm run check` pasa + PR revisado → ✅ Hecho.
-5. **Cambiar un spec** ya aprobado: se avisa al equipo y se anota en `docs/DECISIONS.md`.
+## How to use them
+1. **Read** the specs (your own and others that depend on yours).
+2. **Approve**: each team member adds their ✅ in each spec's "Approval" section. If you disagree, discuss it in the team chat **before** work begins.
+3. **Start** only after all 3 approve the spec. Change status to 🔵 In progress.
+4. **Finish**: all acceptance criteria checked + `npm run check` passes + reviewed PR → ✅ Done.
+5. **Changing an approved spec**: notify the team and record it in `docs/DECISIONS.md`.
 
-Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá ese spec."*
+To work with your agent: *"Read AGENTS.md and docs/specs/NN-xxx.md and work on that spec."*
 
-## Estados
-⚪ Propuesto · 🟢 Aprobado · 🔵 En curso · ✅ Hecho · ⏸️ Recortado
+## Statuses
+⚪ Proposed · 🟢 Approved · 🔵 In progress · ✅ Done · ⏸️ Cut from scope
 
-## Índice
+## Index
 
-| # | Spec | Rol | Prioridad | Fase | Estado |
+| # | Spec | Role | Priority | Phase | Status |
 |---|---|---|---|---|---|
-| 01 | [Dirección de arte y set de imágenes](01-direccion-de-arte.md) | C | P0 | 0 | ⚪ |
-| 02 | [Base técnica: lógica + esqueleto del front](02-base-tecnica.md) | A | P0 | 0 | ⚪ |
-| 03 | [Núcleo de la partida](03-nucleo-partida.md) | A | P0 | 1 | ⚪ |
-| 04 | [Base y movimiento](04-base-y-movimiento.md) | A | P0 | 1 | ⚪ |
-| 05 | [Tripulación y bots](05-tripulacion-bots.md) | A | P0 | 1 | ⚪ |
-| 06 | [Contrato de minijuegos](06-contrato-minijuegos.md) | B | P0 | 0 | ⚪ |
-| 07 | [Minijuego: paneles solares](07-minijuego-paneles.md) | B | P0 | 1 | ⚪ |
-| 08 | [Minijuego: fábrica de oxígeno](08-minijuego-oxigeno.md) | B | P0 | 1 | ⚪ |
-| 09 | [Minijuego: invernadero](09-minijuego-invernadero.md) | B | P0 | 1 | ⚪ |
-| 10 | [Minijuego: muro de escudo](10-minijuego-escudo.md) | B | P0 | 1 | ⚪ |
-| 11 | [Pantallas de inicio y resultado + celu](11-pantallas-inicio-resultado.md) | C | P0 | 1 | ⚪ |
-| 12 | [Mapa de Marte y progresión](12-mapa-marte-progresion.md) | C | P1 | 2 | ⚪ |
-| 13 | [Contenido educativo e idiomas](13-contenido-educativo-idiomas.md) | C | P0 | 1 | ⚪ |
-| 14 | [Eventos y avisos con retraso](14-eventos-avisos.md) | A | P1 | 2 | ⚪ |
-| 15 | [Expedición con el rover](15-expedicion-rover.md) | B | P1 | 2 | ⚪ |
-| 16 | [Crisis meeting and shelter](16-colaboracion.md) | A | P2 | 3 | ⚪ |
-| 17 | [Deploy y demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
-| 18 | [Paneles solares afuera, bajo el cielo de Marte](18-paneles-afuera.md) | B + C | P1 | 2 | ⚪ |
-| 19 | [Intro, cabina y manual de misión](19-intro-cabina-manual.md) | C | P0 | Planificación | ⚪ |
-| 20 | [Cambiar de idioma dentro del juego](20-cambiar-idioma-en-el-juego.md) | C | _(a definir)_ | _(a definir)_ | ⚪ |
-| 21 | [La consola de destinos se ve "adelantada" a las paredes](21-consola-encastrada.md) | C | _(a definir)_ | _(a definir)_ | ⚪ |
+| 01 | [Art direction and image set](01-direccion-de-arte.md) | C | P0 | 0 | ⚪ |
+| 02 | [Technical foundation: logic + frontend skeleton](02-base-tecnica.md) | A | P0 | 0 | ⚪ |
+| 03 | [Game session core](03-nucleo-partida.md) | A | P0 | 1 | ⚪ |
+| 04 | [Base and movement](04-base-y-movimiento.md) | A | P0 | 1 | ⚪ |
+| 05 | [Crew and bots](05-tripulacion-bots.md) | A | P0 | 1 | ⚪ |
+| 06 | [Minigame contract](06-contrato-minijuegos.md) | B | P0 | 0 | ⚪ |
+| 07 | [Minigame: solar panels](07-minijuego-paneles.md) | B | P0 | 1 | ⚪ |
+| 08 | [Minigame: oxygen factory](08-minijuego-oxigeno.md) | B | P0 | 1 | ⚪ |
+| 09 | [Minigame: greenhouse](09-minijuego-invernadero.md) | B | P0 | 1 | ⚪ |
+| 10 | [Minigame: shield wall](10-minijuego-escudo.md) | B | P0 | 1 | ⚪ |
+| 11 | [Start and result screens + mobile](11-pantallas-inicio-resultado.md) | C | P0 | 1 | ⚪ |
+| 12 | [Mars map and progression](12-mapa-marte-progresion.md) | C | P1 | 2 | ⚪ |
+| 13 | [Educational content and languages](13-contenido-educativo-idiomas.md) | C | P0 | 1 | ⚪ |
+| 14 | [Events and delayed warnings](14-eventos-avisos.md) | A | P1 | 2 | ⚪ |
+| 15 | [Rover expedition](15-expedicion-rover.md) | B | P1 | 2 | ⚪ |
+| 16 | [Two-person lever and crisis meeting](16-colaboracion.md) | A | P2 | 3 | ⚪ |
+| 17 | [Deployment and demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
+| 18 | [Solar panels outside, under the Martian sky](18-paneles-afuera.md) | B + C | P1 | 2 | ⚪ |
+| 19 | [Intro, cabin, and mission manual](19-intro-cabina-manual.md) | C | P0 | Planning | ⚪ |
+| 20 | [Change language inside the game](20-cambiar-idioma-en-el-juego.md) | C | _(to be defined)_ | _(to be defined)_ | ⚪ |
+| 21 | [The destination console looks set forward from the walls](21-consola-encastrada.md) | C | _(to be defined)_ | _(to be defined)_ | ⚪ |
 
-## Plantilla para specs nuevos
+## Template for new specs
 
 ```markdown
-# NN — Título
+# NN — Title
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | A/B/C | P0/P1/P2 | 0–4 | ⚪ Propuesto |
+| _(name)_ | A/B/C | P0/P1/P2 | 0–4 | ⚪ Proposed |
 
-## Objetivo
-Qué tiene que lograrse, en 1–3 frases, desde el punto de vista de quien juega.
+## Objective
+What must be achieved, in 1–3 sentences, from the player's perspective.
 
-## Por qué importa
-Qué parte del GDD / del track cumple.
+## Why it matters
+Which part of the GDD / track it fulfills.
 
-## Alcance
-**Incluye:** …
-**No incluye:** …
+## Scope
+**Includes:** …
+**Excludes:** …
 
-## Criterios de aceptación
+## Acceptance criteria
 - [ ] …
 
-## Archivos
-**Propios (los puede modificar):** …
-**Contratos que usa (no modificar sin avisar):** …
+## Files
+**Owned (may modify):** …
+**Contracts used (do not modify without notification):** …
 
-## Dependencias
-**Depende de:** … · **Bloquea a:** …
+## Dependencies
+**Depends on:** … · **Blocks:** …
 
-## Preguntas abiertas
+## Open questions
 - …
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_
 ```

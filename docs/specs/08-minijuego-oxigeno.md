@@ -1,39 +1,39 @@
-# 08 — Minijuego: fábrica de oxígeno 💨
+# 08 — Minigame: oxygen factory 💨
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | B | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | B | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-**Llevar el CO₂ del aire de Marte a MOXIE y ver por su ventanita cómo se parte y cómo dos O forman O₂** (ver DECISIONS 2026-11-14), para entender que en Marte se puede fabricar oxígeno a partir de su aire.
+## Objective
+**Bring CO₂ from Martian air into MOXIE and watch through its little window as it splits and two O atoms form O₂** (see DECISIONS 2026-11-14), to understand that oxygen can be made from Mars' air.
 
-## Por qué importa
-Oxígeno es la barra que baja más rápido. Y enseña MOXIE, el experimento de Perseverance que hizo oxígeno en Marte de verdad.
+## Why it matters
+Oxygen is the fastest-decreasing bar. Teaches MOXIE, the Perseverance experiment that really made oxygen on Mars.
 
-## Cómo se juega
-- Antes del reloj, una tarjeta explica los 4 pasos con dibujitos y el botón "¡A fabricar!" (el juego y la base quedan en pausa).
-- Moléculas de CO₂ (O azul – C oscuro – O azul) flotan por la pantalla; la jugadora las arrastra o toca para meterlas en MOXIE.
-- Por la ventanita de MOXIE se ve: el CO₂ se calienta (naranja) y se parte; el CO sale gris por el caño gris; la O azul espera ("¡Falta 1 CO₂!").
-- Con dos O se forma O₂, que va por el caño azul al tanque ("¡+1 O₂!").
-- Termina al llenar el tanque de O₂ (`oxygenGoal`) o al acabarse el tiempo.
-- **Rendimiento**: CO₂ metidos en MOXIE / CO₂ necesarios (2 por O₂), + bonus por velocidad.
-- Dificultad por lugar: moléculas más rápidas.
+## How to play
+- Before the clock starts, a card explains 4 illustrated steps with a "Let's make oxygen!" button (game and base paused).
+- CO₂ molecules (blue O – dark C – blue O) float around the screen; drag or tap them to feed MOXIE.
+- Through MOXIE's window: CO₂ heats up (orange) and splits; gray CO exits through the gray pipe; blue O waits ("Need 1 more CO₂!").
+- Two O atoms form O₂, which travels through the blue pipe to the tank ("+1 O₂!").
+- Ends when the O₂ tank fills (`oxygenGoal`) or time runs out.
+- **Performance**: CO₂ fed into MOXIE / CO₂ needed (2 per O₂), + speed bonus.
+- Difficulty by location: faster molecules.
 
-## Criterios de aceptación
-- [ ] Se entiende sin leer.
-- [ ] El arrastre funciona bien con el dedo (burbujas grandes, ≥ 40 px).
-- [ ] Rendimiento de 0 a 1.2.
-- [ ] Dato real al final (i18n).
-- [ ] Parámetros en `balance.ts`.
+## Acceptance criteria
+- [ ] Understandable without reading.
+- [ ] Dragging works well with a finger (large bubbles, ≥ 40 px).
+- [ ] Performance from 0 to 1.2.
+- [ ] Real fact at the end (i18n).
+- [ ] Parameters in `balance.ts`.
 
-## Archivos
-**Propios:** `src/minigames/oxygen-factory/*`.
-**Contratos que usa:** `MinigameScene`, `registry.ts` (1 línea), `palette.ts`, `i18n`.
+## Files
+**Owned:** `src/minigames/oxygen-factory/*`.
+**Contracts used:** `MinigameScene`, `registry.ts` (1 line), `palette.ts`, `i18n`.
 
-## Dependencias
-**Depende de:** 06. **Usa assets de:** 01.
+## Dependencies
+**Depends on:** 06. **Uses assets from:** 01.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

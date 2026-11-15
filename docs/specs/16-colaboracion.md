@@ -1,16 +1,16 @@
 # 16 — Crisis meeting and shelter
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | A | P2 | 3 | ⚪ Propuesto |
+| _(name)_ | A | P2 | 3 | ⚪ Proposed |
 
-## Objetivo
-Dos momentos donde **la tripulación tiene que actuar junta**, como las emergencias y las reuniones de Among Us.
+## Objective
+Two moments when **the crew must act together**, like emergencies and meetings in Among Us.
 
-## Por qué importa
-Lo social es el gancho de Among Us. Aunque en la v0 sean bots, deja la mecánica lista para cuando haya personas reales, y se puede mostrar en el pitch.
+## Why it matters
+Social interaction is the hook in Among Us. Even with bots in v0, this prepares the mechanic for real people and can be shown in the pitch.
 
-## Alcance
+## Scope
 > Updated 2026-11-15 (see `docs/DECISIONS.md`): the crisis meeting votes real NASA procedures on the mission tablet, and the two-person lever was replaced by taking shelter.
 
 **Crisis meeting on the tablet** (when Earth warns of a solar or dust storm, spec 14). The base pauses and the cabin tablet pops up over it, its edges flashing black:
@@ -23,21 +23,21 @@ Lo social es el gancho de Among Us. Aunque en la v0 sean bots, deja la mecánica
 
 **Reward** (when a crisis is over): the tablet shows a real NASA photo and one fact (MAVEN's 2024 auroras, Opportunity cleaned by the wind in 2014).
 
-**No incluye:** multijugador online, chat.
+**Excludes:** online multiplayer, chat.
 
-## Criterios de aceptación
-- [ ] Ambas mecánicas se entienden sin texto largo.
-- [ ] Los bots participan usando `GameAction` (`castVote` and `enterShelter` are actions).
-- [ ] Se pueden desactivar desde `balance.ts` si no llegan pulidas.
+## Acceptance criteria
+- [ ] Both mechanics are understandable without long text.
+- [ ] Bots participate using `GameAction` (`castVote` and `enterShelter` are actions).
+- [ ] Can be disabled through `balance.ts` if not polished in time.
 
-## Archivos
-**Propios:** nuevos archivos en `src/core/` y `src/scenes/` para estas mecánicas.
-**Contratos:** agrega tipos nuevos a `GameAction` → **avisar a B** (puede afectar minijuegos).
+## Files
+**Owned:** new files in `src/core/` and `src/scenes/` for these mechanics.
+**Contracts:** adds new `GameAction` types → **notify B** (may affect minigames).
 
-## Dependencias
-**Depende de:** 05, 14.
+## Dependencies
+**Depends on:** 05, 14.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

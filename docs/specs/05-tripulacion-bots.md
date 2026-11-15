@@ -1,47 +1,47 @@
-# 05 — Tripulación y bots
+# 05 — Crew and bots
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | A | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | A | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-Que la jugadora sienta que es **la comandante**: puede mandar a sus 3 bots a hacer tareas o dejarlos en automático, y **los bots mejoran cuanto mejor juega ella**.
+## Objective
+Make the player feel like **the commander**: send their 3 bots to tasks or leave them on auto, and **bots improve as the player plays better**.
 
-## Por qué importa
-- Es nuestra versión de "colaborativo" para la v0 (el multijugador real viene después).
-- Genera decisiones: ¿qué hago yo y qué delego?
-- **Es el gancho para volver a jugar**: entrenar a la tripulación.
+## Why it matters
+- Our version of "collaborative" for v0 (real multiplayer comes later).
+- Creates decisions: what do I do and what do I delegate?
+- **The hook for replaying**: training the crew.
 
-## Alcance
-**Incluye:**
-- 3 bots de colores distintos que se ven caminando por la base, con una barrita de progreso arriba cuando trabajan.
-- **Dar una orden**: tocar un bot (queda resaltado) → tocar una sala → el bot va.
-- **Modo 🤖 Auto** por bot (activado por defecto): va a la barra más baja, sin que dos bots vayan a la misma tarea.
-- Interruptor visible para prender/apagar el modo auto de cada bot.
-- Bot: tarda ~20 s y rinde al 60% sin entrenamiento.
-- **Entrenamiento**: el mejor resultado de la jugadora en cada minijuego pasa a ser la eficiencia de los bots en esa tarea. Se guarda entre partidas.
-- Los bots mandan las **mismas `GameAction`** que una persona.
+## Scope
+**Includes:**
+- 3 differently colored bots visible walking around the base, with a small progress bar overhead while working.
+- **Give an order**: tap a bot (highlight it) → tap a room → bot goes there.
+- **🤖 Auto mode** per bot (on by default): goes to the lowest bar, without two bots choosing the same task.
+- Visible switch to turn each bot's auto mode on/off.
+- Bot: takes ~20 s and performs at 60% without training.
+- **Training**: the player's best result in each minigame becomes the bots' efficiency for that task. Saved between sessions.
+- Bots send the **same `GameAction`** as a person.
 
-**No incluye:** pantalla de "mi tripulación" con niveles (puede ser P2), multijugador online.
+**Excludes:** "my crew" screen with levels (could be P2), online multiplayer.
 
-## Criterios de aceptación
-- [ ] Ordenar a un bot funciona con el dedo en el celu (los bots son chicos: área táctil ampliada).
-- [ ] Con todos en auto, la base se mantiene un rato sola, pero **no alcanza para ganar** sin que la jugadora juegue.
-- [ ] Hacer un "perfecto" en un minijuego mejora visiblemente a los bots en la siguiente partida.
-- [ ] Tests de: elección del modo auto, no repetir tarea, entrenamiento.
-- [ ] Ningún atajo especial para bots en `core/`.
+## Acceptance criteria
+- [ ] Ordering a bot works with a finger on a phone (bots are small: enlarge touch areas).
+- [ ] All bots on auto keep the base running for a while, but **cannot win** without the player playing.
+- [ ] A "perfect" minigame result visibly improves bots in the next session.
+- [ ] Tests for: auto selection, avoiding duplicate tasks, training.
+- [ ] No special shortcuts for bots in `core/`.
 
-## Archivos
-**Propios:** `src/bots/*`, `src/core/training.ts`, la parte visual de los bots en `src/scenes/base/`, `tests/autoPilot.test.ts`, `tests/training.test.ts`.
-**Contratos que usa:** `GameAction`, `balance.ts` (`CREW_BALANCE`), `services/progressStorage.ts`.
+## Files
+**Owned:** `src/bots/*`, `src/core/training.ts`, bot visuals in `src/scenes/base/`, `tests/autoPilot.test.ts`, `tests/training.test.ts`.
+**Contracts used:** `GameAction`, `balance.ts` (`CREW_BALANCE`), `services/progressStorage.ts`.
 
-## Dependencias
-**Depende de:** 03, 04. **Bloquea a:** 16.
+## Dependencies
+**Depends on:** 03, 04. **Blocks:** 16.
 
-## Preguntas abiertas
-- ¿Dónde va el interruptor de auto? Propuesta: caritas de los 3 bots en una esquina del HUD; tocar la carita alterna auto/manual.
+## Open questions
+- Where does the auto switch go? Proposal: 3 bot faces in a HUD corner; tap a face to toggle auto/manual.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

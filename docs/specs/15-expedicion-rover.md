@@ -1,41 +1,41 @@
-# 15 — Expedición con el rover 🧪
+# 15 — Rover expedition 🧪
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | B | P1 | 2 | ⚪ Propuesto |
+| _(name)_ | B | P1 | 2 | ⚪ Proposed |
 
-## Objetivo
-Que la jugadora pueda **arriesgar energía para salir con el rover a juntar muestras** (puntos), y vea una **foto real del lugar** de Marte donde está.
+## Objective
+Let the player **risk energy to take the rover out and collect samples** (points), and see a **real photo of their location** on Mars.
 
-## Por qué importa
-- Es la decisión central de cada partida: ¿me arriesgo por puntos o cuido la base?
-- Da la segunda estrella (muestras) y el puntaje.
-- Es la mejor vidriera para las fotos reales de NASA (Mars Trek, Curiosity, Perseverance).
+## Why it matters
+- The central decision each session: risk it for points or protect the base?
+- Provides the second star (samples) and score.
+- The best showcase for real NASA photos (Mars Trek, Curiosity, Perseverance).
 
-## Alcance
-**Incluye:**
-- Un botón/sala "garaje del rover" en la base (coordinar el lugar con A, spec 04).
-- Solo se puede salir si hay energía suficiente (costo alto, en `balance.ts`).
-- Minijuego (~15 s): el rover avanza sobre un fondo de Marte; tocar a la izquierda/derecha del rover para cambiar de carril: se esquivan las rocas y las piedras brillantes (muestras) se atrapan pasando por encima. *(Cambiado el 2026-11-14: antes había que tocar las piedras; ver `docs/DECISIONS.md`.)* *(Cambiado el 2026-11-15: ahora las rocas son las muestras y se esquiva la arena blanda, como la que atrapó al rover Spirit; ver `docs/DECISIONS.md`.)*
-- *(Agregado el 2026-11-15, Misión 5: ver `docs/DECISIONS.md`.)* Antes de salir, una tarjeta de 4 pasos (la base queda en pausa solo mientras se lee). Se maneja ~10 s y después el rover **guarda una muestra en un tubo, como Perseverance**: mantener apretado el taladro → llevar el cilindro al tubo → tocar para sellar → el tubo va al estante. Sellado = +1 muestra; si queda abierto, "¡Contaminada!" y no suma. *(Cambiado el mismo día: son 3 tubos por viaje, el primero guiado y los otros dos el chico los llena solo.)*
-- Al terminar: suma muestras a la partida y muestra **la foto real del lugar en un marco** + dato.
+## Scope
+**Includes:**
+- A "rover garage" button/room in the base (coordinate placement with A, spec 04).
+- Can depart only with enough energy (high cost, in `balance.ts`).
+- Minigame (~15 s): rover moves over a Mars background; tap left/right of the rover to change lanes: dodge rocks and collect glowing stones (samples) by driving over them. *(Changed 2026-11-14: previously stones had to be tapped; see `docs/DECISIONS.md`.)* *(Changed 2026-11-15: rocks are now samples; dodge soft sand like the sand that trapped Spirit; see `docs/DECISIONS.md`.)*
+- *(Added 2026-11-15, Mission 5: see `docs/DECISIONS.md`.)* Before departure, a 4-step card (base paused only while reading). Drive for ~10 s, then the rover **stores a sample in a tube, like Perseverance**: hold the drill → move the cylinder to the tube → tap to seal → tube goes on the rack. Sealed = +1 sample; left open = "Contaminated!" and no points. *(Changed the same day: 3 tubes per trip, first guided, the other two filled independently by the child.)*
+- At the end: add samples to the session and show **the real location photo in a frame** + fact.
 
-**No incluye:** varios destinos por lugar, inclinar el celu (puede ser P2).
+**Excludes:** multiple destinations per location, tilting the phone (could be P2).
 
-## Criterios de aceptación
-- [ ] Mientras el rover está afuera la base sigue corriendo (riesgo real).
-- [ ] Suma muestras al núcleo mediante una acción (si hace falta una `GameAction` nueva → **avisar a A**).
-- [ ] Muestra foto real con crédito (registrada en `DATA_SOURCES.md`).
-- [ ] Rendimiento y parámetros en `balance.ts`.
+## Acceptance criteria
+- [ ] Base keeps running while the rover is outside (real risk).
+- [ ] Adds samples to the core through an action (if a new `GameAction` is needed → **notify A**).
+- [ ] Shows real photo with credit (registered in `DATA_SOURCES.md`).
+- [ ] Performance and parameters in `balance.ts`.
 
-## Archivos
-**Propios:** `src/minigames/rover/*`.
-**Contratos que usa / puede necesitar cambiar:** `GameAction` (agregar muestras) → avisar a A; `registry.ts`.
+## Files
+**Owned:** `src/minigames/rover/*`.
+**Contracts used / potentially changed:** `GameAction` (add samples) → notify A; `registry.ts`.
 
-## Dependencias
-**Depende de:** 03, 04, 06. **Usa assets de:** 01, fotos del 13.
+## Dependencies
+**Depends on:** 03, 04, 06. **Uses assets from:** 01, photos from 13.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

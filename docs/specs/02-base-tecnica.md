@@ -1,60 +1,60 @@
-# 02 — Base técnica: lógica existente + esqueleto del front
+# 02 — Technical foundation: existing logic + frontend skeleton
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | A | P0 | 0 | ⚪ Propuesto |
+| _(name)_ | A | P0 | 0 | ⚪ Proposed |
 
-## Objetivo
-Que las 3 puedan empezar a programar **en paralelo** sobre una base común: la lógica del juego ya funciona y existe un **esqueleto visual mínimo** (sin estética todavía) donde cada una enchufa su parte, con tests automáticos en cada PR.
+## Objective
+Enable all 3 to start programming **in parallel** on a common foundation: working game logic and a **minimal visual skeleton** (no art yet) where everyone connects their part, with automatic tests on every PR.
 
-## Contexto: qué hay hoy
+## Context: what exists today
 
-### ✅ Back (se conserva)
-Lógica pura en TypeScript, sin nada visual, con 16 tests que pasan.
+### ✅ Backend (kept)
+Pure TypeScript logic, no visuals, with 16 passing tests.
 
-| Qué | Dónde | Spec que lo continúa |
+| What | Where | Continuing spec |
 |---|---|---|
-| Configuración Vite + TypeScript estricto + ESLint + Prettier + Vitest | raíz | — |
-| Partida: stats, decaimiento por lugar, energía, soles, evacuación/supervivencia | `src/core/run.ts`, `stats.ts`, `types.ts` | 03 |
-| Acciones (iguales para bots y personas) | `src/core/actions.ts` | 03 |
-| Punto de entrada para las escenas | `src/core/GameSession.ts` | 03 |
-| Puntaje y 3 estrellas | `src/core/scoring.ts` | 03 |
-| Números de balance | `src/config/balance.ts` | 03 |
-| Bots: modo auto (van a la barra más baja) | `src/bots/autoPilot.ts` | 05 |
-| Entrenamiento de bots (aprenden de tu mejor resultado) | `src/core/training.ts` | 05 |
-| Guardado de progreso en el navegador | `src/services/` | 03, 05, 12 |
-| Textos ES/EN + función `t()` | `src/i18n/` | 13 |
-| Lugares y 2 eventos de ejemplo | `data/` | 12, 13, 14 |
+| Vite + strict TypeScript + ESLint + Prettier + Vitest setup | root | — |
+| Session: stats, decay per location, energy, sols, evacuation/survival | `src/core/run.ts`, `stats.ts`, `types.ts` | 03 |
+| Actions (same for bots and people) | `src/core/actions.ts` | 03 |
+| Entry point for scenes | `src/core/GameSession.ts` | 03 |
+| Score and 3 stars | `src/core/scoring.ts` | 03 |
+| Balance values | `src/config/balance.ts` | 03 |
+| Bots: auto mode (go to the lowest bar) | `src/bots/autoPilot.ts` | 05 |
+| Bot training (learn from your best result) | `src/core/training.ts` | 05 |
+| Browser progress storage | `src/services/` | 03, 05, 12 |
+| ES/EN text + `t()` function | `src/i18n/` | 13 |
+| Locations and 2 sample events | `data/` | 12, 13, 14 |
 
-### ❌ Front (descartado)
-Hubo un prototipo visual que **se descartó por feo** (decisión en `docs/DECISIONS.md`). Queda en el historial de git (commit `fb40014`) **solo como referencia técnica** (por ejemplo, cómo se conectaba un minijuego), no como guía estética.
+### ❌ Frontend (discarded)
+A visual prototype was **discarded because it looked bad** (decision in `docs/DECISIONS.md`). It remains in Git history (commit `fb40014`) **as a technical reference only** (e.g. how a minigame connected), not as a visual guide.
 
-## Alcance
-**Incluye:**
-- Revisar el back contra `AGENTS.md` y con las 3: ¿se entiende?, ¿falta algo?
-- **Esqueleto del front**, sin estética (solo estructura):
-  - `src/main.ts`: Phaser 3, resolución 640 × 360, escalado a la pantalla, pixel art, horizontal.
-  - Escenas vacías que navegan entre sí: Inicio → Base → Resultado (un texto y un botón cada una alcanza).
-  - `src/ui/palette.ts` y `src/ui/layout.ts`: los colores y tamaños de `docs/STYLE_GUIDE.md` como constantes (se actualizan cuando se vote el estilo).
-  - Carga correcta de la fuente antes de dibujar textos.
-- **CI**: ~~GitHub Actions corre `npm run check` en cada PR.~~ Sacado por ahora (ver `docs/DECISIONS.md`): cada una corre `npm run check` antes de abrir el PR.
+## Scope
+**Includes:**
+- Review the backend against `AGENTS.md` with all 3: is it understandable? Is anything missing?
+- **Frontend skeleton**, no visual styling (structure only):
+  - `src/main.ts`: Phaser 3, 640 × 360 resolution, screen scaling, pixel art, landscape.
+  - Empty scenes with navigation: Start → Base → Result (one text and button each is enough).
+  - `src/ui/palette.ts` and `src/ui/layout.ts`: colors and sizes from `docs/STYLE_GUIDE.md` as constants (updated after the style vote).
+  - Correct font loading before drawing text.
+- **CI**: ~~GitHub Actions runs `npm run check` on every PR.~~ Removed for now (see `docs/DECISIONS.md`): everyone runs `npm run check` before opening a PR.
 
-**No incluye:** ningún diseño visual (spec 01), escenas reales (04, 11), minijuegos (06+).
+**Excludes:** any visual design (spec 01), real scenes (04, 11), minigames (06+).
 
-## Criterios de aceptación
-- [ ] Las 3 revisaron el back y lo aprobaron (o pidieron cambios, anotados en `DECISIONS.md`).
-- [ ] `npm run dev` abre el esqueleto y se puede ir Inicio → Base → Resultado → Inicio.
-- [ ] El CI corre en cada PR y bloquea si `npm run check` falla.
-- [ ] Ninguna escena tiene colores o tamaños escritos a mano: todo sale de `palette.ts` / `layout.ts`.
+## Acceptance criteria
+- [ ] All 3 reviewed and approved the backend (or requested changes, recorded in `DECISIONS.md`).
+- [ ] `npm run dev` opens the skeleton with Start → Base → Result → Start navigation.
+- [ ] CI runs on every PR and blocks when `npm run check` fails.
+- [ ] No scene hardcodes colors or sizes: everything comes from `palette.ts` / `layout.ts`.
 
-## Archivos
-**Propios:** `src/main.ts`, `src/scenes/sceneKeys.ts`, escenas vacías iniciales, `src/ui/palette.ts`, `src/ui/layout.ts`, `.github/workflows/ci.yml`.
-Después de este spec, cada escena pasa a ser de su spec (Base → 04, Inicio/Resultado → 11).
+## Files
+**Owned:** `src/main.ts`, `src/scenes/sceneKeys.ts`, initial empty scenes, `src/ui/palette.ts`, `src/ui/layout.ts`, `.github/workflows/ci.yml`.
+After this spec, each scene belongs to its own spec (Base → 04, Start/Result → 11).
 
-## Dependencias
-**Depende de:** nada. **Bloquea a:** todos los specs de front (04, 06, 07–11).
+## Dependencies
+**Depends on:** nothing. **Blocks:** all frontend specs (04, 06, 07–11).
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

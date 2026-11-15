@@ -1,42 +1,42 @@
-# 10 — Minijuego: muro de escudo ☢️
+# 10 — Minigame: shield wall ☢️
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | B | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | B | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-**Arrastrar bloques de agua y regolito para tapar los huecos del muro**, para entender cómo se protegen los astronautas de la radiación.
+## Objective
+**Drag water and regolith blocks to fill gaps in the wall**, to understand how astronauts protect themselves from radiation.
 
-## Por qué importa
-La radiación es un riesgo real e invisible en Marte (no tiene campo magnético global ni atmósfera gruesa). Conecta con los datos de RadLab y DONKI.
+## Why it matters
+Radiation is a real, invisible risk on Mars (no global magnetic field or thick atmosphere). Connects to RadLab and DONKI data.
 
-## Cómo se juega
-- Antes de jugar, una tarjeta de 3 pasos con dibujitos, con el juego en pausa: la Tierra tiene un escudo magnético y Marte no, así que la radiación llega al suelo; el agua y el regolito la frenan; Curiosity la mide con su medidor RAD. Mientras se juega, los mismos pasos quedan en un panel a la izquierda.
-- Un muro con huecos por donde entran "rayitos" de radiación (violetas y amarillos, animados) hacia el hábitat, donde están dos astronautas.
-- Abajo hay bloques (agua 💧 / regolito 🪨).
-- La jugadora arrastra cada bloque a un hueco; encaja solo si está cerca (snap), sin rotar. Tocar un bloque también lo manda al primer hueco libre.
-- Cada hueco tapado corta su rayito y dice "¡Bloqueado!".
-- A la derecha, un **medidor RAD** sube mientras haya huecos abiertos; cerca del final se pone rojo.
-- **Rendimiento**: huecos tapados / total, + bonus si el medidor no se llenó.
-- Dificultad por lugar (ej. Olympus Mons): más huecos.
+## How to play
+- Before playing, a 3-step illustrated card with the game paused: Earth has a magnetic shield and Mars does not, so radiation reaches the ground; water and regolith block it; Curiosity measures it with its RAD instrument. The same steps remain in a panel on the left while playing.
+- A wall with gaps letting radiation "rays" (violet and yellow, animated) into the habitat, where two astronauts stand.
+- Blocks at the bottom (water 💧 / regolith 🪨).
+- Drag each block to a gap; it snaps into place when nearby, without rotation. Tapping a block also sends it to the first free gap.
+- Each filled gap cuts its ray and says "Blocked!".
+- A **RAD meter** on the right rises while gaps remain open; it turns red near the end.
+- **Performance**: gaps filled / total, + bonus if the meter did not fill.
+- Difficulty by location (e.g. Olympus Mons): more gaps.
 
-> Versión simple a propósito: **sin rotación ni piezas raras** (no es un Tetris completo). Si sobra tiempo, se enriquece.
+> Deliberately simple: **no rotation or unusual pieces** (not full Tetris). Expand if time allows.
 
-## Criterios de aceptación
-- [ ] Se entiende sin leer.
-- [ ] Arrastrar y soltar funciona bien con el dedo; el snap es generoso.
-- [ ] Rendimiento de 0 a 1.2.
-- [ ] Dato real al final (i18n).
-- [ ] Parámetros en `balance.ts`.
+## Acceptance criteria
+- [ ] Understandable without reading.
+- [ ] Drag and drop works well with a finger; generous snapping.
+- [ ] Performance from 0 to 1.2.
+- [ ] Real fact at the end (i18n).
+- [ ] Parameters in `balance.ts`.
 
-## Archivos
-**Propios:** `src/minigames/shield-wall/*`.
-**Contratos que usa:** `MinigameScene`, `registry.ts` (1 línea), `palette.ts`, `i18n`.
+## Files
+**Owned:** `src/minigames/shield-wall/*`.
+**Contracts used:** `MinigameScene`, `registry.ts` (1 line), `palette.ts`, `i18n`.
 
-## Dependencias
-**Depende de:** 06. **Usa assets de:** 01.
+## Dependencies
+**Depends on:** 06. **Uses assets from:** 01.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

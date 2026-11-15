@@ -1,40 +1,40 @@
-# 09 — Minijuego: invernadero 🥬
+# 09 — Minigame: greenhouse 🥬
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | B | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | B | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-**Darle a cada planta lo que pide (agua o luz LED) antes de que se seque**, para entender cómo se cultiva comida en el espacio y que las plantas también hacen oxígeno.
+## Objective
+**Give each plant what it requests (water or LED light) before it dries out**, to understand how food is grown in space and that plants also make oxygen.
 
-## Por qué importa
-Sin comida no hay misión larga a Marte. Enseña el experimento Veggie, que cosechó lechuga en la Estación Espacial: crece bajo luces LED rojas y azules; en Marte, como la tierra de allá es tóxica (tiene percloratos), las plantas crecerían en tierra traída de la Tierra, y las plantas toman CO₂ y largan O₂.
+## Why it matters
+No long Mars mission without food. Teaches Veggie, which harvested lettuce on the Space Station: it grows under red and blue LEDs; since Martian soil is toxic (contains perchlorates), plants on Mars would grow in soil brought from Earth, and plants take in CO₂ and release O₂.
 
-## Cómo se juega
-- Antes de jugar, una tarjeta de 3 pasos con dibujitos (tierra de Marte tóxica → la Tierra → brote; agua + luz → lechuga; CO₂ → lechuga → O₂), con el juego en pausa. Mientras se juega, los mismos pasos quedan en un panel a la izquierda.
-- 6 lechugas, una en cada cantero de la sala (tierra traída de la Tierra), bajo las lámparas LED rosas de la sala.
-- Al azar, una planta pide **agua** (se pone amarilla, con una gotita arriba) o **luz** (su cantero se oscurece, como si se apagara la lámpara, y se pone pálida, con una lámpara arriba).
-- A la derecha hay dos herramientas grandes, **Agua** y **Luz**: se arrastra la herramienta a la planta, o se toca la herramienta y después la planta.
-- La correcta la hace crecer (brote → joven → grande) y suelta una burbuja azul de O₂. La equivocada no hace nada (la burbuja tiembla).
-- Si no se la ayuda a tiempo, se marchita.
-- **Rendimiento**: pedidos ayudados / pedidos, + bonus si ninguna se marchitó.
-- Dificultad por lugar: las plantas piden más seguido y esperan menos.
+## How to play
+- Before playing, a 3-step illustrated card (toxic Mars soil → Earth → sprout; water + light → lettuce; CO₂ → lettuce → O₂), with the game paused. The same steps remain in a panel on the left while playing.
+- 6 lettuce plants, one per room bed (soil brought from Earth), under the room's pink LED lamps.
+- A random plant requests **water** (turns yellow, with a droplet overhead) or **light** (its bed dims as though the lamp went off, and it turns pale, with a lamp overhead).
+- Two large tools on the right, **Water** and **Light**: drag the tool to the plant, or tap the tool then the plant.
+- The correct tool makes it grow (sprout → young → large) and releases a blue O₂ bubble. The wrong tool does nothing (the bubble shakes).
+- Without timely help, it wilts.
+- **Performance**: requests helped / requests, + bonus if none wilted.
+- Difficulty by location: plants request more often and wait less.
 
-## Criterios de aceptación
-- [ ] Se entiende sin leer (la gotita, la lámpara y el color lo dicen todo).
-- [ ] Áreas táctiles grandes (≥ 48 px).
-- [ ] Rendimiento de 0 a 1.2.
-- [ ] Dato real al final (i18n).
-- [ ] Parámetros en `balance.ts`.
+## Acceptance criteria
+- [ ] Understandable without reading (droplet, lamp, and color explain everything).
+- [ ] Large touch areas (≥ 48 px).
+- [ ] Performance from 0 to 1.2.
+- [ ] Real fact at the end (i18n).
+- [ ] Parameters in `balance.ts`.
 
-## Archivos
-**Propios:** `src/minigames/greenhouse/*`.
-**Contratos que usa:** `MinigameScene`, `registry.ts` (1 línea), `palette.ts`, `i18n`.
+## Files
+**Owned:** `src/minigames/greenhouse/*`.
+**Contracts used:** `MinigameScene`, `registry.ts` (1 line), `palette.ts`, `i18n`.
 
-## Dependencias
-**Depende de:** 06. **Usa assets de:** 01.
+## Dependencies
+**Depends on:** 06. **Uses assets from:** 01.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

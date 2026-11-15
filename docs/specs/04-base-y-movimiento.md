@@ -1,45 +1,45 @@
-# 04 — Base y movimiento
+# 04 — Base and movement
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | A | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | A | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-Que la jugadora vea la base de Marte con sus 4 salas, **toque una sala y su astronauta camine hasta ahí y se abra el minijuego**, sin que nadie le explique nada.
+## Objective
+Let the player see the Mars base with its 4 rooms, **tap a room, watch their astronaut walk there, and open the minigame**, without anyone explaining it.
 
-## Por qué importa
-Es la sensación "Among Us": moverte por la base y hacer tareas. Y es la primera pantalla de juego: si no se entiende, perdemos al jugador.
+## Why it matters
+It creates the "Among Us" feeling: move around the base and do tasks. It is the first gameplay screen: if it is unclear, we lose the player.
 
-## Alcance
-**Incluye:**
-- Mapa de la base con 4 salas + pasillo central (primero rectángulos, después el arte del spec 01).
-- HUD superior: 4 barras con ícono y color + "Sol N/5". Una barra baja titila en rojo.
-- **La sala cuya barra está baja titila**, para saber adónde ir sin leer.
-- Tocar sala → la astronauta camina → al llegar se abre el minijuego encima. **La base sigue corriendo** (el tiempo apremia).
-- Al cerrar el minijuego, su resultado se manda al núcleo.
-- Al terminar la partida → pantalla de resultado.
-- Mientras se juega un minijuego, no se pueden tocar salas.
+## Scope
+**Includes:**
+- Base map with 4 rooms + central corridor (rectangles first, then spec 01 art).
+- Top HUD: 4 bars with icon and color + "Sol N/5". A low bar flashes red.
+- **The room whose bar is low flashes**, showing where to go without reading.
+- Tap room → astronaut walks → minigame opens on top upon arrival. **The base keeps running** (time matters).
+- Closing a minigame sends its result to the core.
+- Session ends → result screen.
+- Rooms cannot be tapped while a minigame is being played.
 
-**No incluye:** órdenes a bots (05), eventos (14), arte final (01).
+**Excludes:** bot orders (05), events (14), final art (01).
 
-## Criterios de aceptación
-- [ ] Una persona que nunca vio el juego sabe qué tocar en < 5 segundos (probarlo con alguien).
-- [ ] Tocar cualquiera de las 4 salas lleva a la astronauta y abre el minijuego correcto.
-- [ ] Las salas con barra < 30 titilan.
-- [ ] Funciona con el dedo en un celu en horizontal (áreas táctiles ≥ 48 px).
-- [ ] La escena no calcula reglas del juego: solo lee el estado y manda acciones.
+## Acceptance criteria
+- [ ] Someone who has never seen the game knows what to tap in < 5 seconds (test with someone).
+- [ ] Tapping any of the 4 rooms moves the astronaut and opens the correct minigame.
+- [ ] Rooms with a bar < 30 flash.
+- [ ] Works with a finger on a phone in landscape (touch areas ≥ 48 px).
+- [ ] The scene does not calculate game rules: it only reads state and sends actions.
 
-## Archivos
-**Propios:** `src/scenes/base/*`.
-**Contratos que usa:** `GameSession`, `MinigameScene` / `registry.ts` (06), `palette.ts`, `i18n`.
+## Files
+**Owned:** `src/scenes/base/*`.
+**Contracts used:** `GameSession`, `MinigameScene` / `registry.ts` (06), `palette.ts`, `i18n`.
 
-## Dependencias
-**Depende de:** 03, 06. **Bloquea a:** 05 (visual de bots), 14, 16.
+## Dependencies
+**Depends on:** 03, 06. **Blocks:** 05 (bot visuals), 14, 16.
 
-## Preguntas abiertas
-- ¿Movimiento solo tocando salas, o también joystick/arrastrar? Propuesta: solo tocar salas (más simple para 7 años).
+## Open questions
+- Movement only by tapping rooms, or also joystick/dragging? Proposal: room taps only (simpler for age 7).
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

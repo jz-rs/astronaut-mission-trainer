@@ -1,40 +1,40 @@
-# 07 — Minijuego: paneles solares ⚡
+# 07 — Minigame: solar panels ⚡
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | B | P0 | 1 | ⚪ Propuesto |
+| _(name)_ | B | P0 | 1 | ⚪ Proposed |
 
-## Objetivo
-**Deslizar el dedo para sacar el polvo de los paneles solares**, y entender que el polvo de Marte es el gran enemigo de la energía.
+## Objective
+**Swipe to remove dust from solar panels**, and understand that Martian dust is energy's greatest enemy.
 
-## Por qué importa
-Es **el único minijuego que genera energía**, la moneda que usan todas las tareas. Y enseña algo real: el polvo apagó a los rovers Opportunity e InSight.
+## Why it matters
+The **only minigame that generates energy**, the currency all tasks use. Teaches a real fact: dust shut down the Opportunity and InSight rovers.
 
-## Cómo se juega
-- Antes del reloj, una tarjeta explica los 3 pasos con dibujitos y el botón "¡A limpiar!" (el juego y la base quedan en pausa). Ver DECISIONS 2026-11-15.
-- 3 paneles cubiertos de polvo (tonos de Marte), y la luz del Sol que entra por la ventana en rayos amarillos: débiles donde hay polvo, fuertes donde está limpio. De noche entra poca luz (ver DECISIONS 2026-11-15).
-- Arrastrar el dedo "barre" el polvo por donde pasa (como una raspadita).
-- Cada panel limpio manda rayitos de energía por un cable a la batería de la base, que se va llenando.
-- Termina cuando está todo limpio o se acaba el tiempo (~12 s).
-- **Rendimiento**: porcentaje limpio; si quedó todo limpio, bonus por velocidad (hasta 1.2 = perfecto).
-- Dificultad por lugar (ej. Gale): más polvo o el polvo vuelve a caer de a poco.
+## How to play
+- Before the clock starts, a card explains 3 illustrated steps with a "Let's clean!" button (game and base paused). See DECISIONS 2026-11-15.
+- 3 dust-covered panels (Mars tones), with sunlight entering through the window as yellow rays: weak where dusty, strong where clean. Little light enters at night (see DECISIONS 2026-11-15).
+- Drag a finger to "sweep" dust away along its path (like a scratch card).
+- Each clean panel sends energy sparks along a cable to the base battery, filling it.
+- Ends when everything is clean or time runs out (~12 s).
+- **Performance**: percentage cleaned; if fully clean, a speed bonus (up to 1.2 = perfect).
+- Difficulty by location (e.g. Gale): more dust or dust gradually falls again.
 
-## Criterios de aceptación
-- [ ] Se entiende qué hacer sin leer la instrucción (probarlo con alguien).
-- [ ] Funciona con el dedo en celu (deslizar no mueve la página).
-- [ ] Rendimiento de 0 a 1.2 según el criterio de arriba.
-- [ ] Al terminar muestra el dato real (texto en `i18n`).
-- [ ] Usa los sprites del spec 01 cuando estén (paneles, polvo).
-- [ ] La dificultad sale de `balance.ts`, no de números en el código.
+## Acceptance criteria
+- [ ] Clear what to do without reading the instruction (test with someone).
+- [ ] Works with a finger on a phone (swiping does not move the page).
+- [ ] Performance from 0 to 1.2 using the criteria above.
+- [ ] Shows the real fact at the end (text in `i18n`).
+- [ ] Uses spec 01 sprites when available (panels, dust).
+- [ ] Difficulty comes from `balance.ts`, not numbers in code.
 
-## Archivos
-**Propios:** `src/minigames/solar-panels/*`.
-**Contratos que usa:** `MinigameScene` (06), `registry.ts` (1 línea), `palette.ts`, `i18n`.
+## Files
+**Owned:** `src/minigames/solar-panels/*`.
+**Contracts used:** `MinigameScene` (06), `registry.ts` (1 line), `palette.ts`, `i18n`.
 
-## Dependencias
-**Depende de:** 06. **Usa assets de:** 01.
+## Dependencies
+**Depends on:** 06. **Uses assets from:** 01.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_

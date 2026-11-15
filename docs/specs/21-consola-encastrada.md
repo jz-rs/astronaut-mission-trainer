@@ -1,25 +1,25 @@
-# 21 — La consola de destinos se ve "adelantada" a las paredes 🧱
+# 21 — The destination console looks set forward from the walls 🧱
 
-| Dueña | Rol | Prioridad | Fase | Estado |
+| Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
-| _(nombre)_ | C (imágenes) | _(a definir)_ | _(a definir)_ | ⚪ Propuesto |
+| _(name)_ | C (images) | _(to be defined)_ | _(to be defined)_ | ⚪ Proposed |
 
-## Problema
-En la consola de destinos (`MonitorScene`, imagen `public/assets/sprites/cabina/consola-fondo.png`), el tablero **no se ve integrado a la cabina**:
+## Problem
+In the destination console (`MonitorScene`, image `public/assets/sprites/cabina/consola-fondo.png`), the dashboard **does not look integrated into the cabin**:
 
-- A los costados del tablero se ven las paredes y el pasillo de la nave que **siguen por detrás** del tablero, hasta los bordes de la imagen.
-- Por eso el tablero parece una **caja apoyada adelante de las paredes**, en vez de estar empotrado: las paredes deberían **terminar alrededor del tablero**.
-- El problema está en las dos franjas de los costados, entre el borde del tablero y el borde de la pantalla (y el piso debajo del estante).
+- Beside the dashboard, the ship's walls and corridor **continue behind** it to the image edges.
+- This makes the dashboard look like a **box placed in front of the walls**, rather than built in: the walls should **end around the dashboard**.
+- The problem lies in the two side strips between the dashboard edge and screen edge (and the floor below the shelf).
 
-Lo que ya se probó y no funcionó:
-- Un fondo de cabina con zoom detrás del tablero recortado: se veía el crédito enorme y se cortaban la pantallita de ruta y el botón ATERRIZAR.
-- Una versión con asientos a los costados: los asientos quedaban delante del tablero.
-- La versión actual (paredes a los costados): sigue viéndose adelantado.
-- Dos pedidos a Gemini para que las paredes terminen alrededor del tablero, el segundo con las zonas marcadas en rojo. El primero devolvió lo mismo y el segundo no llegó a revisarse.
+What has already been tried and did not work:
+- A zoomed cabin background behind the cropped dashboard: the credit looked huge, and the route screen and LAND button were cut off.
+- A version with seats at the sides: the seats ended up in front of the dashboard.
+- The current version (walls at the sides): still looks set forward.
+- Two Gemini requests to make the walls end around the dashboard, the second with the areas marked red. The first returned the same image; the second has not been reviewed.
 
-> Por ahora este spec **solo describe el problema**. La solución se define después, cuando el equipo lo revise.
+> For now, this spec **only describes the problem**. The solution will be defined after team review.
 
-## Aprobación
-- [ ] A — _(nombre)_
-- [ ] B — _(nombre)_
-- [ ] C — _(nombre)_
+## Approval
+- [ ] A — _(name)_
+- [ ] B — _(name)_
+- [ ] C — _(name)_
