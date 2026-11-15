@@ -48,9 +48,9 @@ Marte solamente. Una base con salas. Cada partida es un aterrizaje en un lugar r
 
 ### Ejemplo de partida (Cráter Gale)
 1. **Sol 1**: el invernadero titila (comida baja). Vas, jugás, la comida sube y la energía baja. Los bots en auto van a otras salas.
-2. **Sol 2**: 📡 llega un aviso de la Tierra (con retraso): tormenta de polvo. Reunión de crisis: votan limpiar paneles.
+2. **Sol 2**: 📡 llega un aviso de la Tierra (con retraso): tormenta de polvo. Crisis meeting on the tablet: the crew votes "save energy" (the real procedure) instead of "clean panels".
 3. **Sol 3**: la tormenta tapa los paneles. ¿Salís con el rover (cuesta energía, da puntos) o cuidás la energía?
-4. **Sol 4**: tormenta solar **sin aviso**. Palanca de a dos con un bot para cerrar el escudo.
+4. **Sol 4**: tormenta solar **sin aviso**. "GET INSIDE!": the crew has a few seconds to reach the shield room, like real crews taking shelter.
 5. **Sol 5**: otra expedición, llega la nave. Resultado: ⭐⭐☆ y "la energía bajó del 20% en el sol 3".
 
 ## 8. Tripulación: vos sos la comandante
@@ -77,7 +77,7 @@ Reglas comunes: **10–15 segundos, una sola acción táctil, sin leer**, termin
 | 🥬 | Invernadero | Tocar las plantas con sed antes de que se sequen | +🥬 −⚡ | Veggie: lechuga cosechada en la Estación Espacial |
 | ☢️ | Muro de escudo | Arrastrar bloques de agua/regolito para tapar huecos | +☢️ −⚡ | El agua frena la radiación; Marte no tiene campo magnético global |
 | 🧪 | Expedición rover | Esquivar rocas y tocar piedras brillantes | +🧪 puntos −−⚡ | Foto real del lugar + dato del rover |
-| 🤝 | Palanca de a dos (evento) | Mantener apretado junto con otro astronauta | Evita daño de tormenta solar | Alertas de DONKI (NASA) |
+| 🤝 | Shelter (event) | Tap the shield room before the countdown ends | Softens the solar storm | Orion storm shelter, ISS shielded modules (NASA) |
 
 La dificultad de cada minijuego cambia según el lugar (parámetros en `balance.ts`, no código nuevo).
 

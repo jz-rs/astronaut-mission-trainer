@@ -1,10 +1,11 @@
 import { CREW_BALANCE } from '../config/balance';
-import { castVote, holdLever } from './collab';
+import { castVote, setCrewBusy } from './collab';
 import { completeExpedition, startExpedition } from './expedition';
+import { enterShelter } from './shelter';
 import { canStartTask } from './daylight';
 import { applyTaskResult, canAffordTask } from './stats';
 import { clampPerformance } from './training';
-import type { CrewMember, RunState, TaskId } from './types';
+import type { CrewMember, CrisisProcedureId, RunState, TaskId } from './types';
 
 /**
  * Everything a crew member can do. Humans (local or, later, online) and bots
@@ -16,8 +17,9 @@ export type GameAction =
   | { type: 'setAutoMode'; crewId: string; enabled: boolean }
   | { type: 'startExpedition'; crewId: string }
   | { type: 'completeExpedition'; crewId: string; samples: number }
-  | { type: 'holdLever'; crewId: string; holding: boolean }
-  | { type: 'castVote'; crewId: string; taskId: TaskId };
+  | { type: 'castVote'; crewId: string; procedureId: CrisisProcedureId }
+  | { type: 'enterShelter'; crewId: string }
+  | { type: 'setBusy'; crewId: string; busy: boolean };
 
 export function applyAction(state: RunState, action: GameAction): void {
   if (state.status !== 'playing') return;
@@ -39,11 +41,14 @@ export function applyAction(state: RunState, action: GameAction): void {
     case 'completeExpedition':
       completeExpedition(state, action.samples);
       break;
-    case 'holdLever':
-      holdLever(state, member.id, action.holding);
-      break;
     case 'castVote':
-      castVote(state, member.id, action.taskId);
+      castVote(state, member.id, action.procedureId);
+      break;
+    case 'enterShelter':
+      enterShelter(state, member.id);
+      break;
+    case 'setBusy':
+      setCrewBusy(state, member.id, action.busy);
       break;
   }
 }

@@ -41,6 +41,26 @@ Formato:
 - A quién afecta: solo el spec 19 (`src/scenes/manual/*`, nuevo `manualText.ts`, i18n del manual).
 - ¿Avisado al equipo?: no todavía.
 
+## 2026-11-15 — Crisis redesign: real procedures on the tablet, shelter instead of the lever (spec 16)
+- Who: Marianela, with the team (design reviewed in the "Rediseño de crisis" canvas, v2) and Claude
+- What was decided:
+  - The crisis meeting votes **real NASA procedures**, not tasks. Solar storm: "Take shelter" (right) vs "Go outside". Dust storm: "Save energy" (right) vs "Clean panels". Only events in `src/core/crisisProcedures.ts` get a meeting.
+  - It is shown on the **mission tablet** over the base, edges flashing black: message from Earth with its real delay (3–22 min), the vote, then right/wrong with a real NASA photo and one line on why. A reward photo appears once the storm is over.
+  - The **player is the commander**: bots vote the same as the player. Voting right halves the event's damage (`rightChoiceDamageFactor`) and sets what bots on auto do first (`PROCEDURE_PRIORITY`).
+  - **Crises never interrupt a minigame or the rover trip**: the meeting and the shelter wait until the player is back in the base (`setBusy` action), so a kid always sees the whole message.
+  - The **two-person lever is gone**. When a solar storm lands the crew has `shelterWindowMs` to get into the shield room; getting in halves the damage again (`shelterDamageFactor`).
+  - Contracts changed: `GameAction` (`holdLever` removed, `castVote` now takes `procedureId`, new `enterShelter` and `setBusy`), `RunState` (`emergency` → `shelter`), `ScheduledEvent` (`crisisChoice`, `crewSheltered`), `EventNews` (`saved` → `decided`), `COLLAB_BALANCE` (lever values replaced). i18n: the `collab.*` keys of the lever and the old meeting were removed, `crisis.*` added. Seven new NASA photos credited in `docs/DATA_SOURCES.md`. GDD §7 and the tasks table, and spec 16, updated.
+- Why: the old meeting offered "shield vs panels" for every crisis, which is not what real crews do (nobody goes out to fix panels in a solar storm, and cleaning in the middle of a dust storm is useless). Kids now learn the real procedure and see real photos of why. The lever had no real-world equivalent; taking shelter does (Orion, ISS).
+- Affects: A (specs 05, 14, 16: `types.ts`, `actions.ts`, `collab.ts`, `events.ts`, `run.ts`, `bots/teamwork.ts`, `BaseScene`, `EventAnnouncer`, `TeamworkViews`); B (`GameAction` changed, no minigame uses the removed parts); C (`docs/GDD.md`, `docs/DATA_SOURCES.md`, i18n).
+- Team notified?: the design was reviewed by the team; the code goes in the PR.
+
+## 2026-11-15 — Wrong choices in the oxygen and greenhouse missions (specs 08, 09, 15)
+- Who: Jeza, with Claude
+- What was decided: like the rover's soft sand, two missions get a "wrong choice" that only a kid who learned the science avoids. **Oxygen factory**: one N₂ and one Ar molecule float among the CO₂ (real Martian air is ~95 % CO₂ plus a little nitrogen and argon). MOXIE spits them back with a very short message ("No N₂! Only CO₂") and each one fed costs `OXYGEN_FACTORY_BALANCE.decoyPenalty` (0.15) of performance. **Greenhouse**: a third tool, "Mars soil" (a red-brown heap, no cross on it). Given to a plant, the plant goes red and droops for a moment, "Toxic!" shows up, the request is not helped, and it costs `GREENHOUSE_BALANCE.marsSoilPenalty` (0.15). The rover's "Soft sand!" message turns red too (it was sand-colored), so every wrong choice looks the same. `floatText` (`src/ui/floatingText.ts`) gets an optional `durationMs` so these teaching messages stay long enough to read; existing calls don't change.
+- Why: reward the kid's knowledge (step 1 of each how-to card already teaches it: Mars air is CO₂; Mars soil is toxic for plants), not only speed.
+- Who it affects: B (specs 08, 09 and 15: `src/minigames/oxygen-factory/*`, `src/minigames/greenhouse/*`, `RoverExpeditionScene.ts`); everyone only through new values in `balance.ts`, new keys in `i18n/*.json` and the optional `floatText` parameter.
+- Team notified?: yes (with the PR).
+
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).
