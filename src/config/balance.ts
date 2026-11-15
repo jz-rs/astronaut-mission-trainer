@@ -205,8 +205,8 @@ export const INTRO_BALANCE = {
   itemSpinMinMs: 20_000,
   itemSpinMaxMs: 40_000,
   highlightPulseMs: 600,
-  /** The arrow over LAND bounces while the ship can land. */
-  landArrowBounceMs: 450,
+  /** The glow of the LAND button breathes while the ship can land (half a breath). */
+  landGlowPulseMs: 900,
   landingDurationMs: 6_000,
   /** After touchdown: a still moment, then a fade to black into the base. */
   landingStillMs: 700,
