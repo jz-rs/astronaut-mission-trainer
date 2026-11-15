@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
 
 /**
- * Short sound effects, also real NASA recordings (docs/DATA_SOURCES.md):
- *   - tap: one note of a star, from the sonification of Webb's Cosmic Cliffs, an octave lower
- *     and soft, so it fits under the calm music. It plays for anything the kid touches that
- *     reacts (buttons, rooms, molecules, tools), so every touch answers (AGENTS.md §4);
+ * Short sound effects (docs/DATA_SOURCES.md):
+ *   - tap: a soft, round bubble "pop", made for the game (the only sound that is not NASA's:
+ *     the team picked it because it sits gently under the calm music). It plays for anything
+ *     the kid touches that reacts (buttons, rooms, molecules, tools), so every touch answers
+ *     (AGENTS.md §4);
+ * The other three are real NASA recordings:
  *   - landing: a real Martian dust devil passing over Perseverance, while the cabin zooms
  *     toward the window (its last gust lands with the touchdown);
  *   - alert: two Quindar beeps, the radio tones of Apollo's Mission Control, when a message
@@ -17,15 +19,13 @@ const TAP_KEY = 'sfxTap';
 const LANDING_KEY = 'sfxLanding';
 const ALERT_KEY = 'sfxAlert';
 const ERROR_KEY = 'sfxError';
-const TAP_VOLUME = 0.15;
-/** One octave lower: warmer and closer to the calm music. */
-const TAP_DETUNE_CENTS = -1_200;
+const TAP_VOLUME = 0.5;
 const LANDING_VOLUME = 0.7;
 const ALERT_VOLUME = 0.3;
 const ERROR_VOLUME = 0.45;
 
 export function preloadSoundEffects(load: Phaser.Loader.LoaderPlugin): void {
-  load.audio(TAP_KEY, 'assets/audio/sfx-tap-webb-star.m4a');
+  load.audio(TAP_KEY, 'assets/audio/sfx-tap-bubble-pop.m4a');
   load.audio(LANDING_KEY, 'assets/audio/sfx-landing-mars-dust-devil.m4a');
   load.audio(ALERT_KEY, 'assets/audio/sfx-alert-apollo-quindar.m4a');
   load.audio(ERROR_KEY, 'assets/audio/sfx-error-insight-donk.m4a');
@@ -36,7 +36,7 @@ export function preloadSoundEffects(load: Phaser.Loader.LoaderPlugin): void {
  * no scene has to remember it, and new scenes get it too.
  */
 export function startTapSounds(game: Phaser.Game): void {
-  const playTap = () => game.sound.play(TAP_KEY, { volume: TAP_VOLUME, detune: TAP_DETUNE_CENTS });
+  const playTap = () => game.sound.play(TAP_KEY, { volume: TAP_VOLUME });
   for (const scene of game.scene.scenes) {
     scene.sys.events.on(Phaser.Scenes.Events.START, () => {
       scene.input.off(Phaser.Input.Events.GAMEOBJECT_DOWN, playTap); // never twice per touch
