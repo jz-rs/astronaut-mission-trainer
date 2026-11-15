@@ -20,7 +20,6 @@ const CABIN_FILES = {
   dustCloud: 'energia/nube-polvo.png',
   floatingPen: 'cabina/flotantes/birome.png',
   floatingWater: 'cabina/flotantes/bolsa-agua.png',
-  floatingRocket: 'cabina/flotantes/cohete-juguete.png',
   floatingWrench: 'cabina/flotantes/llave.png',
   floatingSnack: 'cabina/flotantes/snack.png',
 } as const;

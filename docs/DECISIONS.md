@@ -13,9 +13,16 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Las barras de cada sala pasan a ser de bloques
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la barra de cada sala (la tarjeta de `RoomView`, las únicas barras de stats del juego) deja de ser una barra continua y pasa a ser de **10 bloques**, como las del manual de la tablet: bloques encendidos en el color de la stat hasta el valor y bloques apagados después. Si la stat está por encima de 0 se ve al menos un bloque. Cuando la barra está baja, los bloques encendidos titilan en rojo como antes y los apagados se ven rojizos. La cantidad de bloques es una sola constante (`STAT_BAR_SEGMENTS` en `layout.ts`) para la base y el manual.
+- Por qué: a C le gustan más; los bloques se cuentan de un vistazo y combinan con la estética de pantalla del manual.
+- A quién afecta: dueña de la base (spec 04, `src/scenes/base/RoomView.ts`: cambia solo cómo se dibuja la barra; `barCenter` y `flashBar` siguen igual). `layout.ts` (se agregan 2 valores).
+- ¿Avisado al equipo?: no todavía (va en el PR #33).
+
 ## 2026-11-15 — En la cabina, los destinos se eligen en el tablero del centro (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca se adapta a ese lugar: la franja de arriba deja de ser un cuadro y pasa a ser el borde de abajo del parabrisas (con la misma foto real de Marte de la ventana), y el beige pasa a los grises claros del tablero. El botón ATERRIZAR tiene un cartel arriba y, cuando se puede aterrizar, una flecha que rebota y brillo. En la cabina flotan los objetos de `bocetos/cabina/flotantes/` (birome, bolsa de agua, cohetito, llave, snack) en gravedad cero: deriva lenta en línea recta, giro lento y rebote suave en los bordes.
+- Qué se decidió: el monitor del costado derecho de la cabina se reemplazó por un rincón con trajes colgados, casco, botas y mochila (editado con Gemini solo en esa zona; el resto del dibujo queda igual). Ahora se toca la pantalla del centro del tablero, debajo de la ventana, para abrir la consola de destinos; esa pantalla muestra el mini mapa de Marte y, durante el aterrizaje, la altura. La consola de destinos de cerca se adapta a ese lugar: la franja de arriba deja de ser un cuadro y pasa a ser el borde de abajo del parabrisas (con la misma foto real de Marte de la ventana), y el beige pasa a los grises claros del tablero. El botón ATERRIZAR tiene un cartel arriba y, cuando se puede aterrizar, una flecha que rebota y brillo. En la cabina flotan los objetos de `bocetos/cabina/flotantes/` (birome, bolsa de agua, llave, snack; el cohetito se sacó porque confundía) en gravedad cero: deriva lenta en línea recta, giro lento y rebote suave en los bordes.
 - Por qué: al probarlo, lo intuitivo era tocar la pantalla del centro para elegir misión.
 - A quién afecta: solo el spec 19 (`cabina-fondo.png`, `layout.ts`: `CABIN_DASHBOARD_*` reemplaza a `CABIN_MONITOR_*`, que solo usaba el spec 19; textos `cabin.manualDone` y `cabin.again`; `consola-fondo.png`; clave nueva `monitor.landButton`; valores nuevos en `INTRO_BALANCE`).
 - ¿Avisado al equipo?: no todavía (va en el PR #33).

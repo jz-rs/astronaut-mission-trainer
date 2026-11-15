@@ -8,7 +8,7 @@ import {
 import { PALETTE } from '../../ui/palette';
 
 /**
- * Spec 19 — A pen, a water pouch, a toy rocket, a wrench and a snack float around the cabin.
+ * Spec 19 — A pen, a water pouch, a wrench and a snack float around the cabin.
  * Zero gravity: nothing pushes them, so each one keeps a slow, steady drift in a straight line
  * and a slow turn, and only changes direction when it bumps softly into a wall. A thin gray
  * halo keeps them visible over the white walls. Only decoration: they never block a tap.

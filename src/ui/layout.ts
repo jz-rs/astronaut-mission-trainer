@@ -31,6 +31,9 @@ export function rectCenter(rect: Rect): Point {
 
 /** Top band of the base screen with the 4 bars. */
 export const HUD_HEIGHT = 44;
+/** Stat bars are drawn as this many separate blocks (rooms and the manual), easy to count. */
+export const STAT_BAR_SEGMENTS = 10;
+export const STAT_BAR_SEGMENT_GAP = 2;
 
 /** Astronaut sprites are 54×80 files shown at half size (~27×40), like the rest of the kit. */
 export const ASTRONAUT_SCALE = 0.5;
@@ -169,10 +172,9 @@ export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
 /** Loose things floating in zero gravity: where each one starts its drift. */
 export const CABIN_FLOATING_ITEMS = [
-  { key: 'floatingPen', x: 205, y: 40, angle: -20 },
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
   { key: 'floatingWater', x: 255, y: 300, angle: -12 },
-  { key: 'floatingRocket', x: 405, y: 312, angle: 25 },
+  { key: 'floatingPen', x: 405, y: 312, angle: -20 },
   { key: 'floatingWrench', x: 112, y: 44, angle: 30 },
 ] as const;
 /** The floating things are drawn about this many game pixels tall. */
