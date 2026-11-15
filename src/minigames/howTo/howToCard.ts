@@ -24,13 +24,15 @@ export interface HowToCardOptions {
 }
 
 const DEPTH = 20;
-const TITLE_Y = 14;
-const FIRST_ROW_Y = 44;
-const LAST_ROW_GAP = 16;
-const PICTURE_X = 100;
+const TITLE_Y = 16;
+/** The steps share the space between the title and the button, with this margin on each side. */
+const STEPS_TOP = 34;
+const STEPS_MARGIN = 10;
 const PICTURE_SCALE = 0.85;
-const TEXT_X = 196;
-const TEXT_RIGHT_PADDING = 14;
+/** Pictures and lines form one block, centered in the card. */
+const PICTURE_COLUMN = 126;
+const COLUMN_GAP = 10;
+const TEXT_WIDTH = 330;
 const BUTTON_WIDTH = 200;
 const BUTTON_BOTTOM_GAP = 8;
 
@@ -50,8 +52,8 @@ export function showHowToCard(
   const centerX = area.x + area.width / 2;
   const title = addText(scene, centerX, area.y + TITLE_Y, t(options.titleKey), titleStyle);
   const buttonY = area.y + area.height - MIN_TOUCH_SIZE / 2 - BUTTON_BOTTOM_GAP;
-  const lastRowY = buttonY - MIN_TOUCH_SIZE / 2 - LAST_ROW_GAP;
-  card.add([blocker, panel, title, ...addSteps(scene, area, options.steps, lastRowY)]);
+  const stepsBottom = buttonY - MIN_TOUCH_SIZE / 2 - STEPS_MARGIN;
+  card.add([blocker, panel, title, ...addSteps(scene, area, options.steps, stepsBottom)]);
   const button = createButton(scene, {
     x: centerX,
     y: buttonY,
@@ -66,24 +68,24 @@ export function showHowToCard(
   card.add(button);
 }
 
-/** One row per step, spread evenly between the title and the button. */
+/** One row per step: each one centered in an equal slice between the title and the button. */
 function addSteps(
   scene: Phaser.Scene,
   area: Rect,
   steps: readonly HowToStep[],
-  lastRowY: number,
+  stepsBottom: number,
 ): Phaser.GameObjects.GameObject[] {
-  const firstRowY = area.y + FIRST_ROW_Y;
-  const rowHeight = (lastRowY - firstRowY) / Math.max(1, steps.length - 1);
-  const wrapWidth = area.width - TEXT_X - TEXT_RIGHT_PADDING;
+  const stepsTop = area.y + STEPS_TOP + STEPS_MARGIN;
+  const rowHeight = (stepsBottom - stepsTop) / Math.max(1, steps.length);
+  const blockLeft = area.x + (area.width - (PICTURE_COLUMN + COLUMN_GAP + TEXT_WIDTH)) / 2;
   return steps.flatMap(({ picture, textKey }, index) => {
-    const y = firstRowY + index * rowHeight;
+    const y = stepsTop + rowHeight * (index + 0.5);
     const image = picture(scene)
-      .setPosition(area.x + PICTURE_X, y)
+      .setPosition(blockLeft + PICTURE_COLUMN / 2, y)
       .setScale(PICTURE_SCALE);
-    const line = addText(scene, area.x + TEXT_X, y, t(textKey), {
+    const line = addText(scene, blockLeft + PICTURE_COLUMN + COLUMN_GAP, y, t(textKey), {
       size: FONT_SIZE.small,
-      wrapWidth,
+      wrapWidth: TEXT_WIDTH,
     });
     line.setOrigin(0, 0.5).setAlign('left');
     return [image, line];

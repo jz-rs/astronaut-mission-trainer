@@ -1,144 +1,134 @@
 import Phaser from 'phaser';
 import { GREENHOUSE_BALANCE } from '../../config/balance';
 import type { Rect } from '../../ui/layout';
-import { TECH_GLOW } from '../../ui/palette';
-import { addSprite, type SpriteKey } from '../../ui/sprites';
 import { showGestureHint } from '../gestureHint';
+import { showHowToCard } from '../howTo/howToCard';
+import { StepGuide } from '../howTo/stepGuide';
 import { MinigameScene } from '../MinigameScene';
+import { addGasBubble } from './greenhouseIcons';
+import { GREENHOUSE_STEPS } from './greenhouseRecipe';
+import { BEDS_IN_PICTURE, IN_FRONT_OF_BEDS } from './greenhouseRoom';
+import { PlantPot, type Need } from './plantPot';
+import { Toolbox } from './toolbox';
 
 /**
- * Spec 09 — Tap the thirsty plants (yellow, with a water drop) before they wither. Whack-a-mole.
- * Performance = plants saved / plants that got thirsty, + bonus if none withered.
- * Harsher locations = plants get thirsty more often and last less.
+ * Spec 09 — The greenhouse: lettuces grow in the beds of the room, in soil brought from Earth
+ * (Mars soil is toxic for them), under pink LED lamps like NASA's Veggie on the Space Station.
+ * Each plant shows what it needs, water or light, and the kid brings the right tool (drag it,
+ * or tap tool then plant).
+ * Helped, it grows and gives off O₂; forgotten, it withers.
+ * Performance = needs helped / needs asked, + bonus if none withered.
+ * Harsher locations = plants ask more often and wait less.
  */
-const CELL_WIDTH = 140;
-const CELL_HEIGHT = 112;
-const DROP_BOUNCE_PX = 4;
-const DROP_Y = -48;
-/** Lettuces have different heights: they all stand on this line, so they grow upwards. */
-const PLANT_BASE_Y = 34;
-
-/** Color says everything (spec 09): green = fine, yellow and drooping = thirsty, brown = withered. */
-type PlantState = 'healthy' | 'thirsty' | 'withered';
-
-const PLANT_SPRITES: Record<PlantState, SpriteKey> = {
-  healthy: 'lettuceHealthy',
-  thirsty: 'lettuceThirsty',
-  withered: 'lettuceWithered',
-};
-
-interface Plant {
-  state: PlantState;
-  thirstyMs: number;
-  body: Phaser.GameObjects.Container;
-  sprite: Phaser.GameObjects.Image;
-  drop: Phaser.GameObjects.Image;
-}
+const TOOL_COLUMN_WIDTH = 76;
+const OXYGEN_RISE_PX = 40;
+const OXYGEN_MS = 900;
 
 export class GreenhouseMinigame extends MinigameScene {
   static readonly KEY = 'GreenhouseMinigame';
   protected readonly instructionKey = 'minigame.greenhouse.instruction';
-  private plants: Plant[] = [];
-  private nextThirstMs = 0;
-  private saved = 0;
+  private pots: PlantPot[] = [];
+  private toolbox: Toolbox | null = null;
+  private guide: StepGuide | null = null;
+  private nextNeedMs = 0;
+  private asked = 0;
+  private helped = 0;
   private withered = 0;
-  private gotThirsty = 0;
 
   constructor() {
     super(GreenhouseMinigame.KEY);
   }
 
   protected buildGame(area: Rect): void {
-    this.plants = [];
-    this.saved = 0;
+    this.asked = 0;
+    this.helped = 0;
     this.withered = 0;
-    this.gotThirsty = 0;
-    this.nextThirstMs = 0;
-    const { columns, rows } = GREENHOUSE_BALANCE;
-    const startX = area.x + (area.width - columns * CELL_WIDTH) / 2 + CELL_WIDTH / 2;
-    const startY = area.y + (area.height - rows * CELL_HEIGHT) / 2 + CELL_HEIGHT / 2;
-    for (let row = 0; row < rows; row += 1) {
-      for (let column = 0; column < columns; column += 1) {
-        this.plants.push(
-          this.createPlant(startX + column * CELL_WIDTH, startY + row * CELL_HEIGHT),
-        );
-      }
-    }
+    this.nextNeedMs = 0;
+    this.guide = new StepGuide(this, area, GREENHOUSE_STEPS);
+    const toolsX = area.x + area.width - TOOL_COLUMN_WIDTH;
+    this.pots = this.createPots();
+    for (const outline of IN_FRONT_OF_BEDS) this.addRoomPiece(outline);
+    const toolColumn = { x: toolsX, y: area.y, width: TOOL_COLUMN_WIDTH, height: area.height };
+    this.toolbox = new Toolbox(this, toolColumn, (need, x, y) => {
+      const pot = this.pots.find((candidate) => candidate.contains(x, y));
+      if (pot) this.give(pot, need);
+    });
+    this.pauseGame();
+    const howTo = {
+      titleKey: 'minigame.greenhouse.introTitle',
+      startKey: 'minigame.greenhouse.start',
+      steps: GREENHOUSE_STEPS,
+    } as const;
+    showHowToCard(this, area, howTo, () => this.resumeGame());
+  }
+
+  private createPots(): PlantPot[] {
+    return BEDS_IN_PICTURE.map(({ x, y }) => {
+      const pot = new PlantPot(this, this.roomPoint(x, y));
+      pot.body.on('pointerdown', () => {
+        const selected = this.toolbox?.selected;
+        if (selected) this.give(pot, selected);
+      });
+      return pot;
+    });
   }
 
   protected calculatePerformance(): number {
-    if (this.gotThirsty === 0) return 1;
-    const savedFraction = this.saved / this.gotThirsty;
+    if (this.asked === 0) return 1;
     const bonus = this.withered === 0 ? GREENHOUSE_BALANCE.noWitheredBonus : 0;
-    return savedFraction + bonus;
+    return this.helped / this.asked + bonus;
   }
 
   protected updateGame(deltaMs: number): void {
-    const thirstyLimitMs = GREENHOUSE_BALANCE.thirstyForMs / this.difficulty;
-    for (const plant of this.plants) {
-      if (plant.state !== 'thirsty') continue;
-      plant.thirstyMs += deltaMs;
-      if (plant.thirstyMs >= thirstyLimitMs) {
+    const waitLimitMs = GREENHOUSE_BALANCE.needLastsMs / this.difficulty;
+    for (const pot of this.pots) {
+      if (pot.state !== 'needy') continue;
+      pot.waitedMs += deltaMs;
+      if (pot.waitedMs >= waitLimitMs) {
         this.withered += 1;
-        this.setState(plant, 'withered');
+        pot.wither();
       }
     }
-    this.nextThirstMs -= deltaMs;
-    if (this.nextThirstMs <= 0) {
-      this.nextThirstMs = GREENHOUSE_BALANCE.thirstEveryMs / this.difficulty;
-      this.makeRandomPlantThirsty();
+    this.nextNeedMs -= deltaMs;
+    if (this.nextNeedMs <= 0) {
+      this.nextNeedMs = GREENHOUSE_BALANCE.needEveryMs / this.difficulty;
+      this.askForSomething();
     }
-    if (this.plants.every((plant) => plant.state === 'withered')) this.finish();
+    if (this.pots.every((pot) => pot.state === 'withered')) this.finish();
   }
 
-  private createPlant(x: number, y: number): Plant {
-    const frame = this.add.graphics();
-    frame
-      .lineStyle(1, TECH_GLOW, 0.4)
-      .strokeRect(
-        x - CELL_WIDTH / 2 + 6,
-        y - CELL_HEIGHT / 2 + 4,
-        CELL_WIDTH - 12,
-        CELL_HEIGHT - 8,
-      );
-    const sprite = addSprite(this, 0, PLANT_BASE_Y, PLANT_SPRITES.healthy).setOrigin(0.5, 1);
-    const drop = addSprite(this, 0, DROP_Y, 'waterDrop').setVisible(false);
-    const body = this.add.container(x, y, [sprite, drop]).setSize(CELL_WIDTH - 12, CELL_HEIGHT - 8);
-    body.setInteractive({ useHandCursor: true });
-    const plant: Plant = { state: 'healthy', thirstyMs: 0, body, sprite, drop };
-    body.on('pointerdown', () => this.water(plant));
+  private askForSomething(): void {
+    const healthy = this.pots.filter((pot) => pot.state === 'healthy');
+    const pot = Phaser.Utils.Array.GetRandom(healthy);
+    if (!pot) return;
+    const need: Need = Math.random() < GREENHOUSE_BALANCE.lightNeedShare ? 'light' : 'water';
+    this.asked += 1;
+    pot.ask(need);
+    // The very first time, a ghost finger shows how to bring the tool to the plant.
+    if (this.asked === 1 && this.toolbox)
+      showGestureHint(this, this.toolbox.homeOf(need), pot.center);
+  }
+
+  private give(pot: PlantPot, need: Need): void {
+    if (this.isFinished || !pot.help(need)) return;
+    this.helped += 1;
+    this.guide?.show(2);
+    this.giveOffOxygen(pot);
+  }
+
+  /** A healthy plant takes CO₂ from the air and gives off O₂: a blue bubble rises from it. */
+  private giveOffOxygen(pot: PlantPot): void {
+    const { x, y } = pot.top;
+    const bubble = addGasBubble(this, 'o2').setPosition(x, y).setDepth(3);
     this.tweens.add({
-      targets: drop,
-      y: DROP_Y - DROP_BOUNCE_PX,
-      yoyo: true,
-      repeat: -1,
-      duration: 250,
+      targets: bubble,
+      y: y - OXYGEN_RISE_PX,
+      alpha: 0,
+      duration: OXYGEN_MS,
+      onComplete: () => {
+        bubble.destroy();
+        this.guide?.show(3);
+      },
     });
-    return plant;
-  }
-
-  private makeRandomPlantThirsty(): void {
-    const healthy = this.plants.filter((plant) => plant.state === 'healthy');
-    const plant = Phaser.Utils.Array.GetRandom(healthy);
-    if (!plant) return;
-    this.gotThirsty += 1;
-    plant.thirstyMs = 0;
-    this.setState(plant, 'thirsty');
-    // The very first thirsty plant shows where to tap.
-    if (this.gotThirsty === 1) showGestureHint(this, { x: plant.body.x, y: plant.body.y });
-  }
-
-  private water(plant: Plant): void {
-    if (plant.state !== 'thirsty' || this.isFinished) return;
-    this.saved += 1;
-    this.setState(plant, 'healthy');
-    plant.body.setScale(1.15);
-    this.tweens.add({ targets: plant.body, scale: 1, duration: 200, ease: 'Back.Out' });
-  }
-
-  private setState(plant: Plant, state: PlantState): void {
-    plant.state = state;
-    plant.drop.setVisible(state === 'thirsty');
-    plant.sprite.setTexture(PLANT_SPRITES[state]);
   }
 }
