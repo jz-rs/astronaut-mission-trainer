@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import type { EventNews, RunState } from '../../core/types';
 import { t, type TranslationKey } from '../../i18n';
 import { FONT_SIZE, GAME_WIDTH, type Rect } from '../../ui/layout';
+import { playAlertSound } from '../../ui/soundEffects';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
@@ -37,6 +38,7 @@ export class EventAnnouncer {
     if (news.kind === 'warning') {
       const eventName = t(eventKey(news.eventId, 'name'));
       this.showBanner(t('event.warning', { event: eventName }), PALETTE.cyan);
+      playAlertSound(this.scene); // Apollo's radio beeps: a message from Earth
       return;
     }
     this.showBanner(t(eventKey(news.eventId, 'text')), isGood ? PALETTE.green : PALETTE.alert);

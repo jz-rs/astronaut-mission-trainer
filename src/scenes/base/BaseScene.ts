@@ -7,6 +7,7 @@ import { PLAYER_ID } from '../../core/run';
 import { canStartExpedition } from '../../core/expedition';
 import { canAffordTask } from '../../core/stats';
 import { isAfterSunset, isTooDarkFor, nightAmount } from '../../core/daylight';
+import { musicMood } from '../../core/musicMood';
 import { TASK_IDS, type TaskId, type TaskNews } from '../../core/types';
 import { t } from '../../i18n';
 import type { MinigameResult, MinigameStartData } from '../../minigames/MinigameScene';
@@ -19,6 +20,7 @@ import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
 import { addScanlines } from '../../ui/techFrame';
+import { setMusicMood } from '../../ui/backgroundMusic';
 import { finishRun } from '../runEnd';
 import type { ManualSceneData } from '../manual/ManualScene';
 import { SCENE_KEYS } from '../sceneKeys';
@@ -183,6 +185,7 @@ export class BaseScene extends Phaser.Scene {
     this.hud.update(state);
     this.stationLights.setNight(this.currentNight());
     this.nightSign.setVisible(isAfterSunset(state));
+    setMusicMood(musicMood(state));
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -396,12 +399,14 @@ export class BaseScene extends Phaser.Scene {
   /** The X of the base: back to the ship, without saving this run's result. */
   private leaveRun(): void {
     this.runEnded = true;
+    setMusicMood('calm'); // out of the base (ship, results) the music is calm again
     OVERLAY_KEYS.forEach((key) => this.scene.stop(key));
     this.scene.start(SCENE_KEYS.cabin);
   }
 
   private endRun(): void {
     this.runEnded = true;
+    setMusicMood('calm'); // out of the base (ship, results) the music is calm again
     OVERLAY_KEYS.forEach((key) => this.scene.stop(key));
     finishRun(this, this.session);
   }
