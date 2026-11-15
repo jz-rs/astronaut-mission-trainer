@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — The first mission manual can't be skipped (spec 19)
+- Who: Marianela, with Claude
+- What was decided: until the manual is finished, tapping the dashboard in the cabin doesn't open the destination console. The guide says `cabin.manualFirst` ("First open the mission manual: it is the tablet.") and highlights the tablet. The first read of the manual has no X button, so the only way out is reaching the last page. Once it's done, the X comes back and the manual can be reread and closed at any point. This closes the open item in spec 19 about reaching the monitor before the manual.
+- Why: in playtesting, skipping the welcome and going straight to the console made LAND bounce back with "Read the manual first". That text overflowed its box, and a new player couldn't tell how to get back to the manual or where they had stopped.
+- Affects: spec 19 only (`CabinScene.ts`, `ManualScene.ts`, `docs/specs/19-intro-cabina-manual.md`). It uses an existing i18n key; no shared contract changes.
+- Team notified?: not yet (goes in the PR).
+
 ## 2026-11-15 — Everything new in the repo goes in English
 - Who: the team, with Claude
 - What was decided: from now on commit messages, branch names, PR titles and descriptions, GitHub comments and reviews, and code comments are written in English (NASA Space Apps rule). Game texts in `src/i18n/es.json` stay in Spanish. Git history is not rewritten. Rule added to `AGENTS.md` §2 and §6.
