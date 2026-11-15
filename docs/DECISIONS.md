@@ -13,6 +13,12 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — The game is live on GitHub Pages
+- Who: Jeza (with Claude)
+- What was decided: the repo now belongs to the `jz-rs` account (https://github.com/jz-rs/astronaut-mission-trainer; the old `memocayar` links redirect). There GitHub Actions works, so the Pages source was switched from "Deploy from a branch" (it served the raw source, and the game did not start) to "GitHub Actions", and `deploy-pages.yml` ran. The game is live at https://jz-rs.github.io/astronaut-mission-trainer/ and is published again on every merge to `main`. The billing lock in the earlier entries was on the old owner's account and no longer blocks deploys. The README starts with the live links.
+- Why: the jury must be able to play from a public link (spec 17).
+- Who it affects: everyone (the new links); spec 17; `README.md`.
+
 ## 2026-11-15 — Outdoor solar mission and base airlock (spec 18)
 - Who: workspace owner, with Codex; explicitly approved proceeding across shared contracts.
 - Decision: extend spec 18 to include the corner airlock on the base map, visual crew routes outside, a quick airlock transition, and a suited astronaut beside the panels. Use biome-specific pixel art, preserving the downloaded Gemini Jezero original; recreate unavailable private Gemini assets with the image generation tool using that reference.
