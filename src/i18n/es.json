@@ -199,7 +199,7 @@
   "manual.messages.line1": "Desde la Tierra te mandan avisos para que te prepares.",
   "manual.messages.line2": "[mars]Marte[/] está tan lejos que la señal tarda varios minutos en llegar.",
   "manual.messages.line3": "En el juego: algunos avisos llegan tarde. ¡Mirá también lo que pasa en la base!",
-  "manual.messages.fact": "Según dónde estén los planetas, la señal tarda entre 3 y 22 minutos.",
+  "manual.messages.fact": "Según dónde estén los planetas, la señal tarda entre 4 y 24 minutos.",
   "manual.messages.route": "TIERRA > MARTE",
   "manual.ready.title": "¡Todo listo!",
   "manual.ready.line1": "Las cuatro barras bajan con el tiempo.",

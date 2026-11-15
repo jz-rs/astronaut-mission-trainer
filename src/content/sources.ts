@@ -34,7 +34,7 @@ export const SOURCE_LINKS: readonly SourceLink[] = [
   },
   {
     label: 'Tormenta solar de mayo 2024 en Marte — NASA/JPL',
-    url: 'https://phys.org/news/2024-06-nasa-mars-epic-solar-storm.html',
+    url: 'https://www.jpl.nasa.gov/news/nasa-watches-mars-light-up-during-epic-solar-storm/',
   },
   {
     label: 'Geografía de Marte — ESA',

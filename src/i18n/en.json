@@ -199,7 +199,7 @@
   "manual.messages.line1": "Earth sends you warnings so you can get ready.",
   "manual.messages.line2": "[mars]Mars[/] is so far away that the signal takes several minutes to arrive.",
   "manual.messages.line3": "In the game: some warnings arrive late. Also watch what happens in the base!",
-  "manual.messages.fact": "Depending on where the planets are, the signal takes between 3 and 22 minutes.",
+  "manual.messages.fact": "Depending on where the planets are, the signal takes between 4 and 24 minutes.",
   "manual.messages.route": "EARTH > MARS",
   "manual.ready.title": "All set!",
   "manual.ready.line1": "All four bars go down over time.",
