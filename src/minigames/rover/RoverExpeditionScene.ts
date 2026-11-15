@@ -107,7 +107,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
       startKey: 'rover.start',
       steps: ROVER_STEPS,
     } as const;
-    showHowToCard(this, MINIGAME_AREA, howTo, () => {
+    showHowToCard(this, howTo, () => {
       this.resumeBase();
       this.phase = 'drive';
       this.track.spawnFirstRock(FIRST_ROCK_LANE);
@@ -184,11 +184,11 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.track.moveRover(pointer.x < this.track.roverX ? -1 : 1);
   }
 
-  /** Soft sand: the rover slips for a moment, but keeps the rocks it already has. */
+  /** Soft sand: the rover slips for a moment, but keeps its rocks. Red, like every wrong choice. */
   private hitSand(): void {
     this.stunnedMs = ROVER_BALANCE.sandStuckMs;
     this.track.slip();
-    sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.sand);
+    sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.alert);
   }
 
   /** Counted at once (the trip may end mid-flight); the flying tube only shows it. */

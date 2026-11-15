@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
 import { GREENHOUSE_BALANCE } from '../../config/balance';
+import { t } from '../../i18n';
+import { floatText } from '../../ui/floatingText';
 import type { Rect } from '../../ui/layout';
+import { PALETTE } from '../../ui/palette';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
@@ -9,20 +12,22 @@ import { addGasBubble } from './greenhouseIcons';
 import { GREENHOUSE_STEPS } from './greenhouseRecipe';
 import { BEDS_IN_PICTURE, IN_FRONT_OF_BEDS } from './greenhouseRoom';
 import { PlantPot, type Need } from './plantPot';
-import { Toolbox } from './toolbox';
+import { Toolbox, type ToolKind } from './toolbox';
 
 /**
  * Spec 09 — The greenhouse: lettuces grow in the beds of the room, in soil brought from Earth
  * (Mars soil is toxic for them), under pink LED lamps like NASA's Veggie on the Space Station.
  * Each plant shows what it needs, water or light, and the kid brings the right tool (drag it,
- * or tap tool then plant).
+ * or tap tool then plant). There is a Mars soil tool too, a decoy: it is toxic for the plants.
  * Helped, it grows and gives off O₂; forgotten, it withers.
- * Performance = needs helped / needs asked, + bonus if none withered.
+ * Performance = needs helped / needs asked, + bonus if none withered, − a bit per Mars soil.
  * Harsher locations = plants ask more often and wait less.
  */
 const TOOL_COLUMN_WIDTH = 76;
 const OXYGEN_RISE_PX = 40;
 const OXYGEN_MS = 900;
+/** "Mars soil is toxic!" teaches something, so it stays long enough to read. */
+const TOXIC_MESSAGE_MS = 2_000;
 
 export class GreenhouseMinigame extends MinigameScene {
   static readonly KEY = 'GreenhouseMinigame';
@@ -34,6 +39,10 @@ export class GreenhouseMinigame extends MinigameScene {
   private asked = 0;
   private helped = 0;
   private withered = 0;
+  private marsSoilGiven = 0;
+  /** Where the plants are, between the step panel and the tools: messages stay inside it. */
+  private plantsLeft = 0;
+  private plantsRight = 0;
 
   constructor() {
     super(GreenhouseMinigame.KEY);
@@ -43,9 +52,12 @@ export class GreenhouseMinigame extends MinigameScene {
     this.asked = 0;
     this.helped = 0;
     this.withered = 0;
+    this.marsSoilGiven = 0;
     this.nextNeedMs = 0;
     this.guide = new StepGuide(this, area, GREENHOUSE_STEPS);
     const toolsX = area.x + area.width - TOOL_COLUMN_WIDTH;
+    this.plantsLeft = this.guide.right;
+    this.plantsRight = toolsX;
     this.pots = this.createPots();
     for (const outline of IN_FRONT_OF_BEDS) this.addRoomPiece(outline);
     const toolColumn = { x: toolsX, y: area.y, width: TOOL_COLUMN_WIDTH, height: area.height };
@@ -59,7 +71,7 @@ export class GreenhouseMinigame extends MinigameScene {
       startKey: 'minigame.greenhouse.start',
       steps: GREENHOUSE_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.resumeGame());
+    showHowToCard(this, howTo, () => this.resumeGame());
   }
 
   private createPots(): PlantPot[] {
@@ -76,7 +88,8 @@ export class GreenhouseMinigame extends MinigameScene {
   protected calculatePerformance(): number {
     if (this.asked === 0) return 1;
     const bonus = this.withered === 0 ? GREENHOUSE_BALANCE.noWitheredBonus : 0;
-    return this.helped / this.asked + bonus;
+    const penalty = this.marsSoilGiven * GREENHOUSE_BALANCE.marsSoilPenalty;
+    return Math.max(0, this.helped / this.asked + bonus - penalty);
   }
 
   protected updateGame(deltaMs: number): void {
@@ -109,7 +122,23 @@ export class GreenhouseMinigame extends MinigameScene {
       showGestureHint(this, this.toolbox.homeOf(need), pot.center);
   }
 
-  private give(pot: PlantPot, need: Need): void {
+  private give(pot: PlantPot, tool: ToolKind): void {
+    if (tool === 'marsSoil') this.giveMarsSoil(pot);
+    else this.giveNeed(pot, tool);
+  }
+
+  private giveMarsSoil(pot: PlantPot): void {
+    if (this.isFinished || pot.state === 'withered') return;
+    this.marsSoilGiven += 1;
+    pot.poison();
+    const { x, y } = pot.top;
+    const message = t('minigame.greenhouse.toxicSoil');
+    const text = floatText(this, x, y, message, PALETTE.alert, TOXIC_MESSAGE_MS);
+    const half = text.width / 2;
+    text.setX(Phaser.Math.Clamp(x, this.plantsLeft + half, this.plantsRight - half));
+  }
+
+  private giveNeed(pot: PlantPot, need: Need): void {
     if (this.isFinished || !pot.help(need)) return;
     this.helped += 1;
     this.guide?.show(2);

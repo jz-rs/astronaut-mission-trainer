@@ -9,12 +9,15 @@ import { addText } from '../../ui/text';
  * MOXIE does on Mars: CO₂ (O–C–O) loses one O and becomes CO; two loose O join into O₂.
  * Colors mean something: oxygen is always blue, the same color as the oxygen bar, so the kid
  * sees that the CO₂ of Mars already has oxygen inside; carbon is dark, like coal; and the CO that
- * is left over is all grey, like smoke, because it is thrown away.
+ * is left over is all grey, like smoke, because it is thrown away. The air of Mars also has a
+ * little nitrogen (N₂) and argon (Ar), which MOXIE can't use: they are light grey and sand, so
+ * they don't look like oxygen.
  */
-export type MoleculeKind = 'co2' | 'co' | 'o' | 'o2';
+export type MoleculeKind = 'co2' | 'co' | 'o' | 'o2' | 'n2' | 'ar';
+type Element = 'C' | 'O' | 'N' | 'Ar';
 
 /** Where each atom sits inside its molecule, in atom radii from the center. */
-const ATOM_LAYOUT: Record<MoleculeKind, readonly { element: 'C' | 'O'; offset: number }[]> = {
+const ATOM_LAYOUT: Record<MoleculeKind, readonly { element: Element; offset: number }[]> = {
   co2: [
     { element: 'O', offset: -1.5 },
     { element: 'C', offset: 0 },
@@ -29,10 +32,25 @@ const ATOM_LAYOUT: Record<MoleculeKind, readonly { element: 'C' | 'O'; offset: n
     { element: 'O', offset: -0.75 },
     { element: 'O', offset: 0.75 },
   ],
+  n2: [
+    { element: 'N', offset: -0.75 },
+    { element: 'N', offset: 0.75 },
+  ],
+  ar: [{ element: 'Ar', offset: 0 }],
 };
 
-const ATOM_COLORS = { C: PALETTE.night, O: STAT_COLORS.oxygen } as const;
-const LETTER_COLORS = { C: PALETTE.white, O: PALETTE.night } as const;
+const ATOM_COLORS: Record<Element, number> = {
+  C: PALETTE.night,
+  O: STAT_COLORS.oxygen,
+  N: PALETTE.metalLight,
+  Ar: PALETTE.sand,
+};
+const LETTER_COLORS: Record<Element, number> = {
+  C: PALETTE.white,
+  O: PALETTE.night,
+  N: PALETTE.night,
+  Ar: PALETTE.night,
+};
 const LEFTOVER_COLOR = PALETTE.metal;
 const OUTLINE_WIDTH = 2;
 

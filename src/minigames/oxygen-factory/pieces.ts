@@ -27,6 +27,15 @@ export function createPiece(
   return { kind, body, velocity: new Phaser.Math.Vector2(speed, 0).rotate(angle), busy: false };
 }
 
+/** A free spot inside the area, far enough from the edges that the molecule fits. */
+export function randomSpot(area: Phaser.Geom.Rectangle): { x: number; y: number } {
+  const margin = OXYGEN_FACTORY_BALANCE.atomRadius * 3;
+  return {
+    x: Phaser.Math.Between(area.left + margin, area.right - margin),
+    y: Phaser.Math.Between(area.top + margin, area.bottom - margin),
+  };
+}
+
 export function floatPieces(
   pieces: readonly Piece[],
   area: Phaser.Geom.Rectangle,

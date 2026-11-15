@@ -18,6 +18,8 @@ export interface GuideMessageOptions {
   tailX: number;
   onNext: () => void;
   onSkip?: () => void;
+  /** A scolding first line in red, with a red frame and a shake: the kid did something wrong. */
+  warning?: string;
 }
 
 const DEPTH = 40;
@@ -27,6 +29,8 @@ const TAIL_HEIGHT = 12;
 const NEXT_BUTTON = { width: 104, height: 30 } as const;
 const SKIP_BUTTON = { width: 84, height: 30 } as const;
 const STEP_DOT = { size: 6, gap: 6 } as const;
+const WARNING_GAP = 6;
+const SHAKE = { distance: 4, durationMs: 50, repeats: 3 } as const;
 
 /** The open message can be found by this name (the guide's bubble hides while it is there). */
 export const GUIDE_MESSAGE_NAME = 'guideMessage';
@@ -39,13 +43,43 @@ export function showGuideMessage(
   const message = scene.add.container(0, 0).setDepth(DEPTH).setName(GUIDE_MESSAGE_NAME);
   message.add(drawPanel(scene, options));
   const textWidth = panel.width - NEXT_BUTTON.width - PADDING * 3;
-  const text = addText(scene, panel.x + PADDING, panel.y + PADDING, options.text, {
-    size: FONT_SIZE.small,
-    wrapWidth: textWidth,
-  });
-  message.add(text.setOrigin(0, 0).setAlign('left'));
+  let textTop = panel.y + PADDING;
+  if (options.warning) {
+    const warning = addMessageText(scene, textTop, options.warning, textWidth, PALETTE.alert);
+    message.add(warning);
+    textTop += warning.height + WARNING_GAP;
+    shake(scene, message);
+  }
+  message.add(addMessageText(scene, textTop, options.text, textWidth, PALETTE.white));
   addMessageButtons(scene, message, options);
   return message;
+}
+
+function addMessageText(
+  scene: Phaser.Scene,
+  top: number,
+  content: string,
+  wrapWidth: number,
+  color: number,
+): Phaser.GameObjects.Text {
+  const text = addText(scene, CABIN_MESSAGE_PANEL.x + PADDING, top, content, {
+    size: FONT_SIZE.small,
+    wrapWidth,
+    color,
+  });
+  return text.setOrigin(0, 0).setAlign('left');
+}
+
+/** A quick "no-no" side to side, like a head shake. */
+function shake(scene: Phaser.Scene, message: Phaser.GameObjects.Container): void {
+  scene.tweens.add({
+    targets: message,
+    x: SHAKE.distance,
+    duration: SHAKE.durationMs,
+    yoyo: true,
+    repeat: SHAKE.repeats,
+    ease: 'Sine.InOut',
+  });
 }
 
 /** NEXT at the bottom right; Skip (only during the welcome) to its left. */
@@ -72,7 +106,8 @@ function drawPanel(scene: Phaser.Scene, options: GuideMessageOptions): Phaser.Ga
   const panel = CABIN_MESSAGE_PANEL;
   const graphics = scene.add.graphics();
   const { tailX } = options;
-  graphics.fillStyle(TECH_GLOW, 1);
+  const accent = options.warning ? PALETTE.alert : TECH_GLOW;
+  graphics.fillStyle(accent, 1);
   graphics.fillTriangle(
     tailX - TAIL_HALF_WIDTH - 2,
     panel.y,
@@ -81,7 +116,7 @@ function drawPanel(scene: Phaser.Scene, options: GuideMessageOptions): Phaser.Ga
     tailX + TAIL_HALF_WIDTH + 2,
     panel.y,
   );
-  drawTechPanel(graphics, panel);
+  drawTechPanel(graphics, panel, accent);
   graphics.fillStyle(PALETTE.night, 1);
   graphics.fillTriangle(
     tailX - TAIL_HALF_WIDTH,

@@ -1,7 +1,8 @@
 import { CREW_BALANCE, RUN_BALANCE } from '../config/balance';
 import { applyAction, type GameAction } from './actions';
-import { updateCollab } from './collab';
+import { updateMeeting } from './collab';
 import { updateEvents } from './events';
+import { updateShelter } from './shelter';
 import { applyDecay, createStartingStats, findEmptyStat, updateLowestStats } from './stats';
 import { getBotEfficiency } from './training';
 import type { CrewMember, LocationConfig, RunState, ScheduledEvent, TrainingLevels } from './types';
@@ -29,7 +30,8 @@ export function createRun(
     eventNews: [],
     taskNews: [],
     roverOut: false,
-    emergency: null,
+    shelter: null,
+    busyCrewIds: [],
     meeting: null,
     priority: null,
   };
@@ -49,7 +51,7 @@ function createCrew(): CrewMember[] {
 /** Advances the simulation. Called every frame by the scene, or by a server in the future. */
 export function updateRun(state: RunState, deltaMs: number): void {
   if (state.status !== 'playing') return;
-  updateCollab(state, deltaMs);
+  updateMeeting(state, deltaMs);
   if (state.meeting) return; // the crisis meeting pauses the base while everyone votes
 
   applyDecay(state.stats, state.location, deltaMs);
@@ -58,6 +60,7 @@ export function updateRun(state: RunState, deltaMs: number): void {
   advanceClock(state, deltaMs);
   sendBotsInAtSunset(state);
   updateEvents(state);
+  updateShelter(state, deltaMs);
   checkEvacuation(state);
 }
 

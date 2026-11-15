@@ -2,6 +2,7 @@ import type Phaser from 'phaser';
 import { RUN_BALANCE } from '../../config/balance';
 import { STAT_IDS } from '../../core/types';
 import { t } from '../../i18n';
+import { addLamp } from '../../minigames/greenhouse/greenhouseIcons';
 import { astronautFrameKey, type SuitColor } from '../../ui/astronautFrames';
 import { FONT_SIZE, rectCenter, STAT_BAR_SEGMENTS, type Rect } from '../../ui/layout';
 import { PALETTE, STAT_COLORS, TECH_GLOW } from '../../ui/palette';
@@ -42,8 +43,10 @@ const DRAWERS: Record<PageArt, ArtDrawer> = {
   greenhouse: (scene, area) => {
     const { x, y } = rectCenter(area);
     return [
-      sprite(scene, x - 12, y + 4, 'lettuceHealthy', 60),
-      sprite(scene, x + 46, y - 4, 'waterDrop', 20),
+      sprite(scene, x - 12, y + 10, 'lettuceHealthy', 56),
+      // The same pink LED lamp as the greenhouse mission: plants need water and light.
+      addLamp(scene, x - 12, y - 30),
+      sprite(scene, x + 46, y + 4, 'waterDrop', 20),
     ];
   },
   rover: (scene, area) => {

@@ -22,6 +22,61 @@ Formato:
 - Affects: specs 04, 06, 07 and 18; solar art assets, UI layout, shared minigame lifecycle and environment data.
 - Team notified?: no; approval was given by the workspace owner. This record documents the integration points for review.
 
+## 2026-11-15 — Las explicaciones y resultados de los minijuegos salen en la tablet
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la tarjeta de explicación (`howToCard`) y la de resultado (`resultCard`, y `roverResult` del rover) ya no son un panel dentro del minijuego: aparecen en la pantalla de la tablet de la misión, igual que las crisis. La tablet pasó de `scenes/base/crisis/CrisisTablet.ts` a `src/ui/MissionTablet.ts` (clase `MissionTablet`, recibe la profundidad; suma `addToScreen` y `destroy`) y `TABLET_TEXTURE` vive ahí. `showHowToCard` ya no recibe el área y `addContinueButton` recibe la tablet. Bordes: cian en la explicación, verde si salió bien o perfecto, cian en "¡Casi!".
+- Por qué: que todo lo que se lee venga del mismo aparato (manual, crisis, minijuegos).
+- A quién afecta: B (specs 06–10 y 15, minijuegos y rover), A (spec 16, crisis: solo cambia de dónde importa la tablet). Mientras se ve la explicación, la X del minijuego queda tapada: se sale después de tocar el botón de empezar.
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — Aviso en rojo si tocás la consola sin haber leído el manual (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "En el manual está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.
+- Por qué: que se entienda que te estás salteando un paso obligatorio.
+- A quién afecta: dueña del manual obligatorio (PR #37): cambia el texto del aviso.
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: abajo a la derecha de la base flota la tablet de la nave en chiquito (`public/assets/sprites/cabina/tablet-boton.png`, achicada de `tablet.png`) con "MANUAL" en la pantalla. Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.
+- Por qué: poder consultar el manual mientras jugás sin perder tiempo.
+- A quién afecta: dueña de la base y el HUD (spec 04): `BaseScene.ts` suma `openManual()` y el botón nuevo `src/scenes/base/ManualButton.ts`; `layout.ts` suma `BASE_MANUAL_BUTTON`. `ManualScene` acepta `{ onClose }` para abrirse encima de otra escena.
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — El manual usa la lámpara LED de la misión del invernadero (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la página Comida del manual dibuja la lámpara LED rosa de la misión del invernadero sobre la lechuga, importando `addLamp` de `src/minigames/greenhouse/greenhouseIcons.ts`. Es una excepción a la regla de que los minijuegos solo se conectan por `MinigameScene`/`registry` (AGENTS.md §3): si cambia esa función, cambia también el manual. Además, el Escudo se explica más fácil en 4 renglones (qué es la radiación, qué es el campo magnético, por qué Marte no lo tiene, qué hacés), sin recuadro de dato porque lo explica la misión.
+- Por qué: el invernadero ahora pide agua y luz, y la imagen del manual tiene que mostrar las dos.
+- A quién afecta: dueña del invernadero (spec 09): `addLamp` ahora se usa también fuera del minijuego.
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — Manual en frases cortas, con palabras clave en color (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: cada página del manual deja de tener un párrafo y pasa a tener **3 frases cortas**, una por renglón, con un cuadradito de color según el tipo: el problema (naranja Marte), la ciencia real (celeste) y qué hacés en el juego (amarillo, siempre al final). Las palabras clave van en el color de su barra (oxígeno, comida, escudo, energía; Marte en naranja; tripulación en violeta). Si entra, abajo va un **dato curioso en un recuadro**, sin título. Hay 2 plantillas: con foto real (las frases van abajo a todo el ancho; el dato casi nunca entra) y sin foto (las frases van a la derecha del dibujo). Las claves `manual.<página>.text` se reemplazan por `line1..3` y `fact`. Los botones de los mensajes de la guía quedan los dos en mayúsculas (SALTAR / SEGUIR).
+- Por qué: los párrafos eran largos y planos para chicos de 7 a 12.
+- A quién afecta: solo el spec 19 (`src/scenes/manual/*`, nuevo `manualText.ts`, i18n del manual).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — Crisis redesign: real procedures on the tablet, shelter instead of the lever (spec 16)
+- Who: Marianela, with the team (design reviewed in the "Rediseño de crisis" canvas, v2) and Claude
+- What was decided:
+  - The crisis meeting votes **real NASA procedures**, not tasks. Solar storm: "Take shelter" (right) vs "Go outside". Dust storm: "Save energy" (right) vs "Clean panels". Only events in `src/core/crisisProcedures.ts` get a meeting.
+  - It is shown on the **mission tablet** over the base, edges flashing black: message from Earth with its real delay (3–22 min), the vote, then right/wrong with a real NASA photo and one line on why. A reward photo appears once the storm is over.
+  - The **player is the commander**: bots vote the same as the player. Voting right halves the event's damage (`rightChoiceDamageFactor`) and sets what bots on auto do first (`PROCEDURE_PRIORITY`).
+  - **Crises never interrupt a minigame or the rover trip**: the meeting and the shelter wait until the player is back in the base (`setBusy` action), so a kid always sees the whole message.
+  - The **two-person lever is gone**. When a solar storm lands the crew has `shelterWindowMs` to get into the shield room; getting in halves the damage again (`shelterDamageFactor`).
+  - Contracts changed: `GameAction` (`holdLever` removed, `castVote` now takes `procedureId`, new `enterShelter` and `setBusy`), `RunState` (`emergency` → `shelter`), `ScheduledEvent` (`crisisChoice`, `crewSheltered`), `EventNews` (`saved` → `decided`), `COLLAB_BALANCE` (lever values replaced). i18n: the `collab.*` keys of the lever and the old meeting were removed, `crisis.*` added. Seven new NASA photos credited in `docs/DATA_SOURCES.md`. GDD §7 and the tasks table, and spec 16, updated.
+- Why: the old meeting offered "shield vs panels" for every crisis, which is not what real crews do (nobody goes out to fix panels in a solar storm, and cleaning in the middle of a dust storm is useless). Kids now learn the real procedure and see real photos of why. The lever had no real-world equivalent; taking shelter does (Orion, ISS).
+- Affects: A (specs 05, 14, 16: `types.ts`, `actions.ts`, `collab.ts`, `events.ts`, `run.ts`, `bots/teamwork.ts`, `BaseScene`, `EventAnnouncer`, `TeamworkViews`); B (`GameAction` changed, no minigame uses the removed parts); C (`docs/GDD.md`, `docs/DATA_SOURCES.md`, i18n).
+- Team notified?: the design was reviewed by the team; the code goes in the PR.
+
+## 2026-11-15 — Wrong choices in the oxygen and greenhouse missions (specs 08, 09, 15)
+- Who: Jeza, with Claude
+- What was decided: like the rover's soft sand, two missions get a "wrong choice" that only a kid who learned the science avoids. **Oxygen factory**: one N₂ and one Ar molecule float among the CO₂ (real Martian air is ~95 % CO₂ plus a little nitrogen and argon). MOXIE spits them back with a very short message ("No N₂! Only CO₂") and each one fed costs `OXYGEN_FACTORY_BALANCE.decoyPenalty` (0.15) of performance. **Greenhouse**: a third tool, "Mars soil" (a red-brown heap, no cross on it). Given to a plant, the plant goes red and droops for a moment, "Toxic!" shows up, the request is not helped, and it costs `GREENHOUSE_BALANCE.marsSoilPenalty` (0.15). The rover's "Soft sand!" message turns red too (it was sand-colored), so every wrong choice looks the same. `floatText` (`src/ui/floatingText.ts`) gets an optional `durationMs` so these teaching messages stay long enough to read; existing calls don't change.
+- Why: reward the kid's knowledge (step 1 of each how-to card already teaches it: Mars air is CO₂; Mars soil is toxic for plants), not only speed.
+- Who it affects: B (specs 08, 09 and 15: `src/minigames/oxygen-factory/*`, `src/minigames/greenhouse/*`, `RoverExpeditionScene.ts`); everyone only through new values in `balance.ts`, new keys in `i18n/*.json` and the optional `floatText` parameter.
+- Team notified?: yes (with the PR).
+
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).

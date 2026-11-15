@@ -24,6 +24,7 @@ import {
 } from '../../ui/layout';
 import { SCENE_KEYS } from '../sceneKeys';
 import { createConsoleButton, type ConsoleButton } from './consoleButton';
+import { addInfoHalo } from './infoHalo';
 import { addLandHint, type LandHint } from './landHint';
 import {
   drawMonitorScreens,
@@ -73,7 +74,8 @@ export class MonitorScene extends Phaser.Scene {
     createConsoleButton(this, 'previous', () => this.browse(-1)).sprite.setDepth(11);
     createConsoleButton(this, 'next', () => this.browse(1)).sprite.setDepth(11);
     createConsoleButton(this, 'photo', () => this.nextPhoto()).sprite.setDepth(11);
-    createConsoleButton(this, 'info', () => this.toggleInfo()).sprite.setDepth(11);
+    const info = createConsoleButton(this, 'info', () => this.toggleInfo());
+    addInfoHalo(this, info.sprite.setDepth(11));
     this.landButton = createConsoleButton(this, 'land', () => this.land());
     this.landButton.sprite.setDepth(11);
     this.landHint = addLandHint(this, this.landButton.sprite);

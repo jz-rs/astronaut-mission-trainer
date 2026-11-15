@@ -21,6 +21,16 @@ const SOIL_WIDTH = 30;
 const SOIL_HEIGHT = 14;
 const CROSS_SIZE = 9;
 const EARTH_RADIUS = 11;
+/** The Mars soil tool: a red-brown heap with darker grains, with no cross (the kid must know). */
+const HEAP_WIDTH = 34;
+const HEAP_HEIGHT = 18;
+const GRAINS: readonly { x: number; y: number }[] = [
+  { x: -8, y: -2 },
+  { x: 3, y: -6 },
+  { x: 9, y: 1 },
+  { x: -2, y: 3 },
+];
+const GRAIN_SIZE = 3;
 
 /** A LED lamp: a pink bar with a soft glow under it when it is on, dark when it is off. */
 export function addLamp(scene: Phaser.Scene, x: number, y: number): Phaser.GameObjects.Graphics {
@@ -70,6 +80,16 @@ export function addToxicSoil(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
   soil.lineBetween(-CROSS_SIZE, -CROSS_SIZE, CROSS_SIZE, CROSS_SIZE);
   soil.lineBetween(-CROSS_SIZE, CROSS_SIZE, CROSS_SIZE, -CROSS_SIZE);
   return soil;
+}
+
+/** A heap of Mars soil, the decoy tool: it looks like soil, but it is toxic for the plants. */
+export function addMarsSoilHeap(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
+  const heap = scene.add.graphics();
+  heap.fillStyle(PALETTE.mars, 1);
+  heap.fillEllipse(0, HEAP_HEIGHT / 4, HEAP_WIDTH, HEAP_HEIGHT);
+  heap.fillStyle(PALETTE.marsDark, 1);
+  for (const { x, y } of GRAINS) heap.fillRect(x, y, GRAIN_SIZE, GRAIN_SIZE);
+  return heap;
 }
 
 /** The Earth: the soil of the greenhouse comes from there. */

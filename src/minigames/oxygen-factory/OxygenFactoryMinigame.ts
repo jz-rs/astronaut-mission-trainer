@@ -11,14 +11,17 @@ import { MinigameScene } from '../MinigameScene';
 import { MoxieWindow } from './moxieWindow';
 import { OXYGEN_STEPS } from './oxygenRecipe';
 import { OxygenStation } from './oxygenStation';
-import { createPiece, floatPieces, type Piece } from './pieces';
+import { isDecoy, rejectDecoy, spawnDecoys } from './decoys';
+import { createPiece, floatPieces, randomSpot, type Piece } from './pieces';
 
 /**
  * Spec 08 — The air factory, like MOXIE on the Perseverance rover. The kid only feeds MOXIE:
  * drag (or tap) each CO₂ of the Martian air into it. Through MOXIE's window the kid sees the
  * rest happen by itself, as in the real machine: the CO₂ breaks, the CO goes out as smoke,
  * and every 2 O make one O₂ that goes to the tank (2 CO₂ → 2 CO + O₂).
- * Performance = CO₂ fed / CO₂ needed, with a speed bonus. Harsher locations = faster molecules.
+ * N₂ and Ar float around too, like in the real Martian air: MOXIE spits them back (decoys.ts).
+ * Performance = CO₂ fed / CO₂ needed, with a speed bonus, minus a bit per decoy fed.
+ * Harsher locations = faster molecules.
  */
 const PLAY_MARGIN = 20;
 /** A finger that moves less than this between press and release tapped instead of dragging. */
@@ -37,6 +40,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
   private spawnedCarbon = 0;
   private carbonFed = 0;
   private oxygenStored = 0;
+  private decoysFed = 0;
   private station: OxygenStation | null = null;
   private moxie: MoxieWindow | null = null;
   private guide: StepGuide | null = null;
@@ -50,11 +54,16 @@ export class OxygenFactoryMinigame extends MinigameScene {
     return OXYGEN_FACTORY_BALANCE.oxygenGoal * 2;
   }
 
+  private get moleculeSpeed(): number {
+    return OXYGEN_FACTORY_BALANCE.moleculeSpeed * this.difficulty;
+  }
+
   protected buildGame(area: Rect): void {
     this.pieces = [];
     this.spawnedCarbon = 0;
     this.carbonFed = 0;
     this.oxygenStored = 0;
+    this.decoysFed = 0;
     const station = new OxygenStation(this, area);
     this.station = station;
     this.moxie = new MoxieWindow(this, station);
@@ -64,6 +73,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
     for (let index = 0; index < OXYGEN_FACTORY_BALANCE.moleculesOnScreen; index += 1) {
       this.spawnCarbonDioxide();
     }
+    this.pieces.push(...spawnDecoys(this, this.playArea, this.moleculeSpeed));
     this.input.on('drag', this.handleDrag, this);
     this.input.on('dragend', this.handleDrop, this);
     this.pauseGame();
@@ -72,7 +82,7 @@ export class OxygenFactoryMinigame extends MinigameScene {
       startKey: 'minigame.oxygen-factory.start',
       steps: OXYGEN_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.startPlaying(station));
+    showHowToCard(this, howTo, () => this.startPlaying(station));
   }
 
   /** After the intro: the game goes on and a ghost finger shows the first move. */
@@ -85,7 +95,8 @@ export class OxygenFactoryMinigame extends MinigameScene {
   }
 
   protected calculatePerformance(): number {
-    return this.withSpeedBonus(Math.min(1, this.carbonFed / this.carbonNeeded));
+    const completion = this.withSpeedBonus(Math.min(1, this.carbonFed / this.carbonNeeded));
+    return Math.max(0, completion - this.decoysFed * OXYGEN_FACTORY_BALANCE.decoyPenalty);
   }
 
   protected updateGame(deltaMs: number): void {
@@ -95,11 +106,8 @@ export class OxygenFactoryMinigame extends MinigameScene {
   private spawnCarbonDioxide(): void {
     if (this.spawnedCarbon >= this.carbonNeeded) return;
     this.spawnedCarbon += 1;
-    const margin = OXYGEN_FACTORY_BALANCE.atomRadius * 3;
-    const x = Phaser.Math.Between(this.playArea.left + margin, this.playArea.right - margin);
-    const y = Phaser.Math.Between(this.playArea.top + margin, this.playArea.bottom - margin);
-    const speed = OXYGEN_FACTORY_BALANCE.moleculeSpeed * this.difficulty;
-    this.pieces.push(createPiece(this, 'co2', x, y, speed));
+    const { x, y } = randomSpot(this.playArea);
+    this.pieces.push(createPiece(this, 'co2', x, y, this.moleculeSpeed));
   }
 
   private findPiece(target: Phaser.GameObjects.GameObject): Piece | undefined {
@@ -140,6 +148,11 @@ export class OxygenFactoryMinigame extends MinigameScene {
   /** The CO₂ goes into MOXIE; what happens inside is shown through its window. */
   private feedMoxie(piece: Piece): void {
     if (!this.pieces.includes(piece) || !this.moxie) return;
+    if (isDecoy(piece)) {
+      this.decoysFed += 1;
+      rejectDecoy(this, piece, this.playArea);
+      return;
+    }
     this.pieces = this.pieces.filter((candidate) => candidate !== piece);
     piece.body.destroy();
     this.carbonFed += 1;

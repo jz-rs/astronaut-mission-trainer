@@ -93,7 +93,7 @@ export class SolarPanelsMinigame extends MinigameScene {
       steps: SOLAR_STEPS,
     } as const;
     crossAirlock(this, area, () => {
-      if (!this.isFinished) showHowToCard(this, area, howTo, () => this.startPlaying(station));
+      if (!this.isFinished) showHowToCard(this, howTo, () => this.startPlaying(station));
     });
   }
 
