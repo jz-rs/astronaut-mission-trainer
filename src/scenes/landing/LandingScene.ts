@@ -1,0 +1,168 @@
+import Phaser from 'phaser';
+import { INTRO_BALANCE } from '../../config/balance';
+import { photoTextureKey } from '../../content/locationPhotos';
+import { t } from '../../i18n';
+import { setCoverPhoto } from '../../ui/coverPhoto';
+import {
+  CABIN_MONITOR_SCREENS,
+  GAME_HEIGHT,
+  GAME_WIDTH,
+  LANDING_SEATED_GUIDE,
+  LANDING_SEATED_PLAYER,
+  LANDING_WINDOW,
+} from '../../ui/layout';
+import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { addGlowText } from '../../ui/screenUi';
+import { SPRITE_SCALE } from '../../ui/sprites';
+import { addScanlines } from '../../ui/techFrame';
+import { preloadCabinArt } from '../cabin/cabinArt';
+import { locationText } from '../map/locationText';
+import { SCENE_KEYS } from '../sceneKeys';
+import { describeLanding, type LandingFrame } from './landingTimeline';
+import { addLandingBanner, addStartButton } from './landingUi';
+
+/**
+ * Spec 18, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
+ * to the real photo of the chosen place, the cabin grows toward the window, the ship shakes,
+ * a warning light blinks, the rockets raise dust, and then everything stops: we are there.
+ * Every number of the sequence comes from landingTimeline.ts; this scene only draws it.
+ */
+export interface LandingSceneData {
+  locationId: string;
+}
+
+const SEATED_EXTRA_SHAKE = 0.6;
+
+export class LandingScene extends Phaser.Scene {
+  private locationId = '';
+  private elapsedMs = 0;
+  private landed = false;
+  private globe!: Phaser.GameObjects.Image;
+  private place!: Phaser.GameObjects.Image;
+  private heat!: Phaser.GameObjects.Rectangle;
+  private dust!: Phaser.GameObjects.Rectangle;
+  private warning!: Phaser.GameObjects.Rectangle;
+  private altitude!: Phaser.GameObjects.Text;
+  private seated: Phaser.GameObjects.Image[] = [];
+  private world!: Phaser.GameObjects.Container;
+  private ui!: Phaser.GameObjects.Container;
+
+  constructor() {
+    super(SCENE_KEYS.landing);
+  }
+
+  preload(): void {
+    preloadCabinArt(this.load);
+  }
+
+  create(data: LandingSceneData): void {
+    this.locationId = data.locationId;
+    this.elapsedMs = 0;
+    this.landed = false;
+    this.world = this.add.container(0, 0);
+    this.ui = this.add.container(0, 0).setDepth(100);
+    this.buildCabin();
+    this.splitCameras();
+    const place = locationText(this.locationId, 'name');
+    const banner = addLandingBanner(this, t('landing.confirmed', { place }), t('landing.prepare'));
+    this.ui.add(banner);
+    this.time.delayedCall(INTRO_BALANCE.landingDurationMs * 0.3, () => banner.destroy());
+  }
+
+  update(_time: number, deltaMs: number): void {
+    if (this.landed) return;
+    this.elapsedMs += deltaMs;
+    const frame = describeLanding(this.elapsedMs / INTRO_BALANCE.landingDurationMs);
+    this.drawFrame(frame);
+    if (frame.done) this.touchDown();
+  }
+
+  /** The window layers: whole planet, the place's photo, heat glow and rocket dust. */
+  private buildWindow(): void {
+    this.globe = this.add.image(0, 0, 'marsGlobe').setOrigin(0);
+    this.place = this.add.image(0, 0, photoTextureKey(this.locationId)).setOrigin(0);
+    const { x, y, width, height } = LANDING_WINDOW;
+    this.heat = this.add.rectangle(x, y, width, height, PALETTE.marsLight).setOrigin(0);
+    this.dust = this.add.rectangle(x, y, width, height, PALETTE.sand).setOrigin(0);
+    this.world.add([this.globe, this.place, this.heat, this.dust]);
+  }
+
+  private buildCabin(): void {
+    this.buildWindow();
+    const screen = CABIN_MONITOR_SCREENS[0] ?? LANDING_WINDOW;
+    const glass = this.add.rectangle(
+      screen.x - 2,
+      screen.y - 2,
+      screen.width + 4,
+      screen.height + 4,
+      PALETTE.night,
+    );
+    this.altitude = this.addAltitude(screen.x + screen.width / 2, screen.y + screen.height / 2);
+    const cabin = this.add.image(0, 0, 'cabin').setOrigin(0).setScale(SPRITE_SCALE);
+    this.seated = [
+      this.add.image(LANDING_SEATED_GUIDE.x, LANDING_SEATED_GUIDE.y, 'guideSeated'),
+      this.add.image(LANDING_SEATED_PLAYER.x, LANDING_SEATED_PLAYER.y, 'playerSeated'),
+    ].map((image) => image.setOrigin(0).setScale(SPRITE_SCALE));
+    this.warning = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, PALETTE.sun, 0).setOrigin(0);
+    this.world.add([glass.setOrigin(0), this.altitude, cabin, ...this.seated, this.warning]);
+  }
+
+  private addAltitude(x: number, y: number): Phaser.GameObjects.Text {
+    return addGlowText(this, x, y, '', { color: TECH_GLOW });
+  }
+
+  /** The cabin zooms toward the window; texts and buttons stay put on their own camera. */
+  private splitCameras(): void {
+    const uiCamera = this.cameras.add(0, 0, this.scale.width, this.scale.height);
+    uiCamera.ignore(this.world);
+    this.cameras.main.ignore(this.ui);
+    addScanlines(this);
+    this.children.list
+      .filter((child) => child !== this.world && child !== this.ui)
+      .forEach((child) => {
+        this.cameras.main.ignore(child);
+      });
+  }
+
+  private drawFrame(frame: LandingFrame): void {
+    setCoverPhoto(this.globe, LANDING_WINDOW, frame.globeZoom).setAlpha(frame.globeAlpha);
+    setCoverPhoto(this.place, LANDING_WINDOW, frame.placeZoom).setAlpha(frame.placeAlpha);
+    this.heat.setAlpha(frame.heatAlpha);
+    this.dust.setAlpha(frame.dustAlpha);
+    this.warning.setAlpha(frame.warningAlpha);
+    this.altitude.setText(`${t('landing.altitude')}\n${frame.altitudeM}`);
+    const camera = this.cameras.main;
+    // Bounds keep the zoom and the shaking from showing anything outside the cabin.
+    camera.setBounds(0, 0, GAME_WIDTH, GAME_HEIGHT).setZoom(frame.cameraZoom);
+    const windowCenterX = LANDING_WINDOW.x + LANDING_WINDOW.width / 2;
+    const windowCenterY = LANDING_WINDOW.y + LANDING_WINDOW.height / 2;
+    camera.centerOn(
+      Phaser.Math.Linear(GAME_WIDTH / 2, windowCenterX, frame.cameraPull) +
+        this.jitter(frame.shakePx),
+      Phaser.Math.Linear(GAME_HEIGHT / 2, windowCenterY, frame.cameraPull) +
+        this.jitter(frame.shakePx),
+    );
+    // The seated astronauts bounce a bit more than the ship.
+    const seatShake = frame.shakePx * SEATED_EXTRA_SHAKE;
+    this.seated.forEach((image, index) => {
+      const spot = index === 0 ? LANDING_SEATED_GUIDE : LANDING_SEATED_PLAYER;
+      image.setPosition(spot.x + this.jitter(seatShake), spot.y + this.jitter(seatShake));
+    });
+  }
+
+  private jitter(amount: number): number {
+    return amount > 0 ? Phaser.Math.FloatBetween(-amount, amount) : 0;
+  }
+
+  private touchDown(): void {
+    this.landed = true;
+    this.drawFrame(describeLanding(1));
+    const place = locationText(this.locationId, 'name');
+    this.ui.add(addLandingBanner(this, t('landing.arrived', { place })));
+    this.ui.add(
+      addStartButton(this, () =>
+        this.scene.start(SCENE_KEYS.base, { locationId: this.locationId }),
+      ),
+    );
+  }
+}

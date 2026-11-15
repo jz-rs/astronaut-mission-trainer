@@ -29,6 +29,20 @@ Formato:
 
 ---
 
+## 2026-11-15 — Se implementa la intro en la cabina (spec 18)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: se programa la intro con los bocetos de la cabina como arte del juego (`public/assets/sprites/cabina/`), aunque el spec decía "no implementar". Escenas nuevas: `CabinScene` (cabina, bienvenida de la guía), `ManualScene` (tablet, 10 páginas), `MonitorScene` (consola de destinos) y `LandingScene` (aterrizaje). Decisiones que el spec dejaba abiertas:
+  - **JUGAR lleva a la cabina**, no al mapa. Salir de la base y el botón "Mapa" de resultados llevan al **monitor**. `MarsMapScene` queda registrada pero ya no se llega a ella.
+  - El **monitor se puede usar antes de leer el manual** (se exploran todos los destinos), pero ATERRIZAR queda bloqueado y la pantalla dice "Primero leé el manual". Regla en `landingBlocker()` de `src/core/progression.ts`, con test.
+  - El progreso guarda dos datos nuevos: `welcomeSeen` y `manualDone`. Cerrar la tablet antes de terminar recuerda la página mientras el juego está abierto, no entre recargas.
+  - Tocar a la guía repite la bienvenida. "Saltar" lleva al último mensaje (abrir el manual), así nunca se saltea el manual.
+  - El botón FOTO del monitor muestra la foto en grande (con crédito) porque cada lugar tiene una sola foto por ahora; cuando haya galerías (spec 13) pasa a cambiar de foto. INFO muestra los objetivos.
+  - Etiquetas de comparación: oxígeno y comida usan "La ciencia que nos inspira / Nuestra versión"; rover usa "En la vida real / En tu misión".
+  - No se usa todavía el dato de los "7 minutos" del aterrizaje (falta verificarlo).
+- Por qué: la persona quiso ver la intro jugable en el juego.
+- A quién afecta: spec 11 y 02 (navegación desde JUGAR, `main.ts`, `sceneKeys.ts`), spec 12 (el monitor reemplaza al mapa), spec 05/04 (salida de la base), progreso guardado (`progressStorage.ts`), i18n, `layout.ts` y `balance.ts` (solo se agregaron valores).
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — El manual de misión es una tablet, no un libro (spec 18)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: el manual se muestra en una **tablet de misión** (la que está apoyada en la consola izquierda de la cabina, vista de frente y en grande; ya no flota una tablet aparte), una página por pantalla. Su interfaz tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas celestes finas con brillo, esquinas tipo visor, barras por segmentos, líneas de escaneo y un destello breve al tocar. Las páginas de cada barra y del rover deben comparar la foto real de NASA con la representación del juego. La página de oxígeno sigue la nueva misión de MOXIE (spec 08). Maquetas en `docs/arte/bocetos/cabina/manual/` (no aprobadas).

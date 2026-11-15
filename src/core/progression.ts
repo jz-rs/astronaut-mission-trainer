@@ -29,3 +29,18 @@ export function findNewUnlocks(
       !alreadyCelebrated.includes(location.id),
   );
 }
+
+/**
+ * Spec 18 — Why the ship can't land on a location yet. The first mission manual comes before
+ * anything else; exploring destinations on the monitor never unlocks landing early.
+ */
+export type LandingBlocker = 'manual' | 'stars' | null;
+
+export function landingBlocker(
+  location: LocationConfig,
+  totalStars: number,
+  manualDone: boolean,
+): LandingBlocker {
+  if (!manualDone) return 'manual';
+  return isLocationUnlocked(location, totalStars) ? null : 'stars';
+}

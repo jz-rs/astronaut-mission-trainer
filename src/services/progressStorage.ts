@@ -15,6 +15,10 @@ export interface PlayerProgress {
   celebratedUnlocks: string[];
   /** The guided first sol (TutorialGuide) is shown until it is finished once. */
   tutorialDone: boolean;
+  /** Spec 18 — The guide's welcome in the cabin plays by itself only the first time. */
+  welcomeSeen: boolean;
+  /** Spec 18 — The first landing waits until every page of the mission manual was seen. */
+  manualDone: boolean;
 }
 
 const STORAGE_KEY = 'astronaut-mission-trainer/progress/v1';
@@ -26,6 +30,8 @@ const EMPTY_PROGRESS: PlayerProgress = {
   starsByLocation: {},
   celebratedUnlocks: [],
   tutorialDone: false,
+  welcomeSeen: false,
+  manualDone: false,
 };
 
 let cachedProgress: PlayerProgress | null = null;

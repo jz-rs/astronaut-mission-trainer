@@ -2,7 +2,7 @@
 
 | Dueña | Rol | Prioridad | Fase | Estado |
 |---|---|---|---|---|
-| Por asignar | C | P0 | Planificación | ⚪ Propuesto |
+| C (Emilia) | C | P0 | Implementación | 🟡 En revisión |
 
 ## Objetivo
 Al tocar JUGAR, entrar a una nave, recibir el contexto de la simulación y prepararse para la misión. El manual explica cómo cuidar la base; un monitor dentro de la nave permite conocer los destinos y elegir dónde aterrizar.
@@ -17,6 +17,7 @@ El equipo aprobó el rumbo general (ver `docs/DECISIONS.md`, 2026-11-14). Este d
 - Los bocetos generados durante esta conversación y sus prompts no son referencias aprobadas. No se fija aquí una perspectiva frontal o isométrica ni una distribución visual definitiva.
 - Actualización: la cabina se explora en **vista frontal en perspectiva** (no isométrica). Bocetos, no aprobados: `docs/arte/bocetos/cabina/` (fondo de la cabina, consola del monitor, guía, objetos flotantes y tablet del manual). Ver `docs/DECISIONS.md`.
 - Actualización 2026-11-15: el manual es una **tablet de misión**, no un libro (ver `docs/DECISIONS.md`).
+- Actualización 2026-11-15: **implementado** en `src/scenes/cabin/`, `manual/`, `monitor/` y `landing/`, con el arte de los bocetos en `public/assets/sprites/cabina/`. Las decisiones que estaban abiertas están en `docs/DECISIONS.md` ("Se implementa la intro en la cabina").
 
 ## Decisiones confirmadas
 - Cabina fija: se interactúa tocando objetos, sin caminar por ella.

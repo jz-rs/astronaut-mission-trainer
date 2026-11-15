@@ -3,6 +3,7 @@ import {
   countTotalStars,
   findNewUnlocks,
   isLocationUnlocked,
+  landingBlocker,
   starsMissing,
 } from '../src/core/progression';
 import { TEST_LOCATION } from './helpers';
@@ -24,5 +25,12 @@ describe('Mars map progression', () => {
   it('celebrates each new location only once, and never the first one', () => {
     expect(findNewUnlocks([TEST_LOCATION, LOCKED], 4, [])).toEqual([LOCKED]);
     expect(findNewUnlocks([TEST_LOCATION, LOCKED], 4, ['locked'])).toEqual([]);
+  });
+
+  it('asks for the mission manual before any landing, then for the missing stars', () => {
+    expect(landingBlocker(TEST_LOCATION, 0, false)).toBe('manual');
+    expect(landingBlocker(LOCKED, 0, false)).toBe('manual');
+    expect(landingBlocker(LOCKED, 3, true)).toBe('stars');
+    expect(landingBlocker(LOCKED, 4, true)).toBeNull();
   });
 });

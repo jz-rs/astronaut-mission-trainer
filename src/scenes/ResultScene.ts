@@ -127,7 +127,7 @@ export class ResultScene extends Phaser.Scene {
       label: `🗺️ ${t('result.map')}`,
       fontSize: FONT_SIZE.small,
       color: PALETTE.metalLight,
-      onPress: () => this.scene.start(SCENE_KEYS.map),
+      onPress: () => this.scene.start(SCENE_KEYS.monitor),
     });
   }
 }
