@@ -14,8 +14,7 @@ import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
 import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene';
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
-import { GAME_HEIGHT, GAME_WIDTH, GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
-import { NightShade } from '../../ui/nightfall';
+import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
@@ -59,7 +58,6 @@ export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
-  private nightShade!: NightShade;
   private nightSign!: NightSign;
   private stationLights!: StationLights;
   private mapStatus!: MapStatusSprites;
@@ -99,6 +97,8 @@ export class BaseScene extends Phaser.Scene {
   create(): void {
     this.session = this.createSession();
     this.mapStatus = drawBaseMap(this, this.locationId);
+    this.stationLights = new StationLights(this); // night goes under the signs and astronauts
+    this.stationLights.setNight(this.currentNight());
     for (const taskId of TASK_IDS) {
       this.rooms.set(taskId, new RoomView(this, taskId, (tapped) => this.handleRoomTap(tapped)));
     }
@@ -125,14 +125,8 @@ export class BaseScene extends Phaser.Scene {
     addScanlines(this);
   }
 
-  /**
-   * Night darkens the base, weather falls over it, the HUD goes on top, and the pole's frost
-   * covers even the HUD.
-   */
+  /** Weather falls over the base, the HUD goes on top, and the pole's frost covers even the HUD. */
   private createTopLayer(): void {
-    const screen = { x: 0, y: 0, width: GAME_WIDTH, height: GAME_HEIGHT };
-    this.nightShade = new NightShade(this, screen, this.currentNight());
-    this.stationLights = new StationLights(this);
     this.nightSign = new NightSign(this, 'solar-panels');
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
@@ -171,7 +165,6 @@ export class BaseScene extends Phaser.Scene {
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
-    this.nightShade.setAmount(this.currentNight());
     this.stationLights.setNight(this.currentNight());
     this.nightSign.setVisible(isAfterSunset(state));
     this.mapStatus.update(state.stats);
