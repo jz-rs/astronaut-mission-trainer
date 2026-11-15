@@ -169,9 +169,16 @@ export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 }
 export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 54 };
 /** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
 export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
+/** The window and the dashboard under it both open the console: one frame goes around the two. */
+export const CABIN_CONSOLE_OUTLINE: Rect = {
+  x: CABIN_WINDOW.x,
+  y: CABIN_WINDOW.y,
+  width: CABIN_WINDOW.width,
+  height: CABIN_DASHBOARD_OUTLINE.y + CABIN_DASHBOARD_OUTLINE.height - CABIN_WINDOW.y,
+};
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
 /** "Back" to the start screen, in the top-left corner of the cabin. */
-export const CABIN_BACK_BUTTON: Rect = { x: 10, y: 12, width: 96, height: 28 };
+export const CABIN_BACK_BUTTON: Rect = { x: 10, y: 10, width: 112, height: 36 };
 /** Loose things floating in zero gravity: where each one starts its drift. */
 export const CABIN_FLOATING_ITEMS = [
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },

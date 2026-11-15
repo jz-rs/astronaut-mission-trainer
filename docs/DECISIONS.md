@@ -15,7 +15,7 @@ Formato:
 
 ## 2026-11-15 — Cabina: la ventana también abre la consola, botón Volver y botón físico de la tablet (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola las esquinas amarillas marcan la ventana y el tablero; (2) en la cabina hay un botón **Volver / Back** arriba a la izquierda que lleva a la pantalla de inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
+- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola un solo marco de esquinas amarillas rodea la ventana y el tablero juntos; (2) en la cabina hay un botón **◀ Volver / Back** arriba a la izquierda, con el mismo estilo que los botones de la pantalla de inicio, que lleva al inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
 - Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
 - A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `cabin/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `cabin.back` en `i18n`.
 - ¿Avisado al equipo?: no todavía.
