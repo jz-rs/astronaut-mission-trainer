@@ -11,8 +11,10 @@
 Es **el único minijuego que genera energía**, la moneda que usan todas las tareas. Y enseña algo real: el polvo apagó a los rovers Opportunity e InSight.
 
 ## Cómo se juega
-- 3 paneles cubiertos de polvo (tonos de Marte).
+- Antes del reloj, una tarjeta explica los 3 pasos con dibujitos y el botón "¡A limpiar!" (el juego y la base quedan en pausa). Ver DECISIONS 2026-11-15.
+- 3 paneles cubiertos de polvo (tonos de Marte), con un Sol arriba que les tira rayos amarillos: débiles donde hay polvo, fuertes donde está limpio.
 - Arrastrar el dedo "barre" el polvo por donde pasa (como una raspadita).
+- Cada panel limpio manda rayitos de energía por un cable a la batería de la base, que se va llenando.
 - Termina cuando está todo limpio o se acaba el tiempo (~12 s).
 - **Rendimiento**: porcentaje limpio; si quedó todo limpio, bonus por velocidad (hasta 1.2 = perfecto).
 - Dificultad por lugar (ej. Gale): más polvo o el polvo vuelve a caer de a poco.

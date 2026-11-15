@@ -13,6 +13,15 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Misión de paneles: el Sol, la luz que el polvo tapa y la batería
+- Quién: C (con Claude)
+- Qué se decidió: el minijuego de paneles (spec 07) mantiene "limpiar como raspadita", pero ahora se ve de dónde sale la energía. Hay un Sol arriba que tira rayos amarillos sobre los 3 paneles: el rayo es débil donde hay polvo y fuerte donde el panel está limpio. Cada panel manda rayitos de energía por un cable hasta una batería, tantos como limpio esté, y la batería se llena con lo limpio (el mismo número que el rendimiento). Cuando un panel queda impecable sale "¡+energía!". Igual que en oxígeno: tarjeta de 3 pasos antes de jugar (con pausa) y panel de pasos a la izquierda. Colores: amarillo = luz y energía (el de la barra de energía), marrón-naranja = polvo de Marte. **Código compartido nuevo:** la tarjeta y el panel de pasos pasan a `src/minigames/howTo/` (`showHowToCard`, `StepGuide`, `pictureRow`) para que cualquier minijuego los use; la misión de oxígeno ya los usa. `src/ui/plateLabel.ts` es la etiqueta sobre placa oscura. En `balance.ts` se agrega `SOLAR_PANELS_BALANCE.boltsPerSecond`, y hay claves nuevas de i18n.
+- Por qué: que la mecánica enseñe que la luz del Sol es la energía de la base y que el polvo la tapa. Respaldo: a Marte llega como máximo ~45 % de la luz que a la Tierra (NASA Mars Facts); el polvo apagó a Opportunity (2018) y a InSight (2022) (NASA/JPL).
+- A quién afecta: B (spec 07, `src/minigames/solar-panels/*`), los minijuegos que quieran explicar antes de jugar (`src/minigames/howTo/`), `balance.ts`, `i18n`.
+- ¿Avisado al equipo?: sí (este documento y el PR).
+
+---
+
 ## 2026-11-15 — Se permite una tarjeta de explicación antes de un minijuego
 - Quién: memocayar
 - Qué se decidió: `AGENTS.md` §4 decía "nunca un bloque de texto antes de jugar". Ahora un minijuego puede abrir con una tarjeta de explicación cuando la mecánica enseña algo real: pasos con dibujitos, una línea por paso (máximo 4), un botón grande para empezar y el juego en pausa mientras se ve.
