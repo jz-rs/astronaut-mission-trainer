@@ -5,17 +5,22 @@ import Phaser from 'phaser';
  *   - tap: one soft note of a star, from the sonification of Webb's Cosmic Cliffs. It plays
  *     for anything the kid touches that reacts (buttons, rooms, molecules, tools), so every
  *     touch answers with a sound (AGENTS.md §4);
- *   - landing: the rumble of the Artemis I launch, while the cabin zooms toward the window.
+ *   - landing: the rumble of the Artemis I launch, while the cabin zooms toward the window;
+ *   - error: two low "donks" (InSight's seismometer "dink", an octave lower), an "uh-oh" for
+ *     wrong choices (wrongChoice.ts).
  * The sound button (soundButton.ts) mutes these too.
  */
 const TAP_KEY = 'sfxTap';
 const LANDING_KEY = 'sfxLanding';
+const ERROR_KEY = 'sfxError';
 const TAP_VOLUME = 0.5;
 const LANDING_VOLUME = 0.6;
+const ERROR_VOLUME = 0.7;
 
 export function preloadSoundEffects(load: Phaser.Loader.LoaderPlugin): void {
   load.audio(TAP_KEY, 'assets/audio/sfx-tap-webb-star.m4a');
   load.audio(LANDING_KEY, 'assets/audio/sfx-landing-artemis-liftoff.m4a');
+  load.audio(ERROR_KEY, 'assets/audio/sfx-error-insight-donk.m4a');
 }
 
 /**
@@ -34,4 +39,8 @@ export function startTapSounds(game: Phaser.Game): void {
 
 export function playLandingRumble(scene: Phaser.Scene): void {
   scene.sound.play(LANDING_KEY, { volume: LANDING_VOLUME });
+}
+
+export function playErrorSound(scene: Phaser.Scene): void {
+  scene.sound.play(ERROR_KEY, { volume: ERROR_VOLUME });
 }

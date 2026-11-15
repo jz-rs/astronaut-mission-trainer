@@ -14,6 +14,7 @@ import {
 } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addScanlines, drawTechPanel } from '../../ui/techFrame';
+import { showWrongChoice } from '../../ui/wrongChoice';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
@@ -188,6 +189,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private hitSand(): void {
     this.stunnedMs = ROVER_BALANCE.sandStuckMs;
     this.track.slip();
+    showWrongChoice(this);
     sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.alert);
   }
 
