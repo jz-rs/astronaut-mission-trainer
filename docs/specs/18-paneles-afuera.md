@@ -1,5 +1,27 @@
 # 18 — Solar panels outside, under the Martian sky ☀️
 
+## Approved scope extension — 2026-11-15
+
+The workspace owner approved implementation across specs 04 and 06 (see `docs/DECISIONS.md`). This extension supersedes the exclusion of base-map changes below.
+
+- Add the corner airlock as a pixel-art overlay shared by all base maps. Player and bot routes pass through it to the outdoor solar work spots.
+- Show a quick airlock transition on entry and exit, and a suited astronaut celebrating clean panels.
+- Add an optional minigame background hook and a live, read-only environment callback (sol time, night and dust-storm presentation). Other minigames retain their indoor backgrounds and immediate exit.
+- Use five outdoor pixel-art PNG backgrounds at 1040 × 496. Preserve the Gemini Jezero original; unavailable private Gemini artwork may be recreated from that reference. Do not use code-drawn landscape mockups.
+- Dust-storm presentation follows existing events without changing core rules or rewards. Olympus uses the common daytime sky until a darker sky is supported by a source.
+- Additional owned files: `src/scenes/base/SolarAirlock.ts`, `src/scenes/base/AstronautSprite.ts`, `src/scenes/base/BaseScene.ts`, solar assets under `public/assets/sprites/energia/`, art source records under `docs/arte/biomas/`.
+- Approved shared files: `src/minigames/MinigameScene.ts`, `src/ui/biomes.ts`, `src/ui/sprites.ts`, `src/ui/layout.ts`, `src/config/balance.ts`, `docs/DATA_SOURCES.md`.
+
+## Implementation and validation — 2026-11-15
+
+- Implemented: five outdoor backgrounds generated with ChatGPT, live Sun/twilight/weather, external battery, corner airlock and crew route, paused entry/exit crossing, and astronaut celebration.
+- The owner approved the composition preview and requested the existing numbered cyan `StepGuide` UI. Production already uses that component unchanged; the browser preview now mirrors it. No replacement step-guide UI is required at merge.
+- Shared types moved to `minigameTypes.ts` and remain re-exported from `MinigameScene.ts` for compatibility.
+- Integrated the latest main: how-to/results use the mission tablet, crisis busy-state handling stays intact, and the result tablet closes before the outdoor return transition.
+- Added lifecycle regression tests covering explanation pauses, result return transitions and cancellation without rewards.
+- Automated validation after integrating main: `npm run check` (63 tests) and production build passed on a clean copy of the committed tree. Non-blocking lint size warnings remain.
+- Pending manual acceptance: landscape phone input, children’s playtest, and final in-game visual review of the map overlay. The standalone preview is a composition review, not a substitute for that acceptance.
+
 | Owner | Role | Priority | Phase | Status |
 |---|---|---|---|---|
 | _(name)_ | B (minigame) + C (images) | P1 | 2 | ⚪ Proposed |

@@ -1,43 +1,43 @@
 # Astronaut Mission Trainer
 
-Juego educativo para **NASA Space Apps Challenge 2026** — track *Junior Astronaut Mission Trainer*.
+An educational game for **NASA Space Apps Challenge 2026** — *Junior Astronaut Mission Trainer* track.
 
-Sos la comandante de una base en Marte. Con tu tripulación (bots, y más adelante amigos) mantenés vivos el oxígeno, la comida, el escudo contra la radiación y la energía, jugando minijuegos cortos. Los bots aprenden de cómo jugás vos. Cada lugar de Marte es más difícil, por razones científicas reales.
+You command a base on Mars. Together with your crew (bots, and later friends), you maintain oxygen, food, radiation shielding, and energy by playing short minigames. The bots learn from how you play. Each location on Mars gets harder for real scientific reasons.
 
 ---
 
-## 👋 Si es tu primera vez acá, leé en este orden
+## 👋 New here? Read these in order
 
-1. **`docs/GDD.md`** — qué juego estamos haciendo (10 min de lectura).
-2. **`docs/PLAN.md`** — fases, prioridades y quién hace qué.
-3. **`docs/ROADMAP.md`** — hitos y cómo validamos y testeamos cada uno.
-4. **`docs/specs/README.md`** — la lista de tareas. Cada tarea es un spec con su objetivo.
-5. **`AGENTS.md`** — las reglas que siguen nuestros agentes (y nosotras).
+1. **`docs/GDD.md`** — the game we are building (10-minute read).
+2. **`docs/PLAN.md`** — phases, priorities, and who does what.
+3. **`docs/ROADMAP.md`** — milestones and how we validate and test each one.
+4. **`docs/specs/README.md`** — the task list. Each task has a spec describing its objective.
+5. **`AGENTS.md`** — the rules our agents (and we) follow.
 
-## 🔁 Cómo trabajamos
+## 🔁 How we work
 
-1. **Leemos los specs y los aprobamos.** Cada spec tiene una sección "Aprobación". Si estás de acuerdo, poné tu ✅. Si no, comentalo antes de que alguien empiece.
-2. **Cada una toma sus specs** (son individuales, tienen una sola dueña).
-3. **Rama por spec** → PR → revisión de otra integrante → `main`.
-4. **Si una decisión afecta a otra persona, se avisa** y se anota en `docs/DECISIONS.md` (el agente está configurado para frenar y avisar).
+1. **Read and approve the specs.** Each spec has an "Approval" section. Add your ✅ if you agree. Otherwise, discuss it before anyone starts.
+2. **Each team member takes ownership of their specs** (each spec is an individual task with one owner).
+3. **One branch per spec** → PR → review by another team member → `main`.
+4. **Flag decisions that affect someone else** and record them in `docs/DECISIONS.md` (the agent is configured to stop and flag them).
 
-## ▶️ Correr el juego
+## ▶️ Run the game
 
 ```bash
 npm install
-npm run dev      # abre http://localhost:5173
-npm run check    # lint + tipos + tests
+npm run dev      # opens http://localhost:5173
+npm run check    # lint + types + tests
 ```
 
-> **Estado actual del código:** existe la **lógica del juego** (back) con tests. Todavía **no hay parte visual**: la arman los specs 02, 04 y 11 siguiendo la dirección de arte del spec 01. Ver `docs/specs/02-base-tecnica.md`.
+> **Current code status:** the **game logic** (backend) exists with tests. There is **no visual layer yet**: specs 02, 04, and 11 will build it following the art direction in spec 01. See `docs/specs/02-base-tecnica.md`.
 
-## 📁 Estructura
+## 📁 Structure
 
 ```
-AGENTS.md / CLAUDE.md   Reglas para agentes
-docs/                   GDD, plan, roadmap, specs, guía de estilo, fuentes NASA, decisiones
-data/                   Contenido editable (lugares, eventos)
-src/                    Código (ver AGENTS.md §3)
-public/assets/          Imágenes, sonidos, fotos NASA
-tests/                  Tests de la lógica
+AGENTS.md / CLAUDE.md   Agent rules
+docs/                   GDD, plan, roadmap, specs, style guide, NASA sources, decisions
+data/                   Editable content (locations, events)
+src/                    Code (see AGENTS.md §3)
+public/assets/          Images, sounds, NASA photos
+tests/                  Game logic tests
 ```

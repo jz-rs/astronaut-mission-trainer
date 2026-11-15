@@ -2,6 +2,7 @@ import type Phaser from 'phaser';
 import { t, type TranslationKey } from '../../i18n';
 import { floatText } from '../../ui/floatingText';
 import { PALETTE } from '../../ui/palette';
+import { showWrongChoice } from '../../ui/wrongChoice';
 import { createPiece, randomSpot, type Piece } from './pieces';
 
 /**
@@ -46,7 +47,7 @@ export function rejectDecoy(
   piece.body.disableInteractive();
   const message = t(REJECT_KEYS[piece.kind]);
   floatText(scene, area.centerX, area.top + MESSAGE_TOP_INSET, message, PALETTE.alert, MESSAGE_MS);
-  scene.cameras.main.shake(BOUNCE_MS / 3, 0.004);
+  showWrongChoice(scene);
   const { x, y } = randomSpot(area);
   scene.tweens.add({
     targets: piece.body,

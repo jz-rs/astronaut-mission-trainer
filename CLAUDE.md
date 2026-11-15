@@ -1,5 +1,5 @@
 # CLAUDE.md
 
-Todas las reglas del proyecto están en AGENTS.md (compartido con cualquier agente). Leelo completo y seguilo.
+All project rules are in AGENTS.md (shared with every agent). Read it in full and follow it.
 
 @AGENTS.md

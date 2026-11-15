@@ -4,6 +4,7 @@ import { t } from '../../i18n';
 import { floatText } from '../../ui/floatingText';
 import type { Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
+import { showWrongChoice } from '../../ui/wrongChoice';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
@@ -71,7 +72,7 @@ export class GreenhouseMinigame extends MinigameScene {
       startKey: 'minigame.greenhouse.start',
       steps: GREENHOUSE_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.resumeGame());
+    showHowToCard(this, howTo, () => this.resumeGame());
   }
 
   private createPots(): PlantPot[] {
@@ -131,6 +132,7 @@ export class GreenhouseMinigame extends MinigameScene {
     if (this.isFinished || pot.state === 'withered') return;
     this.marsSoilGiven += 1;
     pot.poison();
+    showWrongChoice(this);
     const { x, y } = pot.top;
     const message = t('minigame.greenhouse.toxicSoil');
     const text = floatText(this, x, y, message, PALETTE.alert, TOXIC_MESSAGE_MS);

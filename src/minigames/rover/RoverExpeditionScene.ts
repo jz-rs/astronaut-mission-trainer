@@ -3,7 +3,7 @@ import { ROVER_BALANCE } from '../../config/balance';
 import { t } from '../../i18n';
 import { SCENE_KEYS } from '../../scenes/sceneKeys';
 import { addCloseButton } from '../../ui/closeButton';
-import { addIconLabel, type IconLabel } from '../../ui/iconLabel';
+import type { IconLabel } from '../../ui/iconLabel';
 import {
   GAME_HEIGHT,
   GAME_WIDTH,
@@ -14,11 +14,13 @@ import {
 } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addScanlines, drawTechPanel } from '../../ui/techFrame';
+import { showWrongChoice } from '../../ui/wrongChoice';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
-import { showRoverResult } from './roverResult';
+import { loadRoverPhoto, showRoverResult } from './roverResult';
 import {
+  addSampleCounter,
   drawTripTimeBar,
   flyTubeToCounter,
   sayAboveRover,
@@ -44,11 +46,9 @@ export interface RoverStartData {
 
 type TripPhase = 'intro' | 'drive' | 'store' | 'done';
 
-const ICON_SIZE = 20;
 /** The hand taps left of the rover (that is how it changes lane), towards the first rock. */
 const HINT_OFFSET_X = 70;
 const FIRST_ROCK_LANE = 0;
-const COUNTER_INSET_X = 40;
 
 export class RoverExpeditionScene extends Phaser.Scene {
   static readonly KEY = 'RoverExpeditionScene';
@@ -58,6 +58,8 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private track!: RoverTrack;
   private guide!: StepGuide;
   private storage: SampleStorage | null = null;
+  /** Hides the steering hint, so it never stays under the drill. */
+  private hideDriveHint = (): void => {};
   private samples = 0;
   private elapsedMs = 0;
   private stunnedMs = 0;
@@ -80,6 +82,10 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.stunnedMs = 0;
   }
 
+  preload(): void {
+    loadRoverPhoto(this.load, this.locationId);
+  }
+
   create(): void {
     const dim = this.add.rectangle(0, HUD_HEIGHT, GAME_WIDTH, GAME_HEIGHT, PALETTE.night);
     dim.setOrigin(0).setAlpha(0.55).setInteractive(); // swallows taps meant for the base
@@ -89,11 +95,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
     // The road paints the whole play area, so the step panel goes on top of it.
     this.track = new RoverTrack(this);
     this.guide = new StepGuide(this, MINIGAME_AREA, ROVER_STEPS);
-    const counterX = MINIGAME_AREA.x + MINIGAME_AREA.width - COUNTER_INSET_X;
-    const counterY = MINIGAME_AREA.y + 20;
-    this.counter = addIconLabel(this, counterX, counterY, 'sampleTube', ICON_SIZE, '0', {
-      color: PALETTE.sun,
-    });
+    this.counter = addSampleCounter(this);
     this.listenToTaps();
     addScanlines(this);
     this.showHowTo();
@@ -107,11 +109,12 @@ export class RoverExpeditionScene extends Phaser.Scene {
       startKey: 'rover.start',
       steps: ROVER_STEPS,
     } as const;
-    showHowToCard(this, MINIGAME_AREA, howTo, () => {
+    showHowToCard(this, howTo, () => {
       this.resumeBase();
       this.phase = 'drive';
       this.track.spawnFirstRock(FIRST_ROCK_LANE);
-      showGestureHint(this, { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y });
+      const hintAt = { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y };
+      this.hideDriveHint = showGestureHint(this, hintAt);
     });
   }
 
@@ -161,6 +164,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private startStoring(): void {
     this.phase = 'store';
     this.elapsedMs = 0;
+    this.hideDriveHint();
     const play: Rect = { ...MINIGAME_AREA, x: this.guide.right };
     play.width = MINIGAME_AREA.x + MINIGAME_AREA.width - play.x;
     this.storage = new SampleStorage(this, play, this.samples, {
@@ -188,6 +192,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private hitSand(): void {
     this.stunnedMs = ROVER_BALANCE.sandStuckMs;
     this.track.slip();
+    showWrongChoice(this);
     sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.alert);
   }
 

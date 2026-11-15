@@ -2,15 +2,17 @@ import Phaser from 'phaser';
 import { RUN_BALANCE } from '../../config/balance';
 import type { RunState } from '../../core/types';
 import { t } from '../../i18n';
-import { FONT_SIZE, GAME_WIDTH, HUD_HEIGHT } from '../../ui/layout';
+import { BASE_BACK_BUTTON, FONT_SIZE, GAME_WIDTH, HUD_HEIGHT, type Rect } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
+import { addSoundToggle } from '../../ui/soundToggle';
 import { addSpriteSized } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 
 /**
  * Spec 04 — Top bar: "Sol N/5" with the progress of the current sol, in the middle.
  * The 4 stat bars are not here: each one lives on its room's card (RoomView), next to the
- * room that fills it. The right corner is left free for the bot faces (spec 05).
+ * room that fills it. The right corner is left free for the bot faces (spec 05). Next to
+ * "◀ BACK", the sound on/off button.
  */
 const SOL_X = GAME_WIDTH / 2;
 const SOL_TEXT_Y = 16;
@@ -19,6 +21,13 @@ const SOL_BAR_HEIGHT = 5;
 const SOL_BAR_Y = 28;
 const SOL_ICON_SIZE = 16;
 const SOL_ICON_GAP = 12;
+const SOUND_BUTTON_GAP = 8;
+const SOUND_BUTTON: Rect = {
+  x: BASE_BACK_BUTTON.x + BASE_BACK_BUTTON.width + SOUND_BUTTON_GAP,
+  y: BASE_BACK_BUTTON.y,
+  width: 34,
+  height: BASE_BACK_BUTTON.height,
+};
 
 export class Hud {
   private readonly solText: Phaser.GameObjects.Text;
@@ -35,6 +44,7 @@ export class Hud {
       color: PALETTE.sand,
     });
     this.solBar = scene.add.graphics();
+    addSoundToggle(scene, SOUND_BUTTON);
   }
 
   update(state: RunState): void {
