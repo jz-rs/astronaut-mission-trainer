@@ -5,7 +5,7 @@ import { musicMood } from '../src/core/musicMood';
 import { createRun } from '../src/core/run';
 import type { ScheduledEvent } from '../src/core/types';
 
-/** The background music turns tense at night and in storms and failures; a new sol is calm. */
+/** The windy night music plays only at night; anything else (storms, low bars) keeps it calm. */
 function calmRun() {
   return createRun(getLocation('jezero'), {});
 }
@@ -19,26 +19,23 @@ describe('musicMood', () => {
     expect(musicMood(calmRun())).toBe('calm');
   });
 
-  it('is tense at night', () => {
+  it('is the night music only after sunset', () => {
     const state = calmRun();
     state.solElapsedMs = RUN_BALANCE.solDurationMs * 0.99;
     expect(musicMood(state)).toBe('tense');
   });
 
-  it('is calm again when a new sol starts, even with low bars', () => {
+  it('stays calm by day even with a storm or low bars', () => {
     const state = calmRun();
     state.events = [hitEvent('dust-storm', state.sol)];
-    state.sol += 1;
-    state.solElapsedMs = 0;
     state.stats.oxygen = 10;
     expect(musicMood(state)).toBe('calm');
   });
 
-  it('is tense in the sol a storm hits, but not for good news or an old storm', () => {
+  it('is calm again when a new sol starts', () => {
     const state = calmRun();
-    state.events = [hitEvent('dust-storm', state.sol)];
-    expect(musicMood(state)).toBe('tense');
-    state.events = [hitEvent('good', state.sol), hitEvent('solar-storm', state.sol - 1)];
+    state.sol += 1;
+    state.solElapsedMs = 0;
     expect(musicMood(state)).toBe('calm');
   });
 });

@@ -4,10 +4,12 @@ import type { MusicMood } from '../core/musicMood';
 /**
  * The background music of the whole game: real NASA data sonifications (docs/DATA_SOURCES.md).
  *   - calm: the center of the Milky Way (Chandra + Hubble + Spitzer), always looping;
- *   - tense: the Pillars of Creation, from second 10 (its opening is too quiet to notice), for
- *     night, storms and problems in the base (core/musicMood.ts).
- * Changing mood crossfades, so it never cuts. It plays softly under the game, and the kid can
- * mute it (and the sound effects) with the sound button on every screen (soundButton.ts). Browsers only allow sound after the first tap: Phaser waits.
+ *   - night: the Pillars of Creation, windy, from second 10 (its opening is too quiet to
+ *     notice), only while it is night in the base (core/musicMood.ts).
+ * Only one plays at a time: changing mood crossfades for a moment, then the other one stops.
+ * It plays softly under the game, and the kid can mute it (and the sound effects) with the
+ * sound button on every screen (soundButton.ts). Browsers only allow sound after the first
+ * tap: Phaser waits.
  */
 const CALM_KEY = 'musicCalm';
 const TENSE_KEY = 'musicTense';
@@ -21,45 +23,51 @@ export function preloadMusic(load: Phaser.Loader.LoaderPlugin): void {
   load.audio(TENSE_KEY, 'assets/audio/music-pillars-of-creation.m4a');
 }
 
+/**
+ * The volume is kept here and never read back from Phaser: its WebAudio volume changes on the
+ * next audio tick, so reading it gives an old value and a fade would never reach silence.
+ */
+interface Track {
+  sound: Phaser.Sound.BaseSound;
+  volume: number;
+}
+
 class BackgroundMusic {
   private mood: MusicMood = 'calm';
   private isMuted = false;
-  private readonly calm: Phaser.Sound.BaseSound;
-  private readonly tense: Phaser.Sound.BaseSound;
+  private readonly calm: Track;
+  private readonly tense: Track;
 
   constructor(private readonly game: Phaser.Game) {
-    this.calm = game.sound.add(CALM_KEY, { loop: true, volume: VOLUME });
-    this.tense = game.sound.add(TENSE_KEY, { volume: 0 });
-    this.tense.addMarker({
+    this.calm = { sound: game.sound.add(CALM_KEY, { loop: true, volume: VOLUME }), volume: VOLUME };
+    this.tense = { sound: game.sound.add(TENSE_KEY, { volume: 0 }), volume: 0 };
+    this.tense.sound.addMarker({
       name: TENSE_MARKER,
       start: TENSE_START_SECONDS,
-      duration: this.tense.duration - TENSE_START_SECONDS,
+      duration: this.tense.sound.duration - TENSE_START_SECONDS,
       config: { loop: true },
     });
-    this.calm.play();
+    this.calm.sound.play();
     game.events.on(Phaser.Core.Events.STEP, this.fade, this);
   }
 
   setMood(mood: MusicMood): void {
     if (mood === this.mood) return;
     this.mood = mood;
-    // The tense track starts over each time; the calm one picks up where it was.
-    if (mood === 'tense') this.tense.play(TENSE_MARKER, { volume: 0 });
-    else this.calm.resume();
+    // The night track starts from second 10 each time; the calm one picks up where it was.
+    if (mood === 'calm') this.calm.sound.resume();
+    else if (!this.tense.sound.isPlaying) this.tense.sound.play(TENSE_MARKER, { volume: 0 });
   }
 
   /** Every frame, the music of the current mood gets louder and the other one softer. */
   private fade(_time: number, deltaMs: number): void {
     const step = (VOLUME * deltaMs) / FADE_MS;
-    const [rising, falling] =
-      this.mood === 'tense' ? [this.tense, this.calm] : [this.calm, this.tense];
-    setVolume(rising, Math.min(VOLUME, volumeOf(rising) + step));
-    const softer = Math.max(0, volumeOf(falling) - step);
-    setVolume(falling, softer);
-    if (softer === 0 && falling.isPlaying) {
-      if (falling === this.calm) falling.pause();
-      else falling.stop();
-    }
+    const isCalm = this.mood === 'calm';
+    moveVolume(this.calm, isCalm ? VOLUME : 0, step);
+    moveVolume(this.tense, isCalm ? 0 : VOLUME, step);
+    // Silent tracks stop for real, so two songs never play together.
+    if (this.calm.volume === 0 && this.calm.sound.isPlaying) this.calm.sound.pause();
+    if (this.tense.volume === 0 && this.tense.sound.isPlaying) this.tense.sound.stop();
   }
 
   /**
@@ -76,13 +84,15 @@ class BackgroundMusic {
   }
 }
 
-/** BaseSound has no volume; the WebAudio and HTML5 sounds Phaser creates both do. */
-function volumeOf(sound: Phaser.Sound.BaseSound): number {
-  return 'volume' in sound && typeof sound.volume === 'number' ? sound.volume : 0;
-}
-
-function setVolume(sound: Phaser.Sound.BaseSound, volume: number): void {
-  if ('setVolume' in sound && typeof sound.setVolume === 'function') sound.setVolume(volume);
+function moveVolume(track: Track, target: number, step: number): void {
+  if (track.volume === target) return;
+  track.volume =
+    target > track.volume
+      ? Math.min(target, track.volume + step)
+      : Math.max(target, track.volume - step);
+  // BaseSound has no volume; the WebAudio and HTML5 sounds Phaser creates both do.
+  const { sound } = track;
+  if ('setVolume' in sound && typeof sound.setVolume === 'function') sound.setVolume(track.volume);
 }
 
 let music: BackgroundMusic | null = null;
