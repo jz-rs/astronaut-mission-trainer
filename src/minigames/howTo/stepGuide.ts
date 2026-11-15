@@ -2,11 +2,13 @@ import type Phaser from 'phaser';
 import type { Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
+import { addStepNumber } from './stepNumber';
 import type { HowToStep } from './howToCard';
 
 /**
  * The side panel while playing: the same picture steps of the how-to card, without the text,
- * so the kid can glance at it without reading. The current step is framed and bright, the steps
+ * so the kid can glance at it without reading. Each row has its number, like on the card, so
+ * the order is clear. The current step is framed and bright, the steps
  * already done stay half lit and the next ones are dim. It only moves forward.
  */
 const WIDTH = 124;
@@ -16,6 +18,13 @@ const ROW_FRAME_PADDING = 4;
 const DONE_ALPHA = 0.6;
 const NEXT_ALPHA = 0.25;
 const POP_MS = 300;
+const NUMBER_RADIUS = 7;
+/**
+ * The number sits in the top-left corner of each step, always lit (even on dimmed steps), so the
+ * order reads at a glance; the picture moves a bit down to leave it room.
+ */
+const NUMBER_INSET = { x: 14, y: 12 };
+const PICTURE_SHIFT_Y = 4;
 
 export class StepGuide {
   /** Steps are counted from 1, like the kid would. */
@@ -36,10 +45,15 @@ export class StepGuide {
     this.frame = scene.add.graphics();
     const rowHeight = height / steps.length;
     this.rows = steps.map(({ picture }, index) => {
-      const centerY = this.rect.y + rowHeight * (index + 0.5);
+      const centerY = this.rect.y + rowHeight * (index + 0.5) + PICTURE_SHIFT_Y;
       return picture(scene)
         .setPosition(this.rect.x + WIDTH / 2, centerY)
         .setScale(PICTURE_SCALE);
+    });
+    steps.forEach((_, index) => {
+      const x = this.rect.x + NUMBER_INSET.x;
+      const y = this.rect.y + rowHeight * index + NUMBER_INSET.y;
+      addStepNumber(scene, x, y, index + 1, NUMBER_RADIUS);
     });
     this.render();
   }

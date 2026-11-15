@@ -5,6 +5,7 @@ import { FONT_SIZE, MIN_TOUCH_SIZE, type Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
+import { addStepNumber } from './stepNumber';
 
 /**
  * Before playing, a card explains the mission in a few picture steps with one short line each,
@@ -29,10 +30,16 @@ const TITLE_Y = 16;
 const STEPS_TOP = 34;
 const STEPS_MARGIN = 10;
 const PICTURE_SCALE = 0.85;
-/** Pictures and lines form one block, centered in the card. */
+/**
+ * Numbers, pictures and lines form one block, centered in the card. The number sits in its own
+ * column, in a yellow circle, so it never mixes with the picture or reads as part of the text.
+ */
+const NUMBER_COLUMN = 22;
+const NUMBER_RADIUS = 10;
 const PICTURE_COLUMN = 126;
 const COLUMN_GAP = 10;
-const TEXT_WIDTH = 330;
+const TEXT_WIDTH = 320;
+const BLOCK_WIDTH = NUMBER_COLUMN + COLUMN_GAP + PICTURE_COLUMN + COLUMN_GAP + TEXT_WIDTH;
 const BUTTON_WIDTH = 200;
 const BUTTON_BOTTOM_GAP = 8;
 
@@ -68,7 +75,7 @@ export function showHowToCard(
   card.add(button);
 }
 
-/** One row per step: each one centered in an equal slice between the title and the button. */
+/** One row per step (number, picture, line), each centered in an equal slice of the card. */
 function addSteps(
   scene: Phaser.Scene,
   area: Rect,
@@ -77,17 +84,19 @@ function addSteps(
 ): Phaser.GameObjects.GameObject[] {
   const stepsTop = area.y + STEPS_TOP + STEPS_MARGIN;
   const rowHeight = (stepsBottom - stepsTop) / Math.max(1, steps.length);
-  const blockLeft = area.x + (area.width - (PICTURE_COLUMN + COLUMN_GAP + TEXT_WIDTH)) / 2;
+  const blockLeft = area.x + (area.width - BLOCK_WIDTH) / 2;
+  const pictureLeft = blockLeft + NUMBER_COLUMN + COLUMN_GAP;
   return steps.flatMap(({ picture, textKey }, index) => {
     const y = stepsTop + rowHeight * (index + 0.5);
+    const number = addStepNumber(scene, blockLeft + NUMBER_COLUMN / 2, y, index + 1, NUMBER_RADIUS);
     const image = picture(scene)
-      .setPosition(blockLeft + PICTURE_COLUMN / 2, y)
+      .setPosition(pictureLeft + PICTURE_COLUMN / 2, y)
       .setScale(PICTURE_SCALE);
-    const line = addText(scene, blockLeft + PICTURE_COLUMN + COLUMN_GAP, y, t(textKey), {
+    const line = addText(scene, pictureLeft + PICTURE_COLUMN + COLUMN_GAP, y, t(textKey), {
       size: FONT_SIZE.small,
       wrapWidth: TEXT_WIDTH,
     });
     line.setOrigin(0, 0.5).setAlign('left');
-    return [image, line];
+    return [number, image, line];
   });
 }
