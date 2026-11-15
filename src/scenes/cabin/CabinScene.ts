@@ -119,6 +119,18 @@ export class CabinScene extends Phaser.Scene {
     this.point(manualDone ? 'guideWave' : 'guidePointDown', manualDone ? 'monitor' : 'tablet');
   }
 
+  /** The console stays locked until the whole manual was read: the guide says so, in red. */
+  private warnManualFirst(): void {
+    this.point('guidePointDown', 'tablet');
+    const message = showGuideMessage(this, {
+      warning: t('cabin.manualFirstWarning'),
+      text: t('cabin.manualFirst'),
+      tailX: this.guide.x,
+      onNext: () => message.destroy(),
+    });
+    this.moment.push(message);
+  }
+
   /** A single guide line that closes with NEXT, leaving the highlight on. */
   private say(text: TranslationKey, pose: CabinArtKey, target: CabinTarget): void {
     this.point(pose, target);
@@ -179,7 +191,7 @@ export class CabinScene extends Phaser.Scene {
       return;
     }
     saveProgress({ ...progress, welcomeSeen: true });
-    this.say('cabin.manualFirst', 'guidePointDown', 'tablet');
+    this.warnManualFirst();
   }
 
   private openManual(): void {

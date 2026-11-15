@@ -20,6 +20,13 @@ Formato:
 - Who it affects: everyone. Touches `index.html`, `src/ui/screen.ts`, `BootScene.ts` (start-up), `BaseScene.ts`, `LandingScene.ts` (spec 19) and adds the first files in `public/assets/audio/`.
 - Team notified?: yes (the team chose the tracks; goes in the PR).
 
+## 2026-11-15 — Aviso en rojo si tocás la consola sin haber leído el manual (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "En el manual está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.
+- Por qué: que se entienda que te estás salteando un paso obligatorio.
+- A quién afecta: dueña del manual obligatorio (PR #37): cambia el texto del aviso.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: abajo a la derecha de la base flota la tablet de la nave en chiquito (`public/assets/sprites/cabina/tablet-boton.png`, achicada de `tablet.png`) con "MANUAL" en la pantalla. Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.
