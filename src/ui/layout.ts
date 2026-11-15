@@ -171,14 +171,14 @@ export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
 export const CABIN_FLOATING_ITEMS = [
   { key: 'floatingPen', x: 205, y: 40, angle: -20 },
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
-  { key: 'floatingWater', x: 408, y: 128, angle: -12 },
-  { key: 'floatingRocket', x: 452, y: 214, angle: 25 },
+  { key: 'floatingWater', x: 255, y: 300, angle: -12 },
+  { key: 'floatingRocket', x: 405, y: 312, angle: 25 },
   { key: 'floatingWrench', x: 112, y: 44, angle: 30 },
 ] as const;
 /** The floating things are drawn about this many game pixels tall. */
 export const CABIN_FLOATING_ITEM_SIZE = 34;
-/** Where the floating things can drift: the whole cabin, above the message panel. */
-export const CABIN_FLOATING_AREA: Rect = { x: 30, y: 30, width: 580, height: 230 };
+/** Where the floating things can drift: the whole cabin, from the ceiling down to the floor. */
+export const CABIN_FLOATING_AREA: Rect = { x: 30, y: 30, width: 580, height: 300 };
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;
 export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };
