@@ -73,8 +73,8 @@ export class CabinScene extends Phaser.Scene {
     this.guide = this.addGuide();
     this.addTouchZone(CABIN_TABLET_ZONE, () => this.openManual());
     // Kids tap the big window with Mars too: it opens the same console as the dashboard.
-    this.addTouchZone(CABIN_WINDOW, () => this.scene.start(SCENE_KEYS.monitor));
-    this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.scene.start(SCENE_KEYS.monitor));
+    this.addTouchZone(CABIN_WINDOW, () => this.openMonitor());
+    this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.openMonitor());
     addBackButton(this, () => this.scene.start(SCENE_KEYS.menu));
     addScanlines(this);
     this.startMoment(data);
@@ -159,6 +159,17 @@ export class CabinScene extends Phaser.Scene {
   private addTouchZone(area: Rect, onTap: () => void): void {
     const zone = this.add.zone(area.x, area.y, area.width, area.height).setOrigin(0);
     zone.setInteractive({ useHandCursor: true }).on('pointerup', onTap);
+  }
+
+  /** The first manual is mandatory: until it is done the guide sends the kid back to the tablet. */
+  private openMonitor(): void {
+    const progress = loadProgress();
+    if (progress.manualDone) {
+      this.scene.start(SCENE_KEYS.monitor);
+      return;
+    }
+    saveProgress({ ...progress, welcomeSeen: true });
+    this.say('cabin.manualFirst', 'guidePointDown', 'tablet');
   }
 
   private openManual(): void {

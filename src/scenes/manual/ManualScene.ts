@@ -28,7 +28,8 @@ import { drawManualPage } from './manualPageView';
  * Spec 19, scene 2 — The mission manual on the tablet, one page per screen.
  * There is no reading timer: seeing every page is enough. The first time the last page is
  * reached the manual counts as done and the guide sends the kid to the monitor.
- * Closing early keeps the page, so reopening the tablet continues where the kid left off.
+ * The first read is mandatory, so the X only shows once the manual was finished. On later reads
+ * closing early keeps the page, so reopening the tablet continues where the kid left off.
  */
 const SCREEN = TABLET_SCREEN;
 const FOOTER_Y = SCREEN.y + SCREEN.height - 22;
@@ -54,7 +55,8 @@ export class ManualScene extends Phaser.Scene {
   create(): void {
     this.pageIndex = lastPageIndex;
     this.drawTablet();
-    this.addHomeButton();
+    // The first read is mandatory (no X), so the round button only closes it after that.
+    if (loadProgress().manualDone) this.addHomeButton();
     this.showPage();
   }
 
@@ -96,7 +98,7 @@ export class ManualScene extends Phaser.Scene {
     this.pageParts = [
       ...drawManualPage(this, page, this.pageIndex, MANUAL_PAGES.length),
       dashes,
-      this.createCloseButton(),
+      ...(loadProgress().manualDone ? [this.createCloseButton()] : []),
       isLast ? this.createFinishButton() : this.createArrow(1),
       scanlines,
     ];

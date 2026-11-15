@@ -16,7 +16,8 @@ Que la jugadora pueda **arriesgar energía para salir con el rover a juntar mues
 **Incluye:**
 - Un botón/sala "garaje del rover" en la base (coordinar el lugar con A, spec 04).
 - Solo se puede salir si hay energía suficiente (costo alto, en `balance.ts`).
-- Minijuego (~15 s): el rover avanza sobre un fondo de Marte; tocar a la izquierda/derecha del rover para cambiar de carril: se esquivan las rocas y las piedras brillantes (muestras) se atrapan pasando por encima. *(Cambiado el 2026-11-14: antes había que tocar las piedras; ver `docs/DECISIONS.md`.)*
+- Minijuego (~15 s): el rover avanza sobre un fondo de Marte; tocar a la izquierda/derecha del rover para cambiar de carril: se esquivan las rocas y las piedras brillantes (muestras) se atrapan pasando por encima. *(Cambiado el 2026-11-14: antes había que tocar las piedras; ver `docs/DECISIONS.md`.)* *(Cambiado el 2026-11-15: ahora las rocas son las muestras y se esquiva la arena blanda, como la que atrapó al rover Spirit; ver `docs/DECISIONS.md`.)*
+- *(Agregado el 2026-11-15, Misión 5: ver `docs/DECISIONS.md`.)* Antes de salir, una tarjeta de 4 pasos (la base queda en pausa solo mientras se lee). Se maneja ~10 s y después el rover **guarda una muestra en un tubo, como Perseverance**: mantener apretado el taladro → llevar el cilindro al tubo → tocar para sellar → el tubo va al estante. Sellado = +1 muestra; si queda abierto, "¡Contaminada!" y no suma. *(Cambiado el mismo día: son 3 tubos por viaje, el primero guiado y los otros dos el chico los llena solo.)*
 - Al terminar: suma muestras a la partida y muestra **la foto real del lugar en un marco** + dato.
 
 **No incluye:** varios destinos por lugar, inclinar el celu (puede ser P2).

@@ -32,7 +32,7 @@ El equipo aprobó el rumbo general (ver `docs/DECISIONS.md`, 2026-11-14). Este d
 ## Recorrido propuesto
 Primera visita: **JUGAR → cabina y bienvenida → manual → cabina → monitor de destinos → aterrizaje → misión**.
 
-Saltar la bienvenida no omite el manual. La condición para aterrizar por primera vez es haber recorrido todas sus páginas. El orden exacto de acceso al monitor antes de completar el manual queda pendiente; explorar no debe habilitar el aterrizaje anticipadamente.
+Saltar la bienvenida no omite el manual. La condición para aterrizar por primera vez es haber recorrido todas sus páginas. Actualización 2026-11-15: hasta completar el manual, tocar el tablero no abre la consola de destinos: la guía dice «Primero abrí el manual de misión: es la tablet.» y resalta la tablet. La primera lectura del manual no tiene X: solo se sale terminándolo (ver `docs/DECISIONS.md`).
 
 Visitas posteriores (propuesta): JUGAR lleva a la cabina sin repetir automáticamente la bienvenida; el manual se puede consultar nuevamente. Recordar su finalización mediante el sistema de progreso, sin alterar el progreso de las misiones.
 

@@ -15,10 +15,59 @@ Formato:
 
 ## 2026-11-15 — Cabina: la ventana también abre la consola, botón Volver y botón físico de la tablet (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola las esquinas amarillas marcan la ventana y el tablero; (2) en la cabina hay un botón **Volver / Back** arriba a la izquierda que lleva a la pantalla de inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X.
+- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola las esquinas amarillas marcan la ventana y el tablero; (2) en la cabina hay un botón **Volver / Back** arriba a la izquierda que lleva a la pantalla de inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
 - Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
 - A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `cabin/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `cabin.back` en `i18n`.
 - ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — The first mission manual can't be skipped (spec 19)
+- Who: Marianela, with Claude
+- What was decided: until the manual is finished, tapping the dashboard in the cabin doesn't open the destination console. The guide says `cabin.manualFirst` ("First open the mission manual: it is the tablet.") and highlights the tablet. The first read of the manual has no X button, so the only way out is reaching the last page. Once it's done, the X comes back and the manual can be reread and closed at any point. This closes the open item in spec 19 about reaching the monitor before the manual.
+- Why: in playtesting, skipping the welcome and going straight to the console made LAND bounce back with "Read the manual first". That text overflowed its box, and a new player couldn't tell how to get back to the manual or where they had stopped.
+- Affects: spec 19 only (`CabinScene.ts`, `ManualScene.ts`, `docs/specs/19-intro-cabina-manual.md`). It uses an existing i18n key; no shared contract changes.
+- Team notified?: not yet (goes in the PR).
+
+## 2026-11-15 — Everything new in the repo goes in English
+- Who: the team, with Claude
+- What was decided: from now on commit messages, branch names, PR titles and descriptions, GitHub comments and reviews, and code comments are written in English (NASA Space Apps rule). Game texts in `src/i18n/es.json` stay in Spanish. Git history is not rewritten. Rule added to `AGENTS.md` §2 and §6.
+- Why: the hackathon requires the repo content to be in English.
+- Affects: everyone and every agent (`AGENTS.md`).
+- Team notified?: yes (with this PR).
+
+## 2026-11-15 — Las tarjetas de explicación y el panel de pasos numeran los pasos
+- Quién: Jeza (jz-rs), con Claude
+- Qué se decidió: la tarjeta de explicación que abre cada misión (`src/minigames/howTo/howToCard.ts`, la usan paneles, oxígeno, invernadero, escudo y rover) muestra el número de cada paso en un círculo amarillo, en su propia columna a la izquierda del dibujo, para que se siga como una lista y el número no se mezcle con el dibujo ni con el texto. El texto de cada paso se achica de 330 a 320 px de ancho para que entre la columna. Los textos no cambian. El **panel de pasos** que se ve a la izquierda mientras se juega (`stepGuide.ts`) también lleva el número, más chico, en la esquina de arriba a la izquierda de cada paso y siempre encendido (aunque el paso esté apagado), para que el orden se lea de un vistazo. El circulito es el mismo en los dos lugares (`howTo/stepNumber.ts`). Como todas las misiones usan estas dos piezas, vale para todas las misiones y todos los niveles.
+- Por qué: al probarlo, los pasos se leían mejor con números; ponerlos en el texto ("1. ...") se mezclaba con el resto.
+- A quién afecta: B (las tarjetas de los specs 07–10 y 15 se ven con números; no cambia cómo se usan).
+- ¿Avisado al equipo?: sí (PR #38).
+
+## 2026-11-15 — Rover: un tubo guiado y después el chico llena otros solo
+- Quién: Jeza (jz-rs), con Claude
+- Qué se decidió: en el guardado de muestras del rover ya no se llena un solo tubo. Cada viaje tiene **3 tubos** (`tubesPerTrip`): el **primero es guiado** (manito fantasma y panel de pasos, como antes) y en los **otros dos el chico lo hace solo**, sin manito; arriba dice "¡Ahora vos solo! Tubo 2 de 3". Cada tubo sellado suma 1 muestra; uno que queda abierto 4 s se contamina, se tira y se pasa al siguiente. El estante tiene 8 lugares y siempre deja libres los de los tubos del viaje. En el resultado se ven los tubos sellados y, si hubo, los contaminados. **Balance:** `storeDurationMs` pasa de 9 s a 20 s; se agrega `tubesPerTrip` (3); `shelfSlots` pasa de 6 a 8. Las claves `rover.tubeSaved` y `rover.tubeLost`, que eran nuevas de esta misma rama, se reemplazan por `rover.tubesSealed`, `rover.tubesLost` y `rover.soloInstruction`.
+- Por qué: al probarlo, la misión explicaba cómo se hace y terminaba enseguida; el chico tiene que poder practicarlo solo después de la explicación.
+- A quién afecta: B (spec 15, `src/minigames/rover/*`: archivos nuevos `SampleTube.ts` y `tripInstruction.ts`). `balance.ts` (`ROVER_BALANCE`). Hasta 3 muestras más por viaje y un viaje más largo (~30 s con la base corriendo): revisar en la próxima ronda de balance (T5).
+- ¿Avisado al equipo?: sí (PR #38).
+
+## 2026-11-15 — Rover: las rocas se atrapan y lo que se esquiva es la arena blanda
+- Quién: Jeza (jz-rs), con Claude
+- Qué se decidió: en el manejo del rover (spec 15) se dejan de esquivar rocas. Ahora **cada roca que se atrapa es una muestra**, y lo que se esquiva son **pozos de arena blanda**. Como un chico esquiva por reflejo cualquier roca en un juego de manejo, se usa el idioma de los juegos: **cada roca se ve como un premio** (un círculo celeste que late, como los objetivos que marcan los científicos para Perseverance, y un tubito de muestra flotando encima), y al atraparla sale "+1" y el tubito vuela al contador. **La arena se ve como peligro**: una mancha oscura donde se hunden las ruedas, con un cartel ⚠️ rojo. Todo dibujado con la paleta (`trackPieces.ts`). Lo primero que aparece en el camino es siempre una roca en otro carril, y la manito muestra cómo ir hacia ella. Si el rover cae en la arena, patina y queda frenado un momento (`sandStuckMs`, 700 ms) con el aviso "¡Arena blanda!", pero **no pierde las rocas que ya tenía** (antes chocar una roca restaba 1 muestra). Después, el rover taladra una roca como la que atrapó, así las dos partes de la misión quedan conectadas. El paso 1 de la tarjeta enseña el dato: el rover Spirit quedó atrapado en arena blanda en 2009 y nunca pudo salir. **Balance:** en `ROVER_BALANCE`, `sampleChance` (0.45) pasa a `rockChance` (0.55), `rockStunMs` pasa a `sandStuckMs` y se borra `samplesLostPerRock`. Cambia el texto de `rover.instruction` y `rover.guide1`, y hay una clave nueva, `rover.sandStuck`. El dibujo del manual (`manualArt.ts`, spec 19) sigue mostrando la piedra brillante: no se tocó porque no es de este spec.
+- Por qué: al probarlo no se entendía. Primero las rocas eran malas y enseguida había que taladrar una roca; además, la roca y la piedra brillante se parecían mucho a la velocidad del rover.
+- A quién afecta: B (spec 15, `src/minigames/rover/RoverTrack.ts` y la escena del rover). `balance.ts` (`ROVER_BALANCE`: 2 valores renombrados y 1 borrado; solo los usa el rover). i18n. C (spec 19): quizás quiera cambiar la piedra brillante del manual por una roca.
+- ¿Avisado al equipo?: sí (PR #38).
+
+## 2026-11-15 — La pantalla final de cada misión no se cierra sola y pausa la base
+- Quién: Jeza (jz-rs), con Claude
+- Qué se decidió: al terminar cualquier misión (paneles, oxígeno, invernadero, escudo y rover), la pantalla del resultado con el dato queda hasta que el chico toca **SEGUIR ▶**, que es el único botón: la X roja de la esquina se oculta en el resultado (se probó dejarla como otra forma de seguir, pero confundía tener dos botones). La X sigue estando mientras se juega, para salir antes de terminar. Mientras se ve, **la base queda en pausa** (no corre el sol ni bajan las barras), con el mismo `pauseGame()` / `resumeGame()` de la tarjeta de explicación. Ya no hay cierre automático: se borran `MINIGAME_BALANCE.factMaxDisplayMs` (12 s) y `ROVER_BALANCE.resultDisplayMs` (3 s). El rover suma el botón SEGUIR (`addContinueButton`, ahora exportado desde `resultCard.ts`) y su resultado se reacomodó para que el dato de los tubos no quede tapado.
+- Por qué: al probarlo, el resultado del rover se cerraba a los 3 s y el de las otras misiones con la base corriendo atrás: no se llegaba a leer el dato, que es el premio educativo.
+- A quién afecta: A y B (`src/minigames/MinigameScene.ts`: `finish()` pausa la base y la reanuda al tocar SEGUIR; `resultCard.ts`). B (spec 15, rover). `balance.ts`: se borran 2 valores que ya no usa nadie. Reemplaza el "máximo 12 s" de la entrada "El dato del minijuego queda en pantalla".
+- ¿Avisado al equipo?: sí (PR #38).
+
+## 2026-11-15 — Misión del rover: guardar la muestra en el tubo, como Perseverance
+- Quién: Jeza (jz-rs), con Claude
+- Qué se decidió: la expedición del rover (spec 15) suma un segundo momento, el de la Misión 5 de la propuesta "Misiones que enseñan a vivir en una base en Marte". Antes de salir hay una **tarjeta de 4 pasos** (manejar y atrapar piedras → taladrar → meter en el tubo y sellar → estante) con el botón "¡A explorar!"; mientras se lee, la base queda en pausa, y después sigue corriendo todo el viaje como antes. Se maneja **10 s** (antes 15 s) atrapando piedras que brillan, igual que antes. Después el rover para junto a una roca y guarda **una sola muestra por viaje**: mantener apretado el taladro hasta cortar el cilindro, arrastrarlo (o tocarlo) al tubo y tocar el tubo para sellarlo (un anillo que se cierra). El tubo sellado va al estante, donde las piedras atrapadas ya están como tubos y el lugar nuevo se ilumina. **Sellado = +1 muestra** (`sealedTubeSamples`). Si el tubo queda abierto 4 s, entra polvo: "¡Contaminada!" y no suma. Si se termina el tiempo del guardado (9 s), no suma. Panel de pasos a la izquierda, como en las otras misiones. Al final, además de la foto enmarcada, se ve qué pasó con el tubo y el dato "Perseverance lleva 43 tubos y cada muestra es del tamaño de una tiza".
+- Por qué: que la mecánica enseñe lo real. Respaldo NASA: Perseverance lleva 43 tubos, taladra cilindros un poco más gruesos que un lápiz y los sella para que nada de la Tierra contamine las muestras (NASA, "A Martian Roundtrip"; JPL, primera muestra sellada en 2021). No se promete una fecha de regreso a la Tierra porque todavía no está decidida.
+- A quién afecta: B (spec 15, `src/minigames/rover/*`: archivos nuevos `SampleStorage.ts`, `RockDrill.ts`, `SampleShelf.ts`, `roverIcons.ts`, `roverRecipe.ts`, `roverResult.ts`). `balance.ts` (`ROVER_BALANCE.durationMs` baja de 15 000 a 10 000 y se agregan `storeDurationMs`, `drillHoldMs`, `sealWithinMs`, `sealedTubeSamples`, `shelfSlots`, `coreSnapDistance`). i18n: solo claves nuevas `rover.*`. No cambia `core/` ni `GameAction` (`completeExpedition` ya recibe la cantidad de muestras). Las muestras por viaje quedan parecidas (un poco menos de manejo, +1 por tubo sellado): revisar en la próxima ronda de balance (T5).
+- ¿Avisado al equipo?: sí (PR #38).
 
 ## 2026-11-15 — Las barras de cada sala pasan a ser de bloques
 - Quién: C (Emilia), con Claude
