@@ -83,6 +83,8 @@ export const SOLAR_PANELS_BALANCE = {
   brushRadius: 16,
   /** Dust cells that fall back per second for each point of difficulty above 1. */
   dustReturnPerSecond: 8,
+  /** Energy bolts a spotless panel sends to the battery per second (a dusty one sends none). */
+  boltsPerSecond: 1.5,
 } as const;
 
 export const OXYGEN_FACTORY_BALANCE = {

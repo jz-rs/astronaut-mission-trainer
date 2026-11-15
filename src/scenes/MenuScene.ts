@@ -35,7 +35,10 @@ export class MenuScene extends Phaser.Scene {
   create(): void {
     this.drawBackground();
     this.drawFloatingAstronaut();
-    addText(this, CENTER_X, TITLE_Y, t('menu.title'), { size: FONT_SIZE.large, color: PALETTE.white });
+    addText(this, CENTER_X, TITLE_Y, t('menu.title'), {
+      size: FONT_SIZE.large,
+      color: PALETTE.white,
+    });
     addText(this, CENTER_X, SUBTITLE_Y, t('menu.subtitle'), {
       size: FONT_SIZE.small,
       color: PALETTE.cyan,
