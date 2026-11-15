@@ -58,7 +58,7 @@
   "hud.pickRoom": "Which room?",
   "minigame.oxygen-factory.instruction": "Bring the CO₂ to MOXIE!",
   "minigame.oxygen-factory.machine": "MOXIE",
-  "minigame.greenhouse.instruction": "Water the thirsty plants!",
+  "minigame.greenhouse.instruction": "Give each plant what it asks for!",
   "minigame.shield-wall.instruction": "Plug the holes in the wall!",
   "task.oxygen-factory.fact2": "MOXIE made 122 grams of oxygen: what a small dog breathes in 10 hours.",
   "task.oxygen-factory.fact3": "Mars air is almost all carbon dioxide (CO₂).",
@@ -114,7 +114,7 @@
   "collab.priority": "🤖 Bots will focus on: {task}",
   "task.oxygen-factory.why": "Just like MOXIE on Mars: it takes one O out of each CO₂, and two O make O₂.",
   "task.solar-panels.why": "Mars gets less than half the sunlight Earth gets: if dust covers the panels, there's no power.",
-  "task.greenhouse.why": "Without water plants dry out: on the Space Station astronauts water them.",
+  "task.greenhouse.why": "The base's plants don't need the Sun: they grow with LED lights, even at night!",
   "task.shield-wall.why": "Water and soil stop the Sun's radiation: that's why you used those blocks.",
   "minigame.continue": "GO ON ▶",
   "hud.you": "YOU",
@@ -141,5 +141,12 @@
   "minigame.oxygen-factory.introTitle": "How do we make oxygen on Mars?",
   "minigame.oxygen-factory.start": "Let's make it!",
   "minigame.oxygen-factory.madePop": "+1 O₂!",
-  "minigame.oxygen-factory.needOneMore": "1 more CO₂!"
+  "minigame.oxygen-factory.needOneMore": "1 more CO₂!",
+  "minigame.greenhouse.introTitle": "How do you grow food in space?",
+  "minigame.greenhouse.start": "Let's grow!",
+  "minigame.greenhouse.guide1": "Mars soil is toxic. Plants grow in pillows of special soil, like in NASA's Veggie.",
+  "minigame.greenhouse.guide2": "Each plant needs water and LED light. See what it asks for and bring the tool.",
+  "minigame.greenhouse.guide3": "Plants take CO₂ from the air and give off O₂. Food and air!",
+  "minigame.greenhouse.water": "Water",
+  "minigame.greenhouse.light": "Light"
 }
