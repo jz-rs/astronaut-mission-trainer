@@ -57,7 +57,7 @@ export class MenuScene extends Phaser.Scene {
     });
     this.tweens.add({ targets: play, scale: 1.05, yoyo: true, repeat: -1, duration: 600 });
     this.createLanguageButtons();
-    addSoundToggle(this, { x: 14 + LANGUAGES.length * 60, y: 312, width: 52, height: 36 });
+    addSoundToggle(this, { x: 14 + LANGUAGES.length * 60, y: 312, width: 52, height: 36 }, 'menu');
     this.createSourcesButton();
     addScanlines(this);
     this.showPhoneControls();
