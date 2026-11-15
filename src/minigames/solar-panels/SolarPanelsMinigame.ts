@@ -28,6 +28,8 @@ const BATTERY_CATCH_UP = 4;
 /** A short moment to see the full battery before the result card. */
 const FINISH_DELAY_MS = 700;
 const CLEAN_POP_OFFSET_Y = 10;
+/** The glass of the energy room's window, in pixels of the room picture (same in every biome). */
+const WINDOW_GLASS = { left: 620, top: 105, right: 735, bottom: 215 };
 
 export class SolarPanelsMinigame extends MinigameScene {
   static readonly KEY = 'SolarPanelsMinigame';
@@ -53,12 +55,14 @@ export class SolarPanelsMinigame extends MinigameScene {
     this.batteryShown = 0;
     this.allClean = false;
     this.guide = new StepGuide(this, area, SOLAR_STEPS);
-    const station = new SolarStation(this, area, this.guide.right);
-    const dust = new DustCover(this);
-    station.slots.forEach(({ topLeft, scale }, index) => {
-      addSprite(this, topLeft.x, topLeft.y, 'solarPanelClean').setOrigin(0).setScale(scale);
-      dust.cover(topLeft, scale, index);
-    });
+    const station = new SolarStation(
+      this,
+      area,
+      this.guide.right,
+      this.windowRect(),
+      this.daylight,
+    );
+    const dust = this.placePanels(station);
     this.station = station;
     this.dust = dust;
     this.boltProgress = station.slots.map(() => 0);
@@ -75,14 +79,41 @@ export class SolarPanelsMinigame extends MinigameScene {
     showHowToCard(this, area, howTo, () => this.startPlaying(station));
   }
 
+  /** Each panel is the clean sprite with Martian dust on top. */
+  private placePanels(station: SolarStation): DustCover {
+    const dust = new DustCover(this);
+    station.slots.forEach(({ topLeft, scale }, index) => {
+      addSprite(this, topLeft.x, topLeft.y, 'solarPanelClean').setOrigin(0).setScale(scale);
+      dust.cover(topLeft, scale, index);
+    });
+    return dust;
+  }
+
   /** After the how-to card: the game goes on and a ghost finger wipes across all the panels. */
   private startPlaying(station: SolarStation): void {
     this.resumeGame();
+    this.warnIfNight(station);
     const first = station.slots[0];
     const last = station.slots[station.slots.length - 1];
     if (!first || !last) return;
     const y = first.topLeft.y + first.width / 2;
     showGestureHint(this, { x: first.foot.x, y }, { x: last.foot.x, y });
+  }
+
+  /** 1 at noon, down to `nightLight` at full night: the panels only get the light there is. */
+  private get daylight(): number {
+    return 1 - (1 - SOLAR_PANELS_BALANCE.nightLight) * this.nightAmount;
+  }
+
+  private windowRect(): Rect {
+    const topLeft = this.roomPoint(WINDOW_GLASS.left, WINDOW_GLASS.top);
+    const bottomRight = this.roomPoint(WINDOW_GLASS.right, WINDOW_GLASS.bottom);
+    return {
+      x: topLeft.x,
+      y: topLeft.y,
+      width: bottomRight.x - topLeft.x,
+      height: bottomRight.y - topLeft.y,
+    };
   }
 
   protected calculatePerformance(): number {
@@ -122,7 +153,8 @@ export class SolarPanelsMinigame extends MinigameScene {
   private sendBolts(seconds: number): void {
     this.panelFractions().forEach((clean, index) => {
       const progress =
-        (this.boltProgress[index] ?? 0) + clean * SOLAR_PANELS_BALANCE.boltsPerSecond * seconds;
+        (this.boltProgress[index] ?? 0) +
+        clean * this.daylight * SOLAR_PANELS_BALANCE.boltsPerSecond * seconds;
       this.boltProgress[index] = progress >= 1 ? progress - 1 : progress;
       if (progress >= 1) this.station?.sendEnergy(index, () => this.guide?.show(3));
     });
@@ -158,6 +190,14 @@ export class SolarPanelsMinigame extends MinigameScene {
     sparkleAt(this, slot.foot.x, centerY, 'energyFlash');
     const message = t('minigame.solar-panels.panelClean');
     floatText(this, slot.foot.x, slot.topLeft.y - CLEAN_POP_OFFSET_Y, message, PALETTE.sun);
+  }
+
+  /** Late in the sol the light through the window is weak: the kid is told why. */
+  private warnIfNight(station: SolarStation): void {
+    const middle = station.slots[1];
+    if (this.nightAmount < SOLAR_PANELS_BALANCE.nightWarning || !middle) return;
+    const y = station.window.y + station.window.height;
+    floatText(this, middle.foot.x, y, t('minigame.solar-panels.night'), PALETTE.white);
   }
 
   private finishSoon(): void {

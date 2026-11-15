@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { TASK_BALANCE } from '../../config/balance';
+import { RUN_BALANCE, TASK_BALANCE } from '../../config/balance';
 import { drawEventsForRun } from '../../content/events';
 import { getLocation } from '../../content/locations';
 import { GameSession } from '../../core/GameSession';
@@ -13,7 +13,8 @@ import { MINIGAME_KEYS, MINIGAME_REGISTRY } from '../../minigames/registry';
 import { RoverExpeditionScene } from '../../minigames/rover/RoverExpeditionScene';
 import { loadProgress } from '../../services/progressStorage';
 import { recordMinigameResult } from '../../services/progressUpdates';
-import { GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
+import { GAME_HEIGHT, GAME_WIDTH, GARAGE_SPOT, PLAYER_IDLE_SPOT } from '../../ui/layout';
+import { nightAmount, NightShade } from '../../ui/nightfall';
 import { PALETTE } from '../../ui/palette';
 import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
@@ -55,6 +56,7 @@ export class BaseScene extends Phaser.Scene {
   private session!: GameSession;
   private rooms = new Map<TaskId, RoomView>();
   private hud!: Hud;
+  private nightShade!: NightShade;
   private mapStatus!: MapStatusSprites;
   private player!: AstronautSprite;
   private bots!: BotsView;
@@ -118,12 +120,22 @@ export class BaseScene extends Phaser.Scene {
     addScanlines(this);
   }
 
-  /** Weather falls over the base, the HUD goes on top, and the pole's frost covers even the HUD. */
+  /**
+   * Night darkens the base, weather falls over it, the HUD goes on top, and the pole's frost
+   * covers even the HUD.
+   */
   private createTopLayer(): void {
+    const screen = { x: 0, y: 0, width: GAME_WIDTH, height: GAME_HEIGHT };
+    this.nightShade = new NightShade(this, screen, this.currentNight());
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
     addFrost(this, this.locationId);
+  }
+
+  /** After half the sol it gets dark (ui/nightfall.ts). */
+  private currentNight(): number {
+    return nightAmount(this.session.state.solElapsedMs / RUN_BALANCE.solDurationMs);
   }
 
   private createSession(): GameSession {
@@ -140,6 +152,7 @@ export class BaseScene extends Phaser.Scene {
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
+    this.nightShade.setAmount(this.currentNight());
     this.mapStatus.update(state.stats);
     this.botFaces.update(state);
     this.bots.update(state, this.selectedBotId);
@@ -178,6 +191,7 @@ export class BaseScene extends Phaser.Scene {
       taskId,
       difficulty: this.session.state.location.decayMultiplier[stat] ?? 1,
       locationId: this.locationId,
+      nightAmount: this.currentNight(),
       onFinish: (result) => this.handleMinigameFinished(result),
       onExit: () => this.freePlayer(), // the X: nothing done, nothing spent
     };

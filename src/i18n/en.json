@@ -30,6 +30,7 @@
   "minigame.solar-panels.guide3": "The energy charges the base battery. Every clean panel counts!",
   "minigame.solar-panels.battery": "Battery",
   "minigame.solar-panels.panelClean": "+energy!",
+  "minigame.solar-panels.night": "It's night: little light!",
   "minigame.placeholder.instruction": "Tap the button 5 times!",
   "minigame.result.perfect": "PERFECT!",
   "minigame.result.good": "Well done!",

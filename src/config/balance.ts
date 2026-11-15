@@ -14,6 +14,17 @@ export const RUN_BALANCE = {
 } as const;
 
 /**
+ * Day and night on Mars: when the sol bar passes `nightStarts`, the base and the rooms get darker
+ * until `fullNight`; the next sol starts at daylight again.
+ */
+export const NIGHT_BALANCE = {
+  nightStarts: 0.5,
+  fullNight: 0.9,
+  /** How dark full night gets (0 = no change, 1 = black). Kept see-through so kids can play. */
+  maxShade: 0.55,
+} as const;
+
+/**
  * How much each stat drops during one full sol, before location multipliers.
  * Tuned with tests/balance.test.ts (ROADMAP T5): a kid still learning survives Jezero,
  * but bots alone are not enough.
@@ -85,6 +96,10 @@ export const SOLAR_PANELS_BALANCE = {
   dustReturnPerSecond: 8,
   /** Energy bolts a spotless panel sends to the battery per second (a dusty one sends none). */
   boltsPerSecond: 1.5,
+  /** Share of sunlight still coming through the window at full night (bolts and rays). */
+  nightLight: 0.25,
+  /** From this much night on, the mission says it is getting dark. */
+  nightWarning: 0.3,
 } as const;
 
 export const OXYGEN_FACTORY_BALANCE = {

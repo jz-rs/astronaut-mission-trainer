@@ -12,7 +12,7 @@ Es **el único minijuego que genera energía**, la moneda que usan todas las tar
 
 ## Cómo se juega
 - Antes del reloj, una tarjeta explica los 3 pasos con dibujitos y el botón "¡A limpiar!" (el juego y la base quedan en pausa). Ver DECISIONS 2026-11-15.
-- 3 paneles cubiertos de polvo (tonos de Marte), con un Sol arriba que les tira rayos amarillos: débiles donde hay polvo, fuertes donde está limpio.
+- 3 paneles cubiertos de polvo (tonos de Marte), y la luz del Sol que entra por la ventana en rayos amarillos: débiles donde hay polvo, fuertes donde está limpio. De noche entra poca luz (ver DECISIONS 2026-11-15).
 - Arrastrar el dedo "barre" el polvo por donde pasa (como una raspadita).
 - Cada panel limpio manda rayitos de energía por un cable a la batería de la base, que se va llenando.
 - Termina cuando está todo limpio o se acaba el tiempo (~12 s).
