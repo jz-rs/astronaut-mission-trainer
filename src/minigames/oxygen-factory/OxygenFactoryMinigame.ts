@@ -1,170 +1,103 @@
 import Phaser from 'phaser';
 import { OXYGEN_FACTORY_BALANCE } from '../../config/balance';
 import { t } from '../../i18n';
-import { FONT_SIZE, type Rect } from '../../ui/layout';
-import { PALETTE } from '../../ui/palette';
-import { sparkleAt } from '../../ui/sparkle';
-import { addSprite, addSpriteSized } from '../../ui/sprites';
-import { addText } from '../../ui/text';
+import { floatText } from '../../ui/floatingText';
+import type { Rect } from '../../ui/layout';
+import { PALETTE, STAT_COLORS } from '../../ui/palette';
 import { showGestureHint } from '../gestureHint';
 import { MinigameScene } from '../MinigameScene';
+import { MoxieWindow } from './moxieWindow';
+import { OxygenGuide } from './oxygenGuide';
+import { showOxygenIntro } from './oxygenIntro';
+import { OxygenStation } from './oxygenStation';
+import { createPiece, floatPieces, type Piece } from './pieces';
 
 /**
- * Spec 08 — Drag floating CO₂ bubbles into MOXIE (or just tap them: they fly in);
- * each one pops out an O₂ bubble.
- * Performance = bubbles converted / goal, with a speed bonus. Harsher locations = faster bubbles.
+ * Spec 08 — The air factory, like MOXIE on the Perseverance rover. The kid only feeds MOXIE:
+ * drag (or tap) each CO₂ of the Martian air into it. Through MOXIE's window the kid sees the
+ * rest happen by itself, as in the real machine: the CO₂ breaks, the CO goes out as smoke,
+ * and every 2 O make one O₂ that goes to the tank (2 CO₂ → 2 CO + O₂).
+ * Performance = CO₂ fed / CO₂ needed, with a speed bonus. Harsher locations = faster molecules.
  */
-const MACHINE_MARGIN = 24;
-const METER_DOT_SIZE = 8;
-const METER_DOT_SPACING = 14;
-const METER_OFFSET_Y = 14;
-const LABEL_OFFSET_Y = 12;
-const PLATE_PADDING = 4;
-const PLATE_ALPHA = 0.8;
+const PLAY_MARGIN = 20;
 /** A finger that moves less than this between press and release tapped instead of dragging. */
 const TAP_DISTANCE = 8;
-const FLY_TO_MACHINE_MS = 250;
-
-interface Bubble {
-  body: Phaser.GameObjects.Container;
-  velocity: Phaser.Math.Vector2;
-  dragging: boolean;
-}
+const FLY_MS = 250;
+/** "1 more CO₂!" shows up just left of MOXIE, away from its labels and the vent. */
+const WAITING_OFFSET_X = 70;
+const POP_OFFSET_Y = 30;
+/** Pulls "+1 O₂!" a bit left so it is not cut by the frame next to the tank. */
+const POP_OFFSET_X = 24;
 
 export class OxygenFactoryMinigame extends MinigameScene {
   static readonly KEY = 'OxygenFactoryMinigame';
   protected readonly instructionKey = 'minigame.oxygen-factory.instruction';
-  private bubbles: Bubble[] = [];
-  private converted = 0;
-  private spawned = 0;
-  private machine = new Phaser.Geom.Rectangle();
+  private pieces: Piece[] = [];
+  private spawnedCarbon = 0;
+  private carbonFed = 0;
+  private oxygenStored = 0;
+  private station: OxygenStation | null = null;
+  private moxie: MoxieWindow | null = null;
+  private guide: OxygenGuide | null = null;
   private playArea = new Phaser.Geom.Rectangle();
-  private meter: Phaser.GameObjects.Graphics | null = null;
-  private machineImage: Phaser.GameObjects.Image | null = null;
 
   constructor() {
     super(OxygenFactoryMinigame.KEY);
   }
 
+  private get carbonNeeded(): number {
+    return OXYGEN_FACTORY_BALANCE.oxygenGoal * 2;
+  }
+
   protected buildGame(area: Rect): void {
-    this.bubbles = [];
-    this.converted = 0;
-    this.spawned = 0;
-    this.drawMachine(area);
-    const playWidth = this.machine.x - area.x - MACHINE_MARGIN;
-    this.playArea.setTo(area.x, area.y, playWidth, area.height);
-    for (let index = 0; index < OXYGEN_FACTORY_BALANCE.bubblesOnScreen; index += 1) {
-      this.spawnCarbonBubble();
+    this.pieces = [];
+    this.spawnedCarbon = 0;
+    this.carbonFed = 0;
+    this.oxygenStored = 0;
+    const station = new OxygenStation(this, area);
+    this.station = station;
+    this.moxie = new MoxieWindow(this, station);
+    this.guide = new OxygenGuide(this, area);
+    const playWidth = station.machine.left - this.guide.right - PLAY_MARGIN;
+    this.playArea.setTo(this.guide.right, area.y, playWidth, area.height);
+    for (let index = 0; index < OXYGEN_FACTORY_BALANCE.moleculesOnScreen; index += 1) {
+      this.spawnCarbonDioxide();
     }
     this.input.on('drag', this.handleDrag, this);
     this.input.on('dragend', this.handleDrop, this);
-    const firstBubble = this.bubbles[0]?.body;
-    if (firstBubble) {
-      const machineCenter = { x: this.machine.centerX, y: this.machine.centerY };
-      showGestureHint(this, { x: firstBubble.x, y: firstBubble.y }, machineCenter);
-    }
+    this.pauseGame();
+    showOxygenIntro(this, area, () => this.startPlaying(station));
+  }
+
+  /** After the intro: the game goes on and a ghost finger shows the first move. */
+  private startPlaying(station: OxygenStation): void {
+    this.resumeGame();
+    const first = this.pieces[0]?.body;
+    if (!first) return;
+    const machineCenter = { x: station.machine.centerX, y: station.machine.centerY };
+    showGestureHint(this, { x: first.x, y: first.y }, machineCenter);
   }
 
   protected calculatePerformance(): number {
-    return this.withSpeedBonus(this.converted / OXYGEN_FACTORY_BALANCE.bubblesGoal);
+    return this.withSpeedBonus(Math.min(1, this.carbonFed / this.carbonNeeded));
   }
 
   protected updateGame(deltaMs: number): void {
-    const seconds = deltaMs / 1000;
-    const radius = OXYGEN_FACTORY_BALANCE.bubbleRadius;
-    for (const bubble of this.bubbles) {
-      if (bubble.dragging) continue;
-      const { body, velocity } = bubble;
-      body.x += velocity.x * seconds;
-      body.y += velocity.y * seconds;
-      if (body.x < this.playArea.left + radius || body.x > this.playArea.right - radius) {
-        velocity.x *= -1;
-      }
-      if (body.y < this.playArea.top + radius || body.y > this.playArea.bottom - radius) {
-        velocity.y *= -1;
-      }
-      body.x = Phaser.Math.Clamp(body.x, this.playArea.left + radius, this.playArea.right - radius);
-      body.y = Phaser.Math.Clamp(body.y, this.playArea.top + radius, this.playArea.bottom - radius);
-    }
+    floatPieces(this.pieces, this.playArea, deltaMs / 1000);
   }
 
-  /** MOXIE stands on the right, switched off until the first CO₂ goes in. */
-  private drawMachine(area: Rect): void {
-    const image = addSprite(this, 0, 0, 'oxygenMachineOff');
-    const { displayWidth: width, displayHeight: height } = image;
-    const x = area.x + area.width - width - MACHINE_MARGIN;
-    const y = area.y + (area.height - height) / 2;
-    image.setPosition(x + width / 2, y + height / 2);
-    this.machine.setTo(x, y, width, height);
-    this.machineImage = image;
-    const label = addText(
-      this,
-      x + width / 2,
-      y - LABEL_OFFSET_Y,
-      t('minigame.oxygen-factory.machine'),
-      {
-        size: FONT_SIZE.small,
-        color: PALETTE.cyan,
-      },
-    );
-    this.addPlateBehind(label.x, label.y, label.width, label.height);
-    label.setDepth(1);
-    const meterWidth = OXYGEN_FACTORY_BALANCE.bubblesGoal * METER_DOT_SPACING;
-    const meterCenterY = this.machine.bottom + METER_OFFSET_Y + METER_DOT_SIZE / 2;
-    this.addPlateBehind(this.machine.centerX, meterCenterY, meterWidth, METER_DOT_SIZE);
-    this.meter = this.add.graphics().setDepth(1);
-    this.drawMeter();
+  private spawnCarbonDioxide(): void {
+    if (this.spawnedCarbon >= this.carbonNeeded) return;
+    this.spawnedCarbon += 1;
+    const margin = OXYGEN_FACTORY_BALANCE.atomRadius * 3;
+    const x = Phaser.Math.Between(this.playArea.left + margin, this.playArea.right - margin);
+    const y = Phaser.Math.Between(this.playArea.top + margin, this.playArea.bottom - margin);
+    const speed = OXYGEN_FACTORY_BALANCE.moleculeSpeed * this.difficulty;
+    this.pieces.push(createPiece(this, 'co2', x, y, speed));
   }
 
-  /** Dark plate so a label stays readable over the busy room picture (drawn under depth 1). */
-  private addPlateBehind(centerX: number, centerY: number, width: number, height: number): void {
-    const plate = this.add.rectangle(
-      centerX,
-      centerY,
-      width + PLATE_PADDING * 2,
-      height + PLATE_PADDING * 2,
-      PALETTE.night,
-    );
-    plate.setAlpha(PLATE_ALPHA);
-  }
-
-  /** One dot per bubble of the goal, lit as O₂ is produced. */
-  private drawMeter(): void {
-    if (!this.meter) return;
-    const { bubblesGoal } = OXYGEN_FACTORY_BALANCE;
-    const y = this.machine.bottom + METER_OFFSET_Y;
-    const startX = this.machine.centerX - ((bubblesGoal - 1) * METER_DOT_SPACING) / 2;
-    this.meter.clear();
-    for (let index = 0; index < bubblesGoal; index += 1) {
-      const lit = index < this.converted;
-      const x = startX + index * METER_DOT_SPACING - METER_DOT_SIZE / 2;
-      this.meter
-        .fillStyle(PALETTE.night, 1)
-        .fillRect(x - 1, y - 1, METER_DOT_SIZE + 2, METER_DOT_SIZE + 2);
-      this.meter.fillStyle(lit ? PALETTE.cyan : PALETTE.metalDark, 1);
-      this.meter.fillRect(x, y, METER_DOT_SIZE, METER_DOT_SIZE);
-    }
-  }
-
-  private spawnCarbonBubble(): void {
-    if (this.spawned >= OXYGEN_FACTORY_BALANCE.bubblesGoal) return;
-    this.spawned += 1;
-    const radius = OXYGEN_FACTORY_BALANCE.bubbleRadius;
-    const x = Phaser.Math.Between(this.playArea.left + radius, this.playArea.right - radius);
-    const y = Phaser.Math.Between(this.playArea.top + radius, this.playArea.bottom - radius);
-    const sprite = addSpriteSized(this, 0, 0, 'bubbleCarbon', radius * 2);
-    const label = addText(this, 0, 0, 'CO₂', { size: FONT_SIZE.small, color: PALETTE.white });
-    const body = this.add.container(x, y, [sprite, label]).setSize(radius * 2, radius * 2);
-    body.setInteractive({ draggable: true, useHandCursor: true });
-    const speed = OXYGEN_FACTORY_BALANCE.bubbleSpeed * this.difficulty;
-    const velocity = new Phaser.Math.Vector2(speed, 0).rotate(
-      Phaser.Math.FloatBetween(0, Math.PI * 2),
-    );
-    this.bubbles.push({ body, velocity, dragging: false });
-  }
-
-  private findBubble(target: Phaser.GameObjects.GameObject): Bubble | undefined {
-    return this.bubbles.find((bubble) => bubble.body === target);
+  private findPiece(target: Phaser.GameObjects.GameObject): Piece | undefined {
+    return this.pieces.find((piece) => piece.body === target);
   }
 
   private handleDrag(
@@ -172,73 +105,79 @@ export class OxygenFactoryMinigame extends MinigameScene {
     target: Phaser.GameObjects.GameObject,
     x: number,
     y: number,
-  ) {
-    const bubble = this.findBubble(target);
-    if (!bubble || this.isFinished) return;
-    bubble.dragging = true;
-    bubble.body.setPosition(x, y);
+  ): void {
+    const piece = this.findPiece(target);
+    if (!piece || this.isFinished) return;
+    piece.busy = true;
+    piece.body.setPosition(x, y);
   }
 
+  /** Tapped: it flies into MOXIE. Dragged: it goes in only if it was let go on the machine. */
   private handleDrop(pointer: Phaser.Input.Pointer, target: Phaser.GameObjects.GameObject): void {
-    const bubble = this.findBubble(target);
-    if (!bubble) return;
-    if (pointer.getDistance() < TAP_DISTANCE && !this.isFinished) {
-      this.flyIntoMachine(bubble);
-      return;
-    }
-    bubble.dragging = false;
-    const touchZone = Phaser.Geom.Rectangle.Clone(this.machine);
-    Phaser.Geom.Rectangle.Inflate(
-      touchZone,
-      OXYGEN_FACTORY_BALANCE.bubbleRadius,
-      OXYGEN_FACTORY_BALANCE.bubbleRadius,
+    const piece = this.findPiece(target);
+    const station = this.station;
+    // A piece already flying ignores a second "let go", or one CO₂ would go in twice.
+    if (!piece?.body.input?.enabled || this.isFinished || !station) return;
+    piece.busy = false;
+    const { centerX, centerY } = station.machine;
+    if (pointer.getDistance() < TAP_DISTANCE) this.flyTo(piece, centerX, centerY);
+    else if (station.isOnMachine(piece.body.x, piece.body.y)) this.feedMoxie(piece);
+  }
+
+  private flyTo(piece: Piece, x: number, y: number): void {
+    piece.busy = true;
+    piece.body.disableInteractive();
+    const onComplete = () => this.feedMoxie(piece);
+    this.tweens.add({ targets: piece.body, x, y, duration: FLY_MS, onComplete });
+  }
+
+  /** The CO₂ goes into MOXIE; what happens inside is shown through its window. */
+  private feedMoxie(piece: Piece): void {
+    if (!this.pieces.includes(piece) || !this.moxie) return;
+    this.pieces = this.pieces.filter((candidate) => candidate !== piece);
+    piece.body.destroy();
+    this.carbonFed += 1;
+    this.guide?.show(2);
+    this.moxie.feed(
+      () => this.announceWaiting(),
+      (oxygen) => this.storeOxygen(oxygen),
     );
-    if (!touchZone.contains(bubble.body.x, bubble.body.y) || this.isFinished) return;
-    this.convert(bubble);
+    this.spawnCarbonDioxide();
   }
 
-  /** A tapped bubble flies into MOXIE by itself. */
-  private flyIntoMachine(bubble: Bubble): void {
-    bubble.dragging = true; // stops the floating movement while it flies
-    bubble.body.disableInteractive();
-    this.tweens.add({
-      targets: bubble.body,
-      x: this.machine.centerX,
-      y: this.machine.centerY,
-      duration: FLY_TO_MACHINE_MS,
-      onComplete: () => this.convert(bubble),
+  /** A new O₂ goes to the tank; the game ends when the tank is full. */
+  private storeOxygen(oxygen: Phaser.GameObjects.Container): void {
+    const station = this.station;
+    if (!station) return;
+    this.guide?.show(3);
+    station.storeOxygen(oxygen, () => {
+      this.oxygenStored += 1;
+      station.setTankLevel(this.oxygenStored);
+      this.guide?.show(4);
+      const { centerX, top } = station.tank;
+      this.announce(
+        'minigame.oxygen-factory.madePop',
+        STAT_COLORS.oxygen,
+        centerX - POP_OFFSET_X,
+        top - POP_OFFSET_Y,
+      );
+      if (this.oxygenStored >= OXYGEN_FACTORY_BALANCE.oxygenGoal) this.finish();
     });
   }
 
-  private convert(bubble: Bubble): void {
-    this.bubbles = this.bubbles.filter((candidate) => candidate !== bubble);
-    bubble.body.destroy();
-    this.converted += 1;
-    this.machineImage?.setTexture('oxygenMachineOn');
-    this.drawMeter();
-    this.popOxygen();
-    if (this.converted >= OXYGEN_FACTORY_BALANCE.bubblesGoal) {
-      this.finish();
-      return;
-    }
-    this.spawnCarbonBubble();
+  private announceWaiting(): void {
+    const machine = this.station?.machine;
+    if (!machine) return;
+    const x = machine.left - WAITING_OFFSET_X;
+    this.announce('minigame.oxygen-factory.needOneMore', PALETTE.white, x, machine.top);
   }
 
-  private popOxygen(): void {
-    const radius = OXYGEN_FACTORY_BALANCE.bubbleRadius * 0.8;
-    const sprite = addSpriteSized(this, 0, 0, 'bubbleOxygen', radius * 2);
-    const label = addText(this, 0, 0, 'O₂', { size: FONT_SIZE.small, color: PALETTE.night });
-    const bubble = this.add.container(this.machine.centerX, this.machine.top, [sprite, label]);
-    sparkleAt(this, this.machine.centerX, this.machine.top, 'popFlash');
-    bubble.setScale(0.2);
-    this.tweens.add({ targets: bubble, scale: 1, duration: 150, ease: 'Back.Out' });
-    this.tweens.add({
-      targets: bubble,
-      y: this.machine.top - 60,
-      alpha: 0,
-      delay: 300,
-      duration: 700,
-      onComplete: () => bubble.destroy(),
-    });
+  private announce(
+    key: 'minigame.oxygen-factory.needOneMore' | 'minigame.oxygen-factory.madePop',
+    color: number,
+    x: number,
+    y: number,
+  ): void {
+    if (!this.isFinished) floatText(this, x, y, t(key), color);
   }
 }
