@@ -16,6 +16,7 @@ import { addGlowText } from '../../ui/screenUi';
 import { SPRITE_SCALE } from '../../ui/sprites';
 import { addScanlines } from '../../ui/techFrame';
 import { preloadCabinArt } from '../cabin/cabinArt';
+import { drawCabinScreens } from '../cabin/cabinView';
 import { locationText } from '../map/locationText';
 import { SCENE_KEYS } from '../sceneKeys';
 import { describeLanding, type LandingFrame } from './landingTimeline';
@@ -90,13 +91,7 @@ export class LandingScene extends Phaser.Scene {
   private buildCabin(): void {
     this.buildWindow();
     const screen = CABIN_MONITOR_SCREENS[0] ?? LANDING_WINDOW;
-    const glass = this.add.rectangle(
-      screen.x - 2,
-      screen.y - 2,
-      screen.width + 4,
-      screen.height + 4,
-      PALETTE.night,
-    );
+    const screens = drawCabinScreens(this);
     this.altitude = this.addAltitude(screen.x + screen.width / 2, screen.y + screen.height / 2);
     const cabin = this.add.image(0, 0, 'cabin').setOrigin(0).setScale(SPRITE_SCALE);
     this.seated = [
@@ -104,7 +99,7 @@ export class LandingScene extends Phaser.Scene {
       this.add.image(LANDING_SEATED_PLAYER.x, LANDING_SEATED_PLAYER.y, 'playerSeated'),
     ].map((image) => image.setOrigin(0).setScale(SPRITE_SCALE));
     this.warning = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, PALETTE.sun, 0).setOrigin(0);
-    this.world.add([glass.setOrigin(0), this.altitude, cabin, ...this.seated, this.warning]);
+    this.world.add([...screens, this.altitude, cabin, ...this.seated, this.warning]);
   }
 
   private addAltitude(x: number, y: number): Phaser.GameObjects.Text {

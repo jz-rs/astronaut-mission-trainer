@@ -15,6 +15,7 @@ import type { CabinArtKey } from './cabinArt';
  */
 const CREDIT_BAND_HEIGHT = 11;
 const HIGHLIGHT_MARGIN = 4;
+const SCREEN_GLOW = { dim: 0.2, bright: 0.45 } as const;
 
 /** The background goes on top of what is drawn behind its transparent screens. */
 export function addCabinBackground(
@@ -56,23 +57,26 @@ export function addPhotoCredit(
   return [band, text.setOrigin(0, 0.5)];
 }
 
-/** Dark glass behind the monitor holes, and a soft cyan glow on the tablet. */
-export function drawCabinScreens(scene: Phaser.Scene): void {
+/**
+ * Every small screen of the cabin (monitor and tablet) looks switched on: dark glass with a soft
+ * cyan glow that breathes. Returned so the landing can put them inside its zooming layer.
+ */
+export function drawCabinScreens(scene: Phaser.Scene): Phaser.GameObjects.GameObject[] {
   const graphics = scene.add.graphics();
-  graphics.fillStyle(PALETTE.night, 1);
-  for (const screen of CABIN_MONITOR_SCREENS) {
-    graphics.fillRect(screen.x - 2, screen.y - 2, screen.width + 4, screen.height + 4);
+  const parts: Phaser.GameObjects.GameObject[] = [graphics];
+  for (const { x, y, width, height } of [...CABIN_MONITOR_SCREENS, CABIN_TABLET_SCREEN]) {
+    graphics.fillStyle(PALETTE.space, 1).fillRect(x - 2, y - 2, width + 4, height + 4);
+    const glow = scene.add.rectangle(x, y, width, height, TECH_GLOW, SCREEN_GLOW.dim).setOrigin(0);
+    scene.tweens.add({
+      targets: glow,
+      alpha: SCREEN_GLOW.bright,
+      yoyo: true,
+      repeat: -1,
+      duration: INTRO_BALANCE.guideFloatMs,
+    });
+    parts.push(glow);
   }
-  const { x, y, width, height } = CABIN_TABLET_SCREEN;
-  graphics.fillStyle(PALETTE.space, 1).fillRect(x - 2, y - 2, width + 4, height + 4);
-  const glow = scene.add.rectangle(x, y, width, height, TECH_GLOW, 0.25).setOrigin(0);
-  scene.tweens.add({
-    targets: glow,
-    alpha: 0.6,
-    yoyo: true,
-    repeat: -1,
-    duration: INTRO_BALANCE.guideFloatMs,
-  });
+  return parts;
 }
 
 /** Pulsing yellow visor corners around what the kid should look at or tap. */
