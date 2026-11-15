@@ -20,8 +20,9 @@ const BUBBLE_RADIUS = 11;
 const SOIL_WIDTH = 30;
 const SOIL_HEIGHT = 14;
 const CROSS_SIZE = 9;
-const PILLOW_WIDTH = 30;
-const PILLOW_HEIGHT = 10;
+const PILLOW_WIDTH = 34;
+const PILLOW_HEIGHT = 14;
+const PILLOW_PUFFS = 3;
 
 /** A LED lamp: a pink bar with a soft glow under it when it is on, dark when it is off. */
 export function addLamp(scene: Phaser.Scene, x: number, y: number): Phaser.GameObjects.Graphics {
@@ -73,22 +74,44 @@ export function addToxicSoil(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
   return soil;
 }
 
-/** A Veggie plant pillow (a little bag of special soil) with a sprout on top. */
+/**
+ * A Veggie plant pillow: a little cloth bag of special soil, quilted in puffs, sitting on the
+ * floor. It covers the soil of the lettuce pictures, so the kid sees the plant grows from a
+ * pillow and not from Mars soil.
+ */
+export function addPillow(
+  scene: Phaser.Scene,
+  x: number,
+  bottom: number,
+  width: number,
+  height: number,
+): Phaser.GameObjects.Graphics {
+  const pillow = scene.add.graphics({ x, y: bottom - height / 2 });
+  const left = -width / 2;
+  const top = -height / 2;
+  const radius = height / 2;
+  pillow.fillStyle(PALETTE.sand, 1).fillRoundedRect(left, top, width, height, radius);
+  pillow.lineStyle(2, PALETTE.metalDark, 1).strokeRoundedRect(left, top, width, height, radius);
+  // Stitches between the puffs, and a soft shine on top: it reads as cloth, not dirt.
+  pillow.lineStyle(1, PALETTE.marsLight, 1);
+  for (let puff = 1; puff < PILLOW_PUFFS; puff += 1) {
+    const stitchX = left + (width * puff) / PILLOW_PUFFS;
+    pillow.lineBetween(stitchX, top + 3, stitchX, -top - 3);
+  }
+  pillow.lineStyle(2, PALETTE.white, 0.7);
+  pillow.lineBetween(left + radius, top + 3, -left - radius, top + 3);
+  return pillow;
+}
+
+/** A pillow with a sprout growing from it. */
 export function addPillowWithSprout(
   scene: Phaser.Scene,
   height: number,
 ): Phaser.GameObjects.Container {
-  const pillow = scene.add.rectangle(
-    0,
-    height / 2 - PILLOW_HEIGHT / 2,
-    PILLOW_WIDTH,
-    PILLOW_HEIGHT,
-    PALETTE.sand,
-  );
-  pillow.setStrokeStyle(1, PALETTE.white);
-  const sprout = addSpriteOfHeight(scene, 0, 0, 'lettuceSprout', height - PILLOW_HEIGHT);
-  sprout.setOrigin(0.5, 1).setY(height / 2 - PILLOW_HEIGHT + 2);
-  return scene.add.container(0, 0, [pillow, sprout]);
+  const sprout = addSpriteOfHeight(scene, 0, 0, 'lettuceSprout', height);
+  sprout.setOrigin(0.5, 1).setY(height / 2);
+  const pillow = addPillow(scene, 0, height / 2, PILLOW_WIDTH, PILLOW_HEIGHT);
+  return scene.add.container(0, 0, [sprout, pillow]);
 }
 
 /** Any sprite, scaled so its height is `height` game pixels. */
