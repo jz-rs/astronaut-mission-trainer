@@ -194,7 +194,7 @@ export const TABLET_HOME_BUTTON = { x: 574, y: 179, radius: 9 } as const;
 
 /**
  * Destination console: the dashboard under the cockpit window, seen up close from the seat. The
- * bottom of the windshield shows at the top and the seats peek at the sides; then its 3 screens
+ * bottom of the windshield shows at the top and the cabin walls at the sides; then its 3 screens
  * and the physical buttons (top-left corners).
  */
 export const CONSOLE_WINDOW: Rect = { x: 132, y: 0, width: 371, height: 60 };
