@@ -31,6 +31,8 @@ export function rectCenter(rect: Rect): Point {
 
 /** Top band of the base screen with the 4 bars. */
 export const HUD_HEIGHT = 44;
+/** "Back" (leave the run) in the base's top bar, the same size as the one in the cabin. */
+export const BASE_BACK_BUTTON: Rect = { x: 10, y: (HUD_HEIGHT - 26) / 2, width: 86, height: 26 };
 /** Stat bars are drawn as this many separate blocks (rooms and the manual), easy to count. */
 export const STAT_BAR_SEGMENTS = 10;
 export const STAT_BAR_SEGMENT_GAP = 2;

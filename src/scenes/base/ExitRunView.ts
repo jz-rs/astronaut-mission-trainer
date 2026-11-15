@@ -1,18 +1,17 @@
 import Phaser from 'phaser';
 import { t } from '../../i18n';
 import { createButton } from '../../ui/Button';
-import { addCloseButton } from '../../ui/closeButton';
-import { FONT_SIZE, GAME_HEIGHT, GAME_WIDTH, HUD_HEIGHT, type Rect } from '../../ui/layout';
+import { addBackButton } from '../../ui/backButton';
+import { BASE_BACK_BUTTON, FONT_SIZE, GAME_HEIGHT, GAME_WIDTH, type Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { drawTechPanel } from '../../ui/techFrame';
 import { addText } from '../../ui/text';
 
 /**
- * The red X in the top-left corner of the base: leave the run and go back to the Mars map.
+ * The dark "◀ BACK" button in the top-left corner of the base: leave the run and go back to the Mars map.
  * It asks first ("Leave the run?" LEAVE / KEEP PLAYING) and the base waits meanwhile,
  * so a kid who taps it by accident loses nothing.
  */
-const X_CENTER = { x: 22, y: HUD_HEIGHT / 2 };
 const CARD: Rect = { x: GAME_WIDTH / 2 - 160, y: 110, width: 320, height: 140 };
 const BUTTON_OFFSET_X = 76;
 const BUTTON_WIDTH = 132;
@@ -24,7 +23,7 @@ export class ExitRunView {
   private card: Phaser.GameObjects.Container | null = null;
 
   /**
-   * @param canAsk false while something else is on top (a minigame, the rover), so the X
+   * @param canAsk false while something else is on top (a minigame, the rover), so the button
    *               never opens a question hidden behind it.
    */
   constructor(
@@ -32,13 +31,9 @@ export class ExitRunView {
     canAsk: () => boolean,
     private readonly onLeave: () => void,
   ) {
-    addCloseButton(
-      scene,
-      () => {
-        if (canAsk() && !this.card) this.card = this.createCard();
-      },
-      X_CENTER,
-    );
+    addBackButton(scene, BASE_BACK_BUTTON, 'dark', () => {
+      if (canAsk() && !this.card) this.card = this.createCard();
+    });
   }
 
   /** The base waits while the question is on screen. */

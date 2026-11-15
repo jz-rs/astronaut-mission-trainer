@@ -197,7 +197,7 @@
   "monitor.challenge.shield": "El escudo no debe bajar de {minimum}",
   "monitor.challenge.energy": "La energía no debe bajar de {minimum}",
   "cabin.tablet": "MANUAL",
-  "cabin.back": "VOLVER",
+  "hud.back": "VOLVER",
   "result.ship": "Nave",
   "minigame.greenhouse.introTitle": "¿Cómo se cultiva comida en el espacio?",
   "minigame.greenhouse.start": "¡A cultivar!",

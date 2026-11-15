@@ -2,7 +2,9 @@ import Phaser from 'phaser';
 import { INTRO_BALANCE } from '../../config/balance';
 import { t, type TranslationKey } from '../../i18n';
 import { loadProgress, saveProgress } from '../../services/progressStorage';
+import { addBackButton } from '../../ui/backButton';
 import {
+  CABIN_BACK_BUTTON,
   CABIN_GUIDE_SCALE,
   CABIN_GUIDE_SPOT,
   CABIN_CONSOLE_OUTLINE,
@@ -16,7 +18,6 @@ import { PALETTE } from '../../ui/palette';
 import { addScanlines } from '../../ui/techFrame';
 import { drawRouteMap } from '../monitor/routeMap';
 import { SCENE_KEYS } from '../sceneKeys';
-import { addBackButton } from './backButton';
 import { INTRO_PHOTOS, preloadCabinArt, type CabinArtKey } from './cabinArt';
 import {
   addCabinBackground,
@@ -74,7 +75,7 @@ export class CabinScene extends Phaser.Scene {
     // Kids tap the big window with Mars too: it opens the same console as the dashboard.
     this.addTouchZone(CABIN_WINDOW, () => this.openMonitor());
     this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.openMonitor());
-    addBackButton(this, () => this.scene.start(SCENE_KEYS.menu));
+    addBackButton(this, CABIN_BACK_BUTTON, 'light', () => this.scene.start(SCENE_KEYS.menu));
     addScanlines(this);
     this.startMoment(data);
   }
