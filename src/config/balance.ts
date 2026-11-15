@@ -195,10 +195,15 @@ export const INTRO_BALANCE = {
   /** Frames of a physical console button going down and back up. */
   consolePressFrameMs: 50,
   guideFloatMs: 1_800,
-  /** Loose things in the cabin drift slower than the guide, each a bit out of step. */
-  itemFloatMs: 2_600,
-  itemFloatPx: 5,
-  itemSpinDeg: 10,
+  /**
+   * Zero gravity: loose things keep a slow, steady drift in a straight line (game px per second)
+   * and only change direction when they bump softly into a wall.
+   */
+  itemDriftMinPxPerSecond: 4,
+  itemDriftMaxPxPerSecond: 9,
+  /** One full slow turn of a floating thing, at most and at least. */
+  itemSpinMinMs: 20_000,
+  itemSpinMaxMs: 40_000,
   highlightPulseMs: 600,
   /** The arrow over LAND bounces while the ship can land. */
   landArrowBounceMs: 450,

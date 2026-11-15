@@ -167,7 +167,7 @@ export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 
 /** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
 export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
-/** Loose things floating in zero gravity, away from what a kid has to tap. */
+/** Loose things floating in zero gravity: where each one starts its drift. */
 export const CABIN_FLOATING_ITEMS = [
   { key: 'floatingPen', x: 205, y: 40, angle: -20 },
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
@@ -177,6 +177,8 @@ export const CABIN_FLOATING_ITEMS = [
 ] as const;
 /** The floating things are drawn about this many game pixels tall. */
 export const CABIN_FLOATING_ITEM_SIZE = 34;
+/** Where the floating things can drift: the whole cabin, above the message panel. */
+export const CABIN_FLOATING_AREA: Rect = { x: 30, y: 30, width: 580, height: 230 };
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;
 export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };
@@ -184,7 +186,11 @@ export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86
 /** The tablet fills the screen; pages are drawn on its glass. */
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
 
-/** Destination console: its 3 screens and the physical buttons (top-left corners). */
+/**
+ * Destination console: the dashboard under the cockpit window, seen up close. The strip at the
+ * top is the bottom of that window; then its 3 screens and the physical buttons (top-left corners).
+ */
+export const CONSOLE_WINDOW: Rect = { x: 128, y: 25, width: 384, height: 47 };
 export const CONSOLE_BIG_SCREEN: Rect = { x: 193, y: 110, width: 254, height: 141 };
 export const CONSOLE_STARS_SCREEN: Rect = { x: 62, y: 193, width: 80, height: 66 };
 export const CONSOLE_ROUTE_SCREEN: Rect = { x: 37, y: 291, width: 79, height: 27 };
