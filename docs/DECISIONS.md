@@ -15,7 +15,7 @@ Formato:
 
 ## 2026-11-15 — Aviso en rojo si tocás la consola sin haber leído el manual (spec 19)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "Abrí el manual (la tablet): ahí está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.
+- Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "En el manual está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.
 - Por qué: que se entienda que te estás salteando un paso obligatorio.
 - A quién afecta: dueña del manual obligatorio (PR #37): cambia el texto del aviso.
 - ¿Avisado al equipo?: no todavía.

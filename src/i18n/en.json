@@ -148,7 +148,7 @@
   "cabin.manualDone": "All set! Tap the center screen to choose where to land.",
   "cabin.again": "Hi again! Tap the center screen to choose a destination.",
   "cabin.manualFirstWarning": "You can't do the mission without studying it first!",
-  "cabin.manualFirst": "Open the manual (the tablet): it has everything you need to know to survive on Mars.",
+  "cabin.manualFirst": "The manual has everything you need to know to survive on Mars.",
   "manual.counter": "MANUAL {current}/{total}",
   "manual.real": "In real life",
   "manual.game": "In the simulation",
