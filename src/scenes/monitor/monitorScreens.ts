@@ -52,6 +52,7 @@ const PHOTO: Rect = {
 };
 const GOAL_LINE_HEIGHT = 15;
 const GOAL_ICON_SIZE = 10;
+const PHOTO_TAG = { inset: 4, padding: 4, height: 12, alpha: 0.75 } as const;
 /** Goals are long lines: a bit smaller (and sharper) so each one fits in one line. */
 const GOAL_TEXT = { scale: 0.8, resolution: 4 } as const;
 
@@ -78,20 +79,26 @@ export function galleryLength(locationId: string): number {
   return locationGallery(locationId).length;
 }
 
-function drawHeading(scene: Phaser.Scene, state: MonitorState, rightText?: string): Parts {
+function drawHeading(scene: Phaser.Scene, state: MonitorState): Parts {
   const counter = t('monitor.destination', { current: state.order, total: state.total });
   const name = locationText(state.location.id, 'name');
-  const parts: Parts = [
+  return [
     addGlowText(scene, BIG.x + PAD, BIG.y + 9, counter, { color: PALETTE.metal }).setOrigin(0, 0.5),
     addGlowText(scene, BIG.x + PAD, BIG.y + 23, name, { size: FONT_SIZE.medium }).setOrigin(0, 0.5),
   ];
-  if (rightText) {
-    const right = addGlowText(scene, BIG.x + BIG.width - PAD, BIG.y + 9, rightText, {
-      color: TECH_GLOW,
-    });
-    parts.push(right.setOrigin(1, 0.5));
-  }
-  return parts;
+}
+
+/** "REAL NASA PHOTO 1/3" on a dark tag in the photo's top corner: it never meets the heading. */
+function drawPhotoTag(scene: Phaser.Scene, label: string): Parts {
+  const right = PHOTO.x + PHOTO.width - PHOTO_TAG.inset;
+  const y = PHOTO.y + PHOTO_TAG.inset + PHOTO_TAG.height / 2;
+  const text = addGlowText(scene, right - PHOTO_TAG.padding, y, label, { color: TECH_GLOW });
+  text.setOrigin(1, 0.5);
+  const width = text.width + PHOTO_TAG.padding * 2;
+  const tag = scene.add.rectangle(right - width / 2, y, width, PHOTO_TAG.height, PALETTE.night);
+  // The tag is sized from the text, so it is made after it: put the text back on top.
+  scene.children.bringToTop(text);
+  return [tag.setAlpha(PHOTO_TAG.alpha), text];
 }
 
 function drawPhotoView(scene: Phaser.Scene, state: MonitorState): Parts {
@@ -103,9 +110,10 @@ function drawPhotoView(scene: Phaser.Scene, state: MonitorState): Parts {
   const corners = scene.add.graphics();
   drawVisorCorners(corners, PHOTO);
   return [
-    ...drawHeading(scene, state, label),
+    ...drawHeading(scene, state),
     image,
     ...addPhotoCredit(scene, PHOTO, photo.credit),
+    ...drawPhotoTag(scene, label),
     corners,
   ];
 }

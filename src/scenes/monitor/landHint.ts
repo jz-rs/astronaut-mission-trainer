@@ -1,15 +1,13 @@
 import Phaser from 'phaser';
 import { INTRO_BALANCE } from '../../config/balance';
-import { t } from '../../i18n';
-import { FONT_SIZE } from '../../ui/layout';
-import { cssColor, PALETTE } from '../../ui/palette';
+import { PALETTE } from '../../ui/palette';
 import { SPRITE_SCALE } from '../../ui/sprites';
-import { addText } from '../../ui/text';
+import { addLandLabel } from './landLabel';
 
 /**
- * Spec 19 — The big green LAND button says "IR" (GO) on its face, and while the ship can land a
- * soft yellow light around it breathes. When landing is locked the light is off and the word is
- * gray (pressing it still explains why on the screen). The word sinks with the button frames.
+ * Spec 19 — The big green LAND button has its name engraved on its face, and while the ship can
+ * land a soft yellow light around it breathes. When landing is locked the light is off (pressing
+ * it still explains why on the screen). The engraving sinks with the button frames.
  */
 export interface LandHint {
   setReady: (ready: boolean) => void;
@@ -17,23 +15,14 @@ export interface LandHint {
 
 const GLOW = { color: PALETTE.sun, strength: 2, quality: 0.1, distance: 8 } as const;
 /** Center of the button face in the art (1280×720 kit pixels, before SPRITE_SCALE). */
-const FACE_CENTER = { x: 118, y: 39 } as const;
+const FACE_CENTER = { x: 111, y: 39 } as const;
 /** How far the face sinks in each press frame, in the same art pixels. */
 const FACE_SINK: Record<string, number> = { medio: 5, apretado: 9 };
-const OUTLINE_PX = 4;
 
 export function addLandHint(scene: Phaser.Scene, button: Phaser.GameObjects.Image): LandHint {
   const restY = button.y + FACE_CENTER.y * SPRITE_SCALE;
-  const word = addText(
-    scene,
-    button.x + FACE_CENTER.x * SPRITE_SCALE,
-    restY,
-    t('monitor.landButton'),
-    {
-      size: FONT_SIZE.large,
-    },
-  );
-  word.setStroke(cssColor(PALETTE.night), OUTLINE_PX).setDepth(button.depth + 1);
+  const word = addLandLabel(scene, button.x + FACE_CENTER.x * SPRITE_SCALE, restY);
+  word.setDepth(button.depth + 1);
   const followPress = () => word.setY(restY + sinkOf(button.texture.key) * SPRITE_SCALE);
   scene.events.on(Phaser.Scenes.Events.UPDATE, followPress);
   scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () =>
@@ -42,7 +31,6 @@ export function addLandHint(scene: Phaser.Scene, button: Phaser.GameObjects.Imag
   const glow = addBreathingGlow(scene, button);
   return {
     setReady: (ready) => {
-      word.setColor(cssColor(ready ? PALETTE.white : PALETTE.metalLight));
       if (glow) glow.active = ready;
     },
   };

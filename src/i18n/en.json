@@ -182,7 +182,7 @@
   "manual.ready.text": "All four bars go down over time. If one reaches zero, the crew has to evacuate and the mission ends. Look after all four, coordinate your crew and watch the alerts!",
   "monitor.destination": "DESTINATION {current}/{total}",
   "monitor.realPhoto": "REAL NASA PHOTO",
-  "monitor.landButton": "GO",
+  "monitor.landButton": "LAND",
   "monitor.ready": "READY TO LAND",
   "monitor.needManual": "Read the manual first",
   "monitor.needStars": "You need {stars} more stars",
