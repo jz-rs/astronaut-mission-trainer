@@ -13,11 +13,11 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
-## 2026-11-15 — Background music: NASA sonifications, calm and tense
+## 2026-11-15 — Sound: NASA music (calm and tense) and NASA sound effects
 - Who: Jeza, with Claude (the team chose the tracks)
-- What was decided: the game gets its first audio, two NASA data sonifications (`public/assets/audio/`, credits in `docs/DATA_SOURCES.md`). The **center of the Milky Way** loops softly as the normal background music. The **Pillars of Creation**, from second 10, takes over with a crossfade when something is wrong in the base: night (after sunset), a storm or failure that hit this sol, a crisis meeting, the shelter alarm, or a bar under `ALERT_BALANCE.lowStatThreshold`. The rule is pure and tested (`src/core/musicMood.ts`); the player is `src/ui/backgroundMusic.ts`. `BootScene` loads and starts it, `BaseScene` sets the mood every frame and calms it when the run ends. The start screen gets a speaker button (drawn, `src/ui/speakerIcon.ts`) to mute it; the choice lasts while the game is open (it is not saved).
+- What was decided: the game gets its first audio, two NASA data sonifications (`public/assets/audio/`, credits in `docs/DATA_SOURCES.md`). The **center of the Milky Way** loops softly as the normal background music. The **Pillars of Creation**, from second 10, takes over with a crossfade when something is wrong in the base: night (after sunset), a storm or failure that hit this sol, a crisis meeting, the shelter alarm, or a bar under `ALERT_BALANCE.lowStatThreshold`. The rule is pure and tested (`src/core/musicMood.ts`); the player is `src/ui/backgroundMusic.ts`. `BootScene` loads and starts it, `BaseScene` sets the mood every frame and calms it when the run ends. Two real NASA recordings are sound effects (`src/ui/soundEffects.ts`): a "dink" from InSight's seismometer on every touch of an interactive object (each scene gets it on start, so nobody has to add it by hand), and the Artemis I launch rumble during the landing zoom. The start screen gets a speaker button (drawn, `src/ui/speakerIcon.ts`) to mute music and effects; the choice lasts while the game is open (it is not saved).
 - Why: the team asked for official NASA music; changing the music lets the kid feel trouble before reading anything.
-- Who it affects: everyone. Touches `BootScene.ts` (start-up), `BaseScene.ts`, `MenuScene.ts` (spec 11) and adds the first files in `public/assets/audio/`.
+- Who it affects: everyone. Touches `BootScene.ts` (start-up), `BaseScene.ts`, `MenuScene.ts` (spec 11), `LandingScene.ts` (spec 19) and adds the first files in `public/assets/audio/`.
 - Team notified?: yes (the team chose the tracks; goes in the PR).
 
 ## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)

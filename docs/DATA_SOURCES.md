@@ -109,3 +109,13 @@ Real telescope data turned into sound by NASA's *A Universe of Sound* project. N
 |---|---|---|---|---|
 | `public/assets/audio/music-galactic-center.m4a` | Sonification of the center of the Milky Way (Chandra X-rays, Hubble optical, Spitzer infrared), 64 s | Background music of the whole game, looping | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/gcenter.html](https://chandra.si.edu/sound/gcenter.html) |
 | `public/assets/audio/music-pillars-of-creation.m4a` | Sonification of the Pillars of Creation (M16, Chandra + Hubble), 30 s | Base at night, in storms, failures, crisis meetings and when a bar is low; loops from second 10 | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/m16.html](https://chandra.si.edu/sound/m16.html) |
+
+## Sound effects (real NASA recordings)
+
+From NASA's [Sounds from Beyond](https://www.nasa.gov/sounds-from-beyond/) page. Cut and converted to AAC (`.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/sfx-tap-insight-dink.m4a` | One "dink" (0.3 s, at 18.2 s of the clip): a sound made by parts inside InSight's seismometer (SEIS) contracting as they cooled after sunset on Mars, sol 226 (16/07/2019) | Every touch on something that reacts (buttons, rooms, tools, molecules) | NASA/JPL-Caltech | [Cropped-Dinks-and-Donks-sample.wav](https://www.nasa.gov/wp-content/uploads/2015/01/Cropped-Dinks-and-Donks-sample.wav) |
+| `public/assets/audio/sfx-landing-artemis-liftoff.m4a` | The Artemis I launch (16/11/2022), 8 s | The landing, while the cabin zooms toward the window | NASA | [liftoff1.mp3](https://www.nasa.gov/wp-content/uploads/2023/02/liftoff1.mp3) |
+

@@ -117,7 +117,7 @@ export class MenuScene extends Phaser.Scene {
     });
   }
 
-  /** A speaker icon, no words: the music plays everywhere, softly, until it is turned off. */
+  /** A speaker icon, no words: music and sounds play everywhere until it is turned off. */
   private createMusicButton(): void {
     const muted = isMusicMuted();
     const button = createButton(this, {

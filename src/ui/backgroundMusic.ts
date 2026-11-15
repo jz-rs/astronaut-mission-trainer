@@ -7,7 +7,7 @@ import type { MusicMood } from '../core/musicMood';
  *   - tense: the Pillars of Creation, from second 10 (its opening is too quiet to notice), for
  *     night, storms and problems in the base (core/musicMood.ts).
  * Changing mood crossfades, so it never cuts. It plays softly under the game, and the kid can
- * mute it from the start screen. Browsers only allow sound after the first tap: Phaser waits.
+ * mute it (and the sound effects) from the start screen. Browsers only allow sound after the first tap: Phaser waits.
  */
 const CALM_KEY = 'musicCalm';
 const TENSE_KEY = 'musicTense';
