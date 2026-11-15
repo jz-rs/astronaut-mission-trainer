@@ -11,8 +11,8 @@ import { addText } from '../ui/text';
 
 /**
  * The end of every minigame: "PERFECT! / Well done! / Almost!" and what it teaches, in one big line.
- * It stays until the kid taps GO ON (with a time limit, because the base keeps running),
- * so the science is a reward that can actually be read.
+ * It stays until the kid taps GO ON (the base is paused meanwhile), so the science
+ * is a reward that can actually be read.
  */
 const RESULT_DEPTH = 100;
 const CENTER_X = MINIGAME_AREA.x + MINIGAME_AREA.width / 2;
@@ -49,8 +49,11 @@ function resultMessage(performance: number): [TranslationKey, number] {
   return ['minigame.result.tryAgain', PALETTE.marsLight];
 }
 
-/** It appears after a short pause, so the fast taps of the game don't skip the fact by accident. */
-function addContinueButton(scene: Phaser.Scene, onContinue: () => void): void {
+/**
+ * GO ON at the bottom of a result card. It appears after a short pause, so the fast taps of the
+ * game don't skip the fact by accident. Also used by the rover trip.
+ */
+export function addContinueButton(scene: Phaser.Scene, onContinue: () => void): void {
   let continued = false;
   const continueOnce = () => {
     if (continued) return;
@@ -69,5 +72,4 @@ function addContinueButton(scene: Phaser.Scene, onContinue: () => void): void {
     });
     button.setDepth(RESULT_DEPTH);
   });
-  scene.time.delayedCall(MINIGAME_BALANCE.factMaxDisplayMs, continueOnce);
 }

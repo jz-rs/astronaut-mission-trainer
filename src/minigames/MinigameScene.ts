@@ -12,8 +12,8 @@
  *   - draws the X to leave early: no result, no reward and no energy spent (`onExit`);
  *   - optionally pauses the whole game (`pauseGame` / `resumeGame`): its own clock AND the base
  *     behind it, so the survival bars don't drop while a minigame explains how it is played;
- *   - shows "PERFECT! / Well done! / Almost!" plus what it teaches (resultCard.ts), and reports
- *     and closes when the kid taps GO ON.
+ *   - shows "PERFECT! / Well done! / Almost!" plus what it teaches (resultCard.ts), with the
+ *     base paused so it can be read calmly, and reports and closes when the kid taps GO ON.
  *
  * To write a new minigame:
  *   1. Create `src/minigames/<name>/<Name>Minigame.ts` extending MinigameScene.
@@ -156,9 +156,11 @@ export abstract class MinigameScene extends Phaser.Scene {
   protected finish(): void {
     if (this.finished) return;
     this.finished = true;
-    this.closeButton?.setVisible(false); // the result card has its own GO ON button
+    this.pauseGame(); // the base waits while the kid reads what the mission taught
+    this.closeButton?.setVisible(false); // the result card has only its big GO ON button
     const performance = clampPerformance(this.calculatePerformance());
     showResultCard(this, this.taskId, performance, () => {
+      this.resumeGame();
       this.onFinish({ taskId: this.taskId, performance });
       this.scene.stop();
     });
