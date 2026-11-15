@@ -59,6 +59,8 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private track!: RoverTrack;
   private guide!: StepGuide;
   private storage: SampleStorage | null = null;
+  /** Hides the steering hint, so it never stays under the drill. */
+  private hideDriveHint = (): void => {};
   private samples = 0;
   private elapsedMs = 0;
   private stunnedMs = 0;
@@ -112,7 +114,8 @@ export class RoverExpeditionScene extends Phaser.Scene {
       this.resumeBase();
       this.phase = 'drive';
       this.track.spawnFirstRock(FIRST_ROCK_LANE);
-      showGestureHint(this, { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y });
+      const hintAt = { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y };
+      this.hideDriveHint = showGestureHint(this, hintAt);
     });
   }
 
@@ -162,6 +165,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
   private startStoring(): void {
     this.phase = 'store';
     this.elapsedMs = 0;
+    this.hideDriveHint();
     const play: Rect = { ...MINIGAME_AREA, x: this.guide.right };
     play.width = MINIGAME_AREA.x + MINIGAME_AREA.width - play.x;
     this.storage = new SampleStorage(this, play, this.samples, {
