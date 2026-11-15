@@ -31,6 +31,8 @@ export function rectCenter(rect: Rect): Point {
 
 /** Top band of the base screen with the 4 bars. */
 export const HUD_HEIGHT = 44;
+/** "Back" (leave the run) in the base's top bar, the same size as the one in the cabin. */
+export const BASE_BACK_BUTTON: Rect = { x: 10, y: (HUD_HEIGHT - 26) / 2, width: 86, height: 26 };
 /** Stat bars are drawn as this many separate blocks (rooms and the manual), easy to count. */
 export const STAT_BAR_SEGMENTS = 10;
 export const STAT_BAR_SEGMENT_GAP = 2;
@@ -169,7 +171,16 @@ export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 }
 export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 54 };
 /** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
 export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
+/** The window and the dashboard under it both open the console: one frame goes around the two. */
+export const CABIN_CONSOLE_OUTLINE: Rect = {
+  x: CABIN_WINDOW.x,
+  y: CABIN_WINDOW.y,
+  width: CABIN_WINDOW.width,
+  height: CABIN_DASHBOARD_OUTLINE.y + CABIN_DASHBOARD_OUTLINE.height - CABIN_WINDOW.y,
+};
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
+/** "Back" to the start screen, in the top-left corner of the cabin. */
+export const CABIN_BACK_BUTTON: Rect = { x: 10, y: 12, width: 86, height: 26 };
 /** Loose things floating in zero gravity: where each one starts its drift. */
 export const CABIN_FLOATING_ITEMS = [
   { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
@@ -187,6 +198,8 @@ export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86
 
 /** The tablet fills the screen; pages are drawn on its glass. */
 export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
+/** The round physical button on the tablet's right side: it closes the manual too. */
+export const TABLET_HOME_BUTTON = { x: 574, y: 179, radius: 9 } as const;
 
 /**
  * Destination console: the dashboard under the cockpit window, seen up close from the seat. The

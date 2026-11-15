@@ -1,8 +1,14 @@
 import Phaser from 'phaser';
 import { t } from '../../i18n';
 import { loadProgress, saveProgress } from '../../services/progressStorage';
-import { GAME_HEIGHT, GAME_WIDTH, TABLET_SCREEN } from '../../ui/layout';
-import { PALETTE } from '../../ui/palette';
+import {
+  GAME_HEIGHT,
+  GAME_WIDTH,
+  MIN_TOUCH_SIZE,
+  TABLET_HOME_BUTTON,
+  TABLET_SCREEN,
+} from '../../ui/layout';
+import { PALETTE, TECH_GLOW } from '../../ui/palette';
 import {
   createScreenButton,
   drawArrowFace,
@@ -29,6 +35,7 @@ const SCREEN = TABLET_SCREEN;
 const FOOTER_Y = SCREEN.y + SCREEN.height - 22;
 const ARROW_RADIUS = 12;
 const FINISH_BUTTON = { width: 84, height: 26 } as const;
+const HOME_PRESSED_ALPHA = 0.6;
 
 /** Page reached in this visit to the game (not saved: a fresh start opens page 1). */
 let lastPageIndex = 0;
@@ -48,6 +55,8 @@ export class ManualScene extends Phaser.Scene {
   create(): void {
     this.pageIndex = lastPageIndex;
     this.drawTablet();
+    // The first read is mandatory (no X), so the round button only closes it after that.
+    if (loadProgress().manualDone) this.addHomeButton();
     this.showPage();
   }
 
@@ -57,6 +66,17 @@ export class ManualScene extends Phaser.Scene {
     this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, PALETTE.night, 0.6).setOrigin(0);
     this.add.rectangle(SCREEN.x, SCREEN.y, SCREEN.width, SCREEN.height, PALETTE.night).setOrigin(0);
     this.add.image(0, 0, 'tablet').setOrigin(0).setScale(SPRITE_SCALE);
+  }
+
+  /** Like a real tablet, its round button closes the manual (same as the X on the screen). */
+  private addHomeButton(): void {
+    const { x, y, radius } = TABLET_HOME_BUTTON;
+    const glow = this.add.circle(x, y, radius, TECH_GLOW).setAlpha(0);
+    const zone = this.add.zone(x, y, MIN_TOUCH_SIZE, MIN_TOUCH_SIZE);
+    zone.setInteractive({ useHandCursor: true });
+    zone.on('pointerdown', () => glow.setAlpha(HOME_PRESSED_ALPHA));
+    zone.on('pointerout', () => glow.setAlpha(0));
+    zone.on('pointerup', () => this.scene.start(SCENE_KEYS.cabin));
   }
 
   private showPage(): void {

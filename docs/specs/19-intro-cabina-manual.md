@@ -116,7 +116,7 @@ Reemplaza la UI anterior de selección. El monitor es un objeto de la nave y abr
 - Información en fichas breves, diferenciando hechos científicos de dificultad y reglas del juego.
 
 ## Escena 5 — Aterrizaje
-Transición breve propuesta: «Destino confirmado: [nombre del lugar]. ¡Prepará a tu tripulación!» Luego se inicia la misión correspondiente mediante la navegación acordada con el equipo.
+~~Transición breve propuesta: «Destino confirmado: [nombre del lugar]. ¡Prepará a tu tripulación!»~~ (2026-11-15: se sacó, el aterrizaje ya muestra el lugar por la ventana). Luego se inicia la misión correspondiente mediante la navegación acordada con el equipo.
 
 Propuesta visual (2026-11-15, maquetas: `docs/arte/bocetos/cabina/aterrizaje/aterrizaje-jezero.gif` y `aterrizaje-olympus-mons.gif`), unos 5 segundos, vista desde la cabina:
 - Las dos astronautas van **sentadas** en los asientos de piloto, de espaldas (guía a la izquierda, jugadora violeta a la derecha). Fondo: `docs/arte/bocetos/cabina/cabina-aterrizaje.png`. Conviene recortarlas como sprites para que tiemblen un poco más que la nave.

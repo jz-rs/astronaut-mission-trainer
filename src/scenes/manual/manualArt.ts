@@ -92,25 +92,30 @@ export function drawPageArt(scene: Phaser.Scene, art: PageArt, area: Rect): Part
   return DRAWERS[art](scene, area);
 }
 
-/** Radio waves leaving Earth toward Mars. */
+/** Radio waves leaving Earth toward Mars, with the route under them; centered in the frame. */
+const SIGNAL = { radii: [14, 26, 38], labelGap: 18, labelHalfHeight: 4 } as const;
+
 function drawSignal(scene: Phaser.Scene, area: Rect): Parts {
-  const { x } = rectCenter(area);
-  const bottom = area.y + area.height - 30;
+  const { x, y: centerY } = rectCenter(area);
+  const outerRadius = SIGNAL.radii[SIGNAL.radii.length - 1] ?? 0;
+  // The group goes from the top of the outer wave down to the label: put its middle on the frame's.
+  const groupHeight = outerRadius + SIGNAL.labelGap + SIGNAL.labelHalfHeight;
+  const dotY = centerY - groupHeight / 2 + outerRadius;
   const graphics = scene.add.graphics();
-  graphics.fillStyle(TECH_GLOW, 1).fillCircle(x, bottom, 3);
-  for (const radius of [14, 26, 38]) {
+  graphics.fillStyle(TECH_GLOW, 1).fillCircle(x, dotY, 3);
+  for (const radius of SIGNAL.radii) {
     graphics
       .lineStyle(4, TECH_GLOW, 0.25)
       .beginPath()
-      .arc(x, bottom, radius, -2.4, -0.74)
+      .arc(x, dotY, radius, -2.4, -0.74)
       .strokePath();
     graphics
       .lineStyle(1.5, TECH_GLOW, 1)
       .beginPath()
-      .arc(x, bottom, radius, -2.4, -0.74)
+      .arc(x, dotY, radius, -2.4, -0.74)
       .strokePath();
   }
-  const route = addGlowText(scene, x, area.y + area.height - 12, t('manual.messages.route'), {
+  const route = addGlowText(scene, x, dotY + SIGNAL.labelGap, t('manual.messages.route'), {
     color: PALETTE.metalLight,
   });
   return [graphics, route];

@@ -17,10 +17,8 @@ import { SPRITE_SCALE } from '../../ui/sprites';
 import { addScanlines } from '../../ui/techFrame';
 import { preloadCabinArt } from '../cabin/cabinArt';
 import { drawCabinScreens } from '../cabin/cabinView';
-import { locationText } from '../map/locationText';
 import { SCENE_KEYS } from '../sceneKeys';
 import { describeLanding, type LandingFrame } from './landingTimeline';
-import { addLandingBanner } from './landingUi';
 
 /**
  * Spec 19, scene 5 — Landing, seen from the pilot seats. The window goes from the whole planet
@@ -67,10 +65,6 @@ export class LandingScene extends Phaser.Scene {
     this.ui = this.add.container(0, 0).setDepth(100);
     this.buildCabin();
     this.splitCameras();
-    const place = locationText(this.locationId, 'name');
-    const banner = addLandingBanner(this, t('landing.confirmed', { place }), t('landing.prepare'));
-    this.ui.add(banner);
-    this.time.delayedCall(INTRO_BALANCE.landingDurationMs * 0.3, () => banner.destroy());
   }
 
   update(_time: number, deltaMs: number): void {
