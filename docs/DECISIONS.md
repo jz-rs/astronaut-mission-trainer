@@ -103,7 +103,7 @@ Formato:
 - Qué se decidió: al salir de una partida (resultado o ✕ en la base) se vuelve a la **nave** (cabina), no al mapa ni al monitor. El aterrizaje termina con un fundido a negro directo a la base (sin pantalla de "llegaste"). Los diálogos de la guía usan el panel y los botones normales del juego. En el monitor la pantalla grande muestra solo destino, nombre y fotos reales (el botón de la cámara pasa por **varias fotos NASA por destino**, en `src/content/locationGallery.ts`); la explicación, los objetivos y si se puede aterrizar aparecen con el botón i. La pantallita de ruta es un mini mapa de Marte. Los textos del manual son más explicativos.
 - Por qué: pedido de C al probar la intro.
 - A quién afecta: navegación (`ResultScene.ts`, `BaseScene.ts`: cambian a dónde vuelven), `i18n` (claves nuevas y textos del manual reescritos; se borraron `landing.arrived` y `landing.start`, que solo usaba el spec 19).
-- ¿Avisado al equipo?: no todavía (va en el PR #35).
+- ¿Avisado al equipo?: no todavía (va en el PR #33).
 
 ## 2026-11-15 — Se implementa la intro en la cabina (spec 19)
 - Quién: C (Emilia), con Claude
