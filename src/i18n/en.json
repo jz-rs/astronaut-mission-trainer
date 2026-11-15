@@ -59,7 +59,7 @@
   "minigame.oxygen-factory.instruction": "Bring the CO₂ to MOXIE!",
   "minigame.oxygen-factory.machine": "MOXIE",
   "minigame.greenhouse.instruction": "Give each plant what it asks for!",
-  "minigame.shield-wall.instruction": "Plug the holes in the wall!",
+  "minigame.shield-wall.instruction": "Stop the radiation with the wall!",
   "task.oxygen-factory.fact2": "MOXIE made 122 grams of oxygen: what a small dog breathes in 10 hours.",
   "task.oxygen-factory.fact3": "Mars air is almost all carbon dioxide (CO₂).",
   "task.solar-panels.fact2": "In 2018 a dust storm hid the Sun and shut down the Opportunity rover.",
@@ -115,7 +115,7 @@
   "task.oxygen-factory.why": "Just like MOXIE on Mars: it takes one O out of each CO₂, and two O make O₂.",
   "task.solar-panels.why": "Mars gets less than half the sunlight Earth gets: if dust covers the panels, there's no power.",
   "task.greenhouse.why": "The base's plants don't need the Sun: they grow with LED lights, even at night!",
-  "task.shield-wall.why": "Water and soil stop the Sun's radiation: that's why you used those blocks.",
+  "task.shield-wall.why": "On the Orion spacecraft, if a solar storm comes, astronauts build a shelter with the supplies on board.",
   "minigame.continue": "GO ON ▶",
   "hud.you": "YOU",
   "tutorial.welcome": "You are the base commander!",
@@ -148,5 +148,13 @@
   "minigame.greenhouse.guide2": "Each plant needs water and LED light. See what it asks for and bring the tool.",
   "minigame.greenhouse.guide3": "Plants take CO₂ from the air and give off O₂. Food and air!",
   "minigame.greenhouse.water": "Water",
-  "minigame.greenhouse.light": "Light"
+  "minigame.greenhouse.light": "Light",
+  "minigame.shield-wall.introTitle": "Why does Mars need a shield?",
+  "minigame.shield-wall.start": "Let's protect!",
+  "minigame.shield-wall.guide1": "Earth has a magnetic shield that stops radiation. Mars lost it: radiation reaches the ground!",
+  "minigame.shield-wall.guide2": "Water and Mars soil (regolith) stop radiation. Plug the holes in the wall!",
+  "minigame.shield-wall.guide3": "The Curiosity rover measures it with its RAD meter. Don't let it fill up!",
+  "minigame.shield-wall.meter": "RAD",
+  "minigame.shield-wall.blocked": "Blocked!",
+  "minigame.shield-wall.tooMuch": "Too much radiation!"
 }
