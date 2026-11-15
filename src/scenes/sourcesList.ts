@@ -19,12 +19,10 @@ export function addSourceList(scene: Phaser.Scene, links: readonly SourceLink[])
   const firstRowY = LIST.top + LIST.rowHeight / 2;
   const lowestY = firstRowY - Math.max(0, links.length * LIST.rowHeight - viewHeight);
   const rows = scene.add.container(0, firstRowY, links.map(linkText(scene)));
-  rows.setMask(
-    scene.make
-      .graphics({}, false)
-      .fillRect(0, LIST.top, GAME_WIDTH, viewHeight)
-      .createGeometryMask(),
-  );
+  const maskShape = scene.make.graphics({}, false).fillRect(0, LIST.top, GAME_WIDTH, viewHeight);
+  rows.setMask(maskShape.createGeometryMask());
+  // The mask shape is not on the screen, so the scene would not clean it up by itself.
+  scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => maskShape.destroy());
   const bar = scene.add.graphics();
   const scrollTo = (y: number) => {
     rows.setY(Phaser.Math.Clamp(y, lowestY, firstRowY));
