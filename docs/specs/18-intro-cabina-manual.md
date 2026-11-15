@@ -117,6 +117,16 @@ Reemplaza la UI anterior de selección. El monitor es un objeto de la nave y abr
 ## Escena 5 — Aterrizaje
 Transición breve propuesta: «Destino confirmado: [nombre del lugar]. ¡Prepará a tu tripulación!» Luego se inicia la misión correspondiente mediante la navegación acordada con el equipo.
 
+Propuesta visual (2026-11-15, maqueta: `docs/arte/bocetos/cabina/aterrizaje/maqueta-aterrizaje.gif`), unos 5 segundos, vista desde la cabina:
+- Las dos astronautas van **sentadas** en los asientos de piloto, de espaldas (guía a la izquierda, jugadora violeta a la derecha). Fondo: `docs/arte/bocetos/cabina/cabina-aterrizaje.png`. Conviene recortarlas como sprites para que tiemblen un poco más que la nave.
+- La ventana muestra la **foto real del destino** que se agranda, como si el suelo se acercara. La foto **siempre cubre toda la ventana** (escala tipo "cover"): nunca más chica que el vidrio, sin bordes.
+- **La cámara se mete en la nave**: toda la cabina se agranda hacia la ventana durante el descenso.
+1. Entrada: brillo naranja de calor sobre toda la ventana que se apaga; temblor leve.
+2. Descenso: la foto crece, el temblor aumenta y una luz amarilla de aviso parpadea. Propuesta: el monitor muestra la altura bajando, con la estética de pantalla de la tablet.
+3. Cohetes: el polvo tapa la ventana un momento.
+4. Toque: sacudón fuerte, todo queda quieto, se ve el lugar y la guía dice «¡Llegamos a [lugar]!».
+- Dato como premio al final (por verificar con NASA antes de usarlo): aterrizar en Marte tarda unos 7 minutos.
+
 ## Fuentes y arte
 - Seguir la guía de estilo y las referencias aprobadas del equipo. Antes de producir arte, resolver que la guía de la raíz y la versión completada en los worktrees estén alineadas.
 - Ninguna imagen generada en esta conversación queda aprobada por este spec.
