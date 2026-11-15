@@ -21,13 +21,13 @@ const PLANT_SCALE = 0.55;
 const PLANT_DROP = 5;
 /** The touch area around a plant (bigger than the plant, for small fingers). */
 const TOUCH = { width: 76, height: 76 };
-/** The bubble sits right next to the top of the plant, so it is clearly its bubble. */
-const BUBBLE_BESIDE = { x: 20, y: 2 };
+/** The bubble sits right next to the top of the plant, on its left, so it is clearly its bubble. */
+const BUBBLE_BESIDE = { x: -18, y: 2 };
 const BOB_PIXELS = 3;
-const BUBBLE_SIZE = 22;
-const BUBBLE_PLATE_RADIUS = 15;
-const LAMP_ICON_SCALE = 0.45;
-const LAMP_ICON_LIFT = 6;
+const BUBBLE_SIZE = 17;
+const BUBBLE_PLATE_RADIUS = 12;
+const LAMP_ICON_SCALE = 0.35;
+const LAMP_ICON_LIFT = 5;
 /** A thirsty plant turns yellow; a plant without light goes dark. */
 const THIRSTY_TINT = PALETTE.sun;
 const DARK_TINT = PALETTE.metal;
