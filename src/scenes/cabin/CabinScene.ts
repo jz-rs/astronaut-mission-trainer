@@ -28,7 +28,7 @@ import {
 } from './cabinView';
 import { addFloatingItems } from './floatingItems';
 import { addGuideBubble } from './guideBubble';
-import { addHoleGlow } from './holeGlow';
+import { addGlassGlow, addTabletHaloPulse } from './artGlow';
 import { showGuideMessage } from './guideMessage';
 import { showWelcomeExtra, WELCOME_STEPS, type CabinTarget } from './welcomeScript';
 
@@ -71,6 +71,7 @@ export class CabinScene extends Phaser.Scene {
     drawRouteMap(this, -1, CABIN_DASHBOARD_SCREEN);
     addCabinBackground(this, 'cabin');
     addPhotoCredit(this, CABIN_WINDOW, INTRO_PHOTOS.marsGlobe.credit);
+    addTabletHaloPulse(this, 'cabin', CABIN_TABLET_ZONE);
     addFloatingItems(this);
     this.guide = this.addGuide();
     this.addTouchZone(CABIN_TABLET_ZONE, () => this.openManual());
@@ -138,7 +139,7 @@ export class CabinScene extends Phaser.Scene {
   /** The window and the dashboard screen glow gold along their glass; the tablet gets corners. */
   private addTargetLight(target: CabinTarget): Phaser.GameObjects.GameObject {
     const area = TARGET_AREAS[target];
-    return target === 'tablet' ? addHighlight(this, area) : addHoleGlow(this, 'cabin', area);
+    return target === 'tablet' ? addHighlight(this, area) : addGlassGlow(this, 'cabin', area);
   }
 
   private addGuide(): Phaser.GameObjects.Image {
