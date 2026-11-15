@@ -19,6 +19,12 @@ Formato:
 - Why: the jury must be able to play from a public link (spec 17).
 - Who it affects: everyone (the new links and who merges); spec 17; `README.md`.
 
+## 2026-11-15 — Sources: every mission fact has its NASA source, a scrolling Sources screen, and fixes
+- Who: Jeza (with Claude)
+- What was decided: `docs/DATA_SOURCES.md` lists a source for every fact the missions teach now (the how-to cards of oxygen, greenhouse and shield, the N₂/Ar decoys, the crisis tablet, and the new "why" lines of panels, greenhouse and shield), taken from the team's mission proposal. Two facts are fixed: the Mars–Earth signal delay in the manual (`manual.messages.fact`, es/en) goes from "3 to 22" to "4 to 24 minutes", as NASA Goddard says; and the May 2024 solar storm links to NASA/JPL instead of Phys.org (Sources screen, `data/events.json`). "Martian dust is as fine as talcum powder" is removed from the panels texts (es/en): NASA says that about Moon dust, not Mars; they now say the dust builds up on the panels and takes away their power (InSight, Opportunity). The Jezero and north pole lines now have NASA sources. The Sources screen (spec 13) scrolls with a finger drag or the mouse wheel, with a thin bar on the right (`src/scenes/sourcesList.ts`), and lists 27 links: every mission source, the NASA photo library, and the music and sound sources.
+- Why: every real fact in the game must be recorded with its source (the rule at the top of `docs/DATA_SOURCES.md`), and the jury reads the sources.
+- Who it affects: `docs/DATA_SOURCES.md` (built on the English version of PR #51), `src/i18n/*.json` (three texts change meaning), `src/content/sources.ts`, `src/scenes/SourcesScene.ts` and the new `src/scenes/sourcesList.ts` (spec 13), `data/events.json`.
+
 ## 2026-11-15 — Outdoor solar mission and base airlock (spec 18)
 - Who: workspace owner, with Codex; explicitly approved proceeding across shared contracts.
 - Decision: extend spec 18 to include the corner airlock on the base map, visual crew routes outside, a quick airlock transition, and a suited astronaut beside the panels. Use biome-specific pixel art, preserving the downloaded Gemini Jezero original; recreate unavailable private Gemini assets with the image generation tool using that reference.
