@@ -59,7 +59,7 @@
   "minigame.oxygen-factory.instruction": "¡Llevá el CO₂ a MOXIE!",
   "minigame.oxygen-factory.machine": "MOXIE",
   "minigame.greenhouse.instruction": "¡Dale a cada planta lo que pide!",
-  "minigame.shield-wall.instruction": "¡Tapá los huecos del muro!",
+  "minigame.shield-wall.instruction": "¡Frená la radiación con el muro!",
   "task.oxygen-factory.fact2": "MOXIE fabricó 122 gramos de oxígeno: lo que respira un perrito en 10 horas.",
   "task.oxygen-factory.fact3": "El aire de Marte es casi todo dióxido de carbono (CO₂).",
   "task.solar-panels.fact2": "En 2018 una tormenta de polvo tapó el Sol y apagó al rover Opportunity.",
@@ -115,7 +115,7 @@
   "task.oxygen-factory.why": "Como MOXIE en Marte: le saca una O a cada CO₂ y con dos O hace O₂.",
   "task.solar-panels.why": "A Marte llega menos de la mitad de luz del Sol que a la Tierra: si el polvo tapa los paneles, no hay energía.",
   "task.greenhouse.why": "Las plantas de la base no necesitan el Sol: crecen con luces LED, ¡también de noche!",
-  "task.shield-wall.why": "El agua y la tierra frenan la radiación del Sol: por eso tapaste con esos bloques.",
+  "task.shield-wall.why": "En la nave Orion, si llega una tormenta solar, los astronautas arman un refugio con las provisiones de a bordo.",
   "minigame.continue": "SEGUIR ▶",
   "hud.you": "VOS",
   "tutorial.welcome": "¡Estás al mando de la base!",
@@ -148,5 +148,13 @@
   "minigame.greenhouse.guide2": "Cada planta necesita agua y luz LED. Mirá qué pide y llevale la herramienta.",
   "minigame.greenhouse.guide3": "Las plantas toman el CO₂ del aire y largan O₂. ¡Comida y aire!",
   "minigame.greenhouse.water": "Agua",
-  "minigame.greenhouse.light": "Luz"
+  "minigame.greenhouse.light": "Luz",
+  "minigame.shield-wall.introTitle": "¿Por qué hace falta un escudo en Marte?",
+  "minigame.shield-wall.start": "¡A proteger!",
+  "minigame.shield-wall.guide1": "La Tierra tiene un escudo magnético que frena la radiación. Marte lo perdió: ¡llega hasta el suelo!",
+  "minigame.shield-wall.guide2": "El agua y la tierra de Marte (regolito) frenan la radiación. ¡Tapá los huecos del muro!",
+  "minigame.shield-wall.guide3": "El rover Curiosity la mide con su medidor RAD. ¡Que no se llene!",
+  "minigame.shield-wall.meter": "RAD",
+  "minigame.shield-wall.blocked": "¡Bloqueado!",
+  "minigame.shield-wall.tooMuch": "¡Mucha radiación!"
 }

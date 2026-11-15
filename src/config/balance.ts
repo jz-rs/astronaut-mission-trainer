@@ -134,10 +134,15 @@ export const GREENHOUSE_BALANCE = {
 } as const;
 
 export const SHIELD_WALL_BALANCE = {
-  wallSlots: 10,
+  /** 8 fit next to the step panel and the RAD meter. */
+  wallSlots: 8,
   holes: 4,
   maxHoles: 6,
   snapDistance: 40,
+  /** How much each open hole fills the RAD meter per second (1 = full). */
+  radiationPerHolePerSecond: 0.035,
+  /** Extra performance if the RAD meter never filled. */
+  lowRadiationBonus: 0.2,
 } as const;
 
 /** Spec 14 — How many real events hit each run, and when. */
