@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Background music: NASA sonifications, calm and tense
+- Who: Jeza, with Claude (the team chose the tracks)
+- What was decided: the game gets its first audio, two NASA data sonifications (`public/assets/audio/`, credits in `docs/DATA_SOURCES.md`). The **center of the Milky Way** loops softly as the normal background music. The **Pillars of Creation**, from second 10, takes over with a crossfade when something is wrong in the base: night (after sunset), a storm or failure that hit this sol, a crisis meeting, the shelter alarm, or a bar under `ALERT_BALANCE.lowStatThreshold`. The rule is pure and tested (`src/core/musicMood.ts`); the player is `src/ui/backgroundMusic.ts`. `BootScene` loads and starts it, `BaseScene` sets the mood every frame and calms it when the run ends. The start screen gets a speaker button (drawn, `src/ui/speakerIcon.ts`) to mute it; the choice lasts while the game is open (it is not saved).
+- Why: the team asked for official NASA music; changing the music lets the kid feel trouble before reading anything.
+- Who it affects: everyone. Touches `BootScene.ts` (start-up), `BaseScene.ts`, `MenuScene.ts` (spec 11) and adds the first files in `public/assets/audio/`.
+- Team notified?: yes (the team chose the tracks; goes in the PR).
+
 ## 2026-11-15 — Manual accesible desde la base, con el juego en pausa (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: abajo a la derecha de la base flota la tablet de la nave en chiquito (`public/assets/sprites/cabina/tablet-boton.png`, achicada de `tablet.png`) con "MANUAL" en la pantalla. Al tocarla se abre el mismo manual de la nave encima de la base oscurecida, y la base entera queda en pausa (no corre el sol, no bajan las barras, no se puede tocar nada). Se cierra con la X, el botón redondo de la tablet o ¡LISTO!, y la partida sigue donde estaba. No se abre si hay un minijuego abierto, si terminó la partida o si está la pregunta de salir.

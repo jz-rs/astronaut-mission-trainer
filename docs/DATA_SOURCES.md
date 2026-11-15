@@ -100,3 +100,12 @@ La base del juego es **ficción**: es una misión tripulada imaginaria del futur
 | `public/assets/sprites/biomas/sala-*-north-pole.png` | Llanura ártica de Vastitas Borealis (~68°N) vista por Phoenix, cerca del casquete pero no encima (recortada, vista por la ventana de cada sala) | NASA/JPL-Caltech/Univ. of Arizona/Texas A&M | Dominio público (NASA/JPL) | [PIA10713](https://photojournal.jpl.nasa.gov/catalog/PIA10713) |
 | `public/assets/sprites/biomas/sala-*-olympus-mons.png` | Olympus Mons **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
 | `public/assets/sprites/biomas/sala-*-valles-marineris.png` | Valles Marineris **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00425](https://photojournal.jpl.nasa.gov/catalog/PIA00425) |
+
+## Music (NASA data sonifications)
+
+Real telescope data turned into sound by NASA's *A Universe of Sound* project. NASA invites people to download them and use them in their own music ([NASA Data Sonifications](https://www.nasa.gov/data-sonifications/)). Only the audio track was kept (AAC, `.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/music-galactic-center.m4a` | Sonification of the center of the Milky Way (Chandra X-rays, Hubble optical, Spitzer infrared), 64 s | Background music of the whole game, looping | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/gcenter.html](https://chandra.si.edu/sound/gcenter.html) |
+| `public/assets/audio/music-pillars-of-creation.m4a` | Sonification of the Pillars of Creation (M16, Chandra + Hubble), 30 s | Base at night, in storms, failures, crisis meetings and when a bar is low; loops from second 10 | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/m16.html](https://chandra.si.edu/sound/m16.html) |

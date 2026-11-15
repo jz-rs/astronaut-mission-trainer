@@ -1,13 +1,14 @@
 import Phaser from 'phaser';
 import { createWalkAnimations } from '../ui/astronautFrames';
+import { preloadMusic, startBackgroundMusic } from '../ui/backgroundMusic';
 import { GAME_HEIGHT, GAME_WIDTH } from '../ui/layout';
 import { PALETTE } from '../ui/palette';
 import { preloadSprites, prepareSprites } from '../ui/sprites';
 import { SCENE_KEYS } from './sceneKeys';
 
 /**
- * Loads the whole art kit once, with a progress bar, so no other scene has to wait for images.
- * Then it opens the start screen.
+ * Loads the whole art kit and the music once, with a progress bar, so no other scene has to
+ * wait. Then the music starts (after the first tap) and it opens the start screen.
  */
 const BAR_WIDTH = 240;
 const BAR_HEIGHT = 12;
@@ -21,11 +22,13 @@ export class BootScene extends Phaser.Scene {
   preload(): void {
     this.showProgressBar();
     preloadSprites(this.load);
+    preloadMusic(this.load);
   }
 
   create(): void {
     prepareSprites(this.textures);
     createWalkAnimations(this.anims);
+    startBackgroundMusic(this.game);
     this.scene.start(SCENE_KEYS.menu);
   }
 
