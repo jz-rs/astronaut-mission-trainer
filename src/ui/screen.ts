@@ -1,6 +1,5 @@
 import { t } from '../i18n';
 import { cssColor, PALETTE } from './palette';
-import { setUpSoundButton } from './soundButton';
 
 /**
  * Phone helpers: fullscreen + landscape lock where the browser allows it,
@@ -47,7 +46,7 @@ export function applyPageColors(): void {
     overlay.style.background = cssColor(PALETTE.night);
     overlay.style.color = cssColor(PALETTE.white);
   }
-  for (const id of ['fullscreen-button', 'sound-button', 'home-screen-hint']) {
+  for (const id of ['fullscreen-button', 'home-screen-hint']) {
     const element = document.getElementById(id);
     if (!element) continue;
     element.style.background = cssColor(PALETTE.night);
@@ -73,7 +72,6 @@ export function setUpPhoneControls(): void {
   fullscreenButton?.setAttribute('aria-label', t('phone.fullscreen'));
   hintClose?.setAttribute('aria-label', t('phone.closeHint'));
   if (hintText) hintText.textContent = t('phone.homeScreenHint');
-  setUpSoundButton();
   if (arePhoneControlsWired) return;
   arePhoneControlsWired = true;
   fullscreenButton?.addEventListener('click', () => void enterFullscreenLandscape());
