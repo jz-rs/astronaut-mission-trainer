@@ -18,7 +18,7 @@ Formato:
 - What was decided: like the rover's soft sand, two missions get a "wrong choice" that only a kid who learned the science avoids. **Oxygen factory**: one N₂ and one Ar molecule float among the CO₂ (real Martian air is ~95 % CO₂ plus a little nitrogen and argon). MOXIE spits them back with a very short message ("No N₂! Only CO₂") and each one fed costs `OXYGEN_FACTORY_BALANCE.decoyPenalty` (0.15) of performance. **Greenhouse**: a third tool, "Mars soil" (a red-brown heap, no cross on it). Given to a plant, the plant goes red and droops for a moment, "Toxic!" shows up, the request is not helped, and it costs `GREENHOUSE_BALANCE.marsSoilPenalty` (0.15). The rover's "Soft sand!" message turns red too (it was sand-colored), so every wrong choice looks the same. `floatText` (`src/ui/floatingText.ts`) gets an optional `durationMs` so these teaching messages stay long enough to read; existing calls don't change.
 - Why: reward the kid's knowledge (step 1 of each how-to card already teaches it: Mars air is CO₂; Mars soil is toxic for plants), not only speed.
 - Who it affects: B (specs 08, 09 and 15: `src/minigames/oxygen-factory/*`, `src/minigames/greenhouse/*`, `RoverExpeditionScene.ts`); everyone only through new values in `balance.ts`, new keys in `i18n/*.json` and the optional `floatText` parameter.
-- Team notified?: pending (with the PR).
+- Team notified?: yes (with the PR).
 
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
