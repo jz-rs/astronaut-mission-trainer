@@ -226,6 +226,7 @@
   "rover.fact": "Perseverance lleva 43 tubos y cada muestra es del tamaño de una tiza.",
   "rover.sandStuck": "¡Arena blanda!",
   "rover.soloInstruction": "¡Ahora vos solo! Tubo {current} de {total}",
+  "rover.samplesSaved": "+{count} ¡guardadas!",
   "rover.tubesSealed": "🧪 Tubos sellados: {sealed}",
   "rover.tubesLost": "Contaminados: {count} (¡entró polvo!)"
 }
