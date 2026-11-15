@@ -13,6 +13,8 @@ const TEXTURE_KEY = 'land-button-label';
 const RESOLUTION = 4;
 const SIZE = { width: 100, height: 34 } as const;
 const FONT_SIZE_PX = 8;
+/** A little air between the letters: packed together they blur into one block on the button. */
+const LETTER_SPACING_PX = 1;
 /** How the button face is seen: its sides lean right going down, and it looks flattened. */
 const FACE_SLANT = 0.38;
 const FACE_SQUASH = 0.8;
@@ -50,6 +52,7 @@ function drawEngraved(texture: Phaser.Textures.CanvasTexture, font: string): voi
     (SIZE.height / 2) * scale,
   );
   context.font = font;
+  context.letterSpacing = `${LETTER_SPACING_PX}px`;
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   // The light edge first, one pixel lower: the dark mark on top looks carved into the face.
