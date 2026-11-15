@@ -69,6 +69,8 @@ export const BASE_MAP_OFFSET_Y = 20;
 export const CORRIDOR_CENTER: Point = { x: 320, y: 192 };
 
 export interface RoomLayout {
+  /** Optional waypoints from the room door to an outdoor work area. */
+  outdoorRoute?: readonly Point[];
   /** Touch area, also used to center floating texts and the lever panel. */
   rect: Rect;
   /** End of the corridor arm that leads into the room. */
@@ -105,11 +107,25 @@ export const ROOM_LAYOUTS: Record<TaskId, RoomLayout> = {
   'solar-panels': {
     rect: { x: 392, y: 210, width: 230, height: 136 },
     door: { x: 402, y: 237 },
-    workCenter: { x: 450, y: 285 },
-    workStep: { x: 8, y: 4 },
+    outdoorRoute: [
+      { x: 475, y: 295 },
+      { x: 518, y: 345 },
+      { x: 495, y: 350 },
+    ],
+    workCenter: { x: 475, y: 345 },
+    workStep: { x: 9, y: -3 },
     label: { x: 480, y: 220 },
   },
 };
+
+/** Shared airlock overlay, measured against the 1280 × 720 map at half scale. */
+export const SOLAR_AIRLOCK_SPOT: Point = { x: 518, y: 345 };
+export const SOLAR_AIRLOCK_SIZE = { width: 58, height: 62 } as const;
+export const SOLAR_FOOTPRINTS: readonly Point[] = [
+  { x: 511, y: 349 },
+  { x: 500, y: 352 },
+  { x: 489, y: 350 },
+];
 
 /** Where the player waits when not working: the middle of the corridor. */
 export const PLAYER_IDLE_SPOT: Point = { x: 320, y: 196 };

@@ -13,6 +13,29 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Outdoor solar mission and base airlock (spec 18)
+- Who: workspace owner, with Codex; explicitly approved proceeding across shared contracts.
+- Decision: extend spec 18 to include the corner airlock on the base map, visual crew routes outside, a quick airlock transition, and a suited astronaut beside the panels. Use biome-specific pixel art, preserving the downloaded Gemini Jezero original; recreate unavailable private Gemini assets with the image generation tool using that reference.
+- Shared contracts: add an optional background hook and live environment reader to `MinigameScene`; extend biome loading, sprite registration and solar room layout. Preserve game actions, task rewards, night restrictions and other missions' default backgrounds.
+- Weather: show the existing dust-storm event outside without adding a new gameplay penalty. Keep Olympus daytime lighting consistent with the other locations until a scientific source supports a darker sky.
+- Why: panels must collect sunlight outdoors, and the visual route should explain how the crew gets there.
+- Affects: specs 04, 06, 07 and 18; solar art assets, UI layout, shared minigame lifecycle and environment data.
+- Team notified?: no; approval was given by the workspace owner. This record documents the integration points for review.
+
+## 2026-11-15 — Sound: NASA music (calm and tense) and NASA sound effects
+- Who: Jeza, with Claude (the team chose the tracks)
+- What was decided: the game gets its first audio, two NASA data sonifications (`public/assets/audio/`, credits in `docs/DATA_SOURCES.md`). The **center of the Milky Way** loops softly as the normal background music. The **Pillars of Creation** (windy), from second 10, takes over with a short crossfade **only at night** (after sunset); storms, crises and low bars don't change the music, and a new sol always starts calm. Only one track plays at a time (the silent one stops). The rule is pure and tested (`src/core/musicMood.ts`); the player is `src/ui/backgroundMusic.ts`. `BootScene` loads and starts it, `BaseScene` sets the mood every frame and calms it when the run ends. Sound effects (`src/ui/soundEffects.ts`): a soft synthesized bubble "pop" on every touch of an interactive object (each scene gets it on start, so nobody has to add it by hand); it is the only sound that is not from NASA: the team listened to NASA options (Quindar blip, Webb star note) and picked the pop because it fits the calm music. The rest are NASA recordings: the Artemis I launch (rumble and the NASA announcer) during the landing zoom (a Martian dust devil from Perseverance was tried, but the team preferred the launch); two Apollo Quindar beeps when a message from Earth arrives (`EventAnnouncer.ts`); and an "uh-oh" of two low InSight seismometer "donks" for every wrong choice. Every wrong choice (N₂/Ar fed to MOXIE, Mars soil on a plant, the rover on soft sand) shares one effect, `src/ui/wrongChoice.ts`: that sound, a short shake and a red frame around the whole screen that blinks twice (~0.6 s) and goes away; the game never stops. A sound on/off button in the game's style (`src/ui/soundToggle.ts`) sits next to "◀ BACK" on the base's top bar, dark like it, and next to ES/EN on the start screen, sun when on and metal when off like them; it mutes music and effects and the choice lasts while the game is open (it is not saved).
+- Why: the team asked for official NASA music; changing the music lets the kid feel trouble before reading anything.
+- Who it affects: everyone. Touches `BootScene.ts` (start-up), `BaseScene.ts`, `Hud.ts` and `EventAnnouncer.ts` (spec 04/14), `MenuScene.ts` (spec 11), `LandingScene.ts` (spec 19), and B's specs 08, 09 and 15 (one line each in `decoys.ts`, `GreenhouseMinigame.ts`, `RoverExpeditionScene.ts`) and adds the first files in `public/assets/audio/`.
+- Team notified?: yes (the team chose the tracks; goes in the PR).
+
+## 2026-11-15 — Las explicaciones y resultados de los minijuegos salen en la tablet
+- Quién: C (Emilia), con Claude
+- Qué se decidió: la tarjeta de explicación (`howToCard`) y la de resultado (`resultCard`, y `roverResult` del rover) ya no son un panel dentro del minijuego: aparecen en la pantalla de la tablet de la misión, igual que las crisis. La tablet pasó de `scenes/base/crisis/CrisisTablet.ts` a `src/ui/MissionTablet.ts` (clase `MissionTablet`, recibe la profundidad; suma `addToScreen` y `destroy`) y `TABLET_TEXTURE` vive ahí. `showHowToCard` ya no recibe el área y `addContinueButton` recibe la tablet. Bordes: cian en la explicación, verde si salió bien o perfecto, cian en "¡Casi!".
+- Por qué: que todo lo que se lee venga del mismo aparato (manual, crisis, minijuegos).
+- A quién afecta: B (specs 06–10 y 15, minijuegos y rover), A (spec 16, crisis: solo cambia de dónde importa la tablet). Mientras se ve la explicación, la X del minijuego queda tapada: se sale después de tocar el botón de empezar.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — Aviso en rojo si tocás la consola sin haber leído el manual (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: la consola ya estaba bloqueada hasta terminar el manual (PR #37). Ahora, si la tocás antes, la astronauta dice en un mensaje con marco rojo, primera línea en rojo y una sacudida: "¡No podés hacer la misión sin estudiarla antes!" y "En el manual está todo lo que necesitás saber para que sobrevivas en Marte." `showGuideMessage` suma la opción `warning`; nueva clave `cabin.manualFirstWarning` y nuevo texto para `cabin.manualFirst`.

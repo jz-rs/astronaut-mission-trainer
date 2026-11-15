@@ -1,5 +1,15 @@
 # NASA data and image sources
 
+## Outdoor solar mission (spec 18, 2026-11-15)
+
+| Presentation | Scientific source | Scope |
+|---|---|---|
+| Blue twilight near the Sun | [NASA/JPL — Curiosity views serene sundown](https://www.jpl.nasa.gov/news/nasas-curiosity-rover-views-serene-sundown-on-mars/) (2015) | Fine atmospheric dust makes blue light near the Sun more prominent at sunset. The game's pixel tint is an illustration, not a color-calibrated observation. |
+| Polar ice crystals and frost | [NASA/JPL — Phoenix sees falling snow](https://www.jpl.nasa.gov/news/nasa-mars-lander-sees-falling-snow-soil-data-suggest-liquid-past/) (2008) | Phoenix detected snow falling from clouds near its Arctic landing site; that observation showed sublimation before the ground. The game's flakes and polar landscape are stylized, not a reconstruction of that landing site. |
+| Exterior backgrounds and airlock sprites | [Generation record](arte/biomas/OUTDOOR_SOLAR_ART.md) | Generated pixel art of an imaginary human base, not NASA photographs. Olympus and Valles surface views are fictional illustrations, not images obtained by a landed mission. |
+
+Dust-storm shading is a presentation of an existing hit event for its hit sol; it adds no stat penalty or new core rule. Day/night timing remains the existing shared gameplay simplification for all locations.
+
 Record every scientific fact or real image used in the game here. This list is also shown on the game's Sources screen.
 
 > ⚠️ Most NASA images are public domain, but **not all** (some belong to ESA, universities, or companies). Check each image's license before use and include the credit specified by its source (for example, "NASA/JPL-Caltech").
@@ -100,3 +110,23 @@ The game's base is **fictional**: an imaginary future crewed mission. As of toda
 | `public/assets/sprites/biomas/sala-*-north-pole.png` | Vastitas Borealis Arctic plain (~68°N) seen by Phoenix, near the cap but not on it (cropped, seen through each room's window) | NASA/JPL-Caltech/Univ. of Arizona/Texas A&M | Public domain (NASA/JPL) | [PIA10713](https://photojournal.jpl.nasa.gov/catalog/PIA10713) |
 | `public/assets/sprites/biomas/sala-*-olympus-mons.png` | Olympus Mons **from orbit**, Viking mosaic (cropped, seen through each room's window) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
 | `public/assets/sprites/biomas/sala-*-valles-marineris.png` | Valles Marineris **from orbit**, Viking mosaic (cropped, seen through each room's window) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00425](https://photojournal.jpl.nasa.gov/catalog/PIA00425) |
+
+## Music (NASA data sonifications)
+
+Real telescope data turned into sound by NASA's *A Universe of Sound* project. NASA invites people to download them and use them in their own music ([NASA Data Sonifications](https://www.nasa.gov/data-sonifications/)). Only the audio track was kept (AAC, `.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/music-galactic-center.m4a` | Sonification of the center of the Milky Way (Chandra X-rays, Hubble optical, Spitzer infrared), 64 s | Background music of the whole game, looping | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/gcenter.html](https://chandra.si.edu/sound/gcenter.html) |
+| `public/assets/audio/music-pillars-of-creation.m4a` | Sonification of the Pillars of Creation (M16, Chandra + Hubble), 30 s | Only at night in the base (after sunset); loops from second 10 | NASA/CXC/SAO/K. Arcand; SYSTEM Sounds (M. Russo, A. Santaguida) | [chandra.si.edu/sound/m16.html](https://chandra.si.edu/sound/m16.html) |
+
+## Sound effects (real NASA recordings, except the tap)
+
+Cut and converted to AAC (`.m4a`).
+
+| File | What it is | When it plays | Credit | Original URL |
+|---|---|---|---|---|
+| `public/assets/audio/sfx-tap-bubble-pop.m4a` | A soft bubble "pop" (0.12 s), **synthesized for this game, not a NASA recording** (the team chose it over the NASA options because it fits the calm music) | Every touch on something that reacts (buttons, rooms, tools, molecules) | Made by the team for this project | — |
+| `public/assets/audio/sfx-landing-artemis-liftoff.m4a` | The Artemis I launch (16/11/2022), 8 s: the rumble and the NASA announcer | The landing, while the cabin zooms toward the window | NASA | [liftoff1.mp3](https://www.nasa.gov/wp-content/uploads/2023/02/liftoff1.mp3) |
+| `public/assets/audio/sfx-alert-apollo-quindar.m4a` | Two Quindar tones (0.25 s, 2525 Hz each, cut at 2.42 s and 3.82 s), the beeps Mission Control used to key the radio to spacecraft | A message from Earth (crisis warning) arrives in the base | NASA (public domain) | [578628main_hskquindar.mp3](https://www.nasa.gov/mp3/578628main_hskquindar.mp3), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Quindar_-_Sound_(1).mp3) |
+| `public/assets/audio/sfx-error-insight-donk.m4a` | Two low "donks" (0.9 s): one "dink" of InSight's seismometer (SEIS) on Mars, sol 226 (16/07/2019), played an octave lower and then a bit lower again | Every wrong choice: N₂/Ar fed to MOXIE, Mars soil on a plant, the rover on soft sand | NASA/JPL-Caltech | [Cropped-Dinks-and-Donks-sample.wav](https://www.nasa.gov/wp-content/uploads/2015/01/Cropped-Dinks-and-Donks-sample.wav) (NASA [Sounds from Beyond](https://www.nasa.gov/sounds-from-beyond/)) |
