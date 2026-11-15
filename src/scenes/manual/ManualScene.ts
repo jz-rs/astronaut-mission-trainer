@@ -40,9 +40,15 @@ const HOME_PRESSED_ALPHA = 0.6;
 /** Page reached in this visit to the game (not saved: a fresh start opens page 1). */
 let lastPageIndex = 0;
 
+/** Opened from the base: the tablet floats over the paused base and closing goes back to it. */
+export interface ManualSceneData {
+  onClose?: () => void;
+}
+
 export class ManualScene extends Phaser.Scene {
   private pageIndex = 0;
   private pageParts: Phaser.GameObjects.GameObject[] = [];
+  private onClose?: () => void;
 
   constructor() {
     super(SCENE_KEYS.manual);
@@ -52,7 +58,8 @@ export class ManualScene extends Phaser.Scene {
     preloadCabinArt(this.load);
   }
 
-  create(): void {
+  create(data: ManualSceneData = {}): void {
+    this.onClose = data.onClose;
     this.pageIndex = lastPageIndex;
     this.drawTablet();
     // The first read is mandatory (no X), so the round button only closes it after that.
@@ -60,10 +67,11 @@ export class ManualScene extends Phaser.Scene {
     this.showPage();
   }
 
-  /** The cabin, dimmed, with the tablet held up close in front of it. */
+  /** The cabin (or the base, when opened from it), dimmed, with the tablet held up close. */
   private drawTablet(): void {
-    this.add.image(0, 0, 'cabin').setOrigin(0).setScale(SPRITE_SCALE);
-    this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, PALETTE.night, 0.6).setOrigin(0);
+    if (!this.onClose) this.add.image(0, 0, 'cabin').setOrigin(0).setScale(SPRITE_SCALE);
+    const dim = this.add.rectangle(0, 0, GAME_WIDTH, GAME_HEIGHT, PALETTE.night, 0.6);
+    dim.setOrigin(0).setInteractive(); // nothing behind the tablet can be tapped
     this.add.rectangle(SCREEN.x, SCREEN.y, SCREEN.width, SCREEN.height, PALETTE.night).setOrigin(0);
     this.add.image(0, 0, 'tablet').setOrigin(0).setScale(SPRITE_SCALE);
   }
@@ -76,7 +84,7 @@ export class ManualScene extends Phaser.Scene {
     zone.setInteractive({ useHandCursor: true });
     zone.on('pointerdown', () => glow.setAlpha(HOME_PRESSED_ALPHA));
     zone.on('pointerout', () => glow.setAlpha(0));
-    zone.on('pointerup', () => this.scene.start(SCENE_KEYS.cabin));
+    zone.on('pointerup', () => this.close());
   }
 
   private showPage(): void {
@@ -140,8 +148,19 @@ export class ManualScene extends Phaser.Scene {
       width: 18,
       height: 18,
       drawFace: drawCloseFace(18),
-      onPress: () => this.scene.start(SCENE_KEYS.cabin),
+      onPress: () => this.close(),
     });
+  }
+
+  /** Back where the manual was opened from: the cabin, or the base, which then continues. */
+  private close(data?: CabinSceneData): void {
+    if (!this.onClose) {
+      this.scene.start(SCENE_KEYS.cabin, data);
+      return;
+    }
+    const onClose = this.onClose;
+    this.scene.stop();
+    onClose();
   }
 
   private finish(): void {
@@ -149,6 +168,6 @@ export class ManualScene extends Phaser.Scene {
     const progress = loadProgress();
     const data: CabinSceneData = { manualJustDone: !progress.manualDone };
     saveProgress({ ...progress, manualDone: true });
-    this.scene.start(SCENE_KEYS.cabin, data);
+    this.close(data);
   }
 }

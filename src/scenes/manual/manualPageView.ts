@@ -9,12 +9,13 @@ import { STAT_ICON_SPRITES } from '../../ui/sprites';
 import { addPhotoCredit } from '../cabin/cabinView';
 import { INTRO_PHOTOS } from '../cabin/cabinArt';
 import { drawPageArt } from './manualArt';
+import { drawFactBox, drawManualLines } from './manualText';
 import type { ManualPage, PageEffect } from './manualPages';
 
 /**
  * Spec 19 — Draws one page of the manual on the tablet glass: title, the bars this action changes
  * and the counter on top; then the picture (or the real photo next to the simulation's version)
- * and a short explanation, a bit longer than a tutorial line so kids learn the science behind it.
+ * and short lines (the problem, the real science, what you do), plus a fact box when it fits.
  * The tablet scene adds the arrows, the X and the progress dashes around it.
  */
 type Parts = Phaser.GameObjects.GameObject[];
@@ -33,8 +34,9 @@ const SINGLE_ART: Rect = {
 };
 const COMPARE_TOP = SCREEN.y + 52;
 const COMPARE_WIDTH = 208;
-const COMPARE_HEIGHT = 72;
+const COMPARE_HEIGHT = 60;
 const EFFECT_SPACING = 34;
+const FACT_GAP = 8;
 /** The bar effects sit in the header, just left of the page counter. */
 const EFFECTS_RIGHT = RIGHT - 140;
 
@@ -83,8 +85,8 @@ function drawSingle(scene: Phaser.Scene, page: ManualPage): Parts {
   const corners = scene.add.graphics();
   drawVisorCorners(corners, SINGLE_ART);
   const textX = SINGLE_ART.x + SINGLE_ART.width + 16;
-  const text = bodyText(scene, page, textX, SINGLE_ART.y + 4, RIGHT - textX);
-  return [corners, ...drawPageArt(scene, page.art, SINGLE_ART), text];
+  const text = bodyText(scene, page, { x: textX, top: SINGLE_ART.y + 4, width: RIGHT - textX });
+  return [corners, ...drawPageArt(scene, page.art, SINGLE_ART), ...text];
 }
 
 /** Real photo on the left, the game's version on the right, one label above each. */
@@ -99,7 +101,7 @@ function drawCompare(scene: Phaser.Scene, page: ManualPage): Parts {
   drawVisorCorners(frames, real);
   drawVisorCorners(frames, game);
   const textTop = COMPARE_TOP + COMPARE_HEIGHT + 8;
-  const text = bodyText(scene, page, LEFT, textTop, RIGHT - LEFT);
+  const text = bodyText(scene, page, { x: LEFT, top: textTop, width: RIGHT - LEFT });
   return [
     addCoverPhoto(scene, photo, real),
     ...addPhotoCredit(scene, real, INTRO_PHOTOS[photo].credit),
@@ -113,13 +115,24 @@ function drawCompare(scene: Phaser.Scene, page: ManualPage): Parts {
       0.5,
     ),
     ...drawPageArt(scene, page.art, game),
-    text,
+    ...text,
   ];
 }
 
-function bodyText(scene: Phaser.Scene, page: ManualPage, x: number, y: number, width: number) {
-  const content = t(page.text, { sols: RUN_BALANCE.solsPerRun });
-  return addGlowText(scene, x, y, content, { wrapWidth: width }).setOrigin(0).setAlign('left');
+/** The page's short lines, then its fact box if there is room left before the arrows. */
+function bodyText(
+  scene: Phaser.Scene,
+  page: ManualPage,
+  area: { x: number; top: number; width: number },
+): Parts {
+  const lines = page.lines.map((line) => ({
+    kind: line.kind,
+    text: t(line.text, { sols: RUN_BALANCE.solsPerRun }),
+  }));
+  const drawn = drawManualLines(scene, lines, area);
+  if (!page.fact) return drawn.parts;
+  const factArea = { ...area, top: drawn.bottom + FACT_GAP };
+  return [...drawn.parts, ...drawFactBox(scene, t(page.fact), factArea, TEXT_BOTTOM)];
 }
 
 /** "bar icon +" in green or "bar icon −" in red: what this action does to the bars. */

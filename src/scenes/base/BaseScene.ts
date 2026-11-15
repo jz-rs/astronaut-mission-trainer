@@ -20,6 +20,7 @@ import { floatText } from '../../ui/floatingText';
 import { preloadBiome } from '../../ui/biomes';
 import { addScanlines } from '../../ui/techFrame';
 import { finishRun } from '../runEnd';
+import type { ManualSceneData } from '../manual/ManualScene';
 import { SCENE_KEYS } from '../sceneKeys';
 import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
@@ -28,6 +29,7 @@ import { BotsView } from './BotsView';
 import { preloadCrisisArt } from './crisis/crisisArt';
 import { EventAnnouncer } from './EventAnnouncer';
 import { ExitRunView } from './ExitRunView';
+import { addManualButton, preloadManualButton } from './ManualButton';
 import { GarageView } from './GarageView';
 import type { MapStatusSprites } from './MapStatusSprites';
 import { TeamworkViews } from './TeamworkViews';
@@ -96,6 +98,7 @@ export class BaseScene extends Phaser.Scene {
   /** The images of this level (map, rooms, frost); the rest of the kit was loaded at boot. */
   preload(): void {
     preloadBiome(this, this.locationId);
+    preloadManualButton(this);
     preloadCrisisArt(this.load);
   }
 
@@ -136,6 +139,7 @@ export class BaseScene extends Phaser.Scene {
     addWeather(this, this.locationId);
     this.hud = new Hud(this);
     this.botFaces = new BotFaces(this, (botId) => this.toggleAuto(botId));
+    addManualButton(this, () => this.openManual());
     addFrost(this, this.locationId);
   }
 
@@ -254,6 +258,18 @@ export class BaseScene extends Phaser.Scene {
     };
     this.enterScene();
     this.scene.launch(MINIGAME_REGISTRY[taskId].key, data);
+  }
+
+  /** The mission manual over the base. The whole base pauses (time, bars, taps) until it closes. */
+  private openManual(): void {
+    // The crisis tablet is already on screen: a second tablet on top would hide it.
+    if (this.minigameOpen || this.runEnded || this.exitRun.isAsking || this.teamwork.isShowing) {
+      return;
+    }
+    const data: ManualSceneData = { onClose: () => this.scene.resume() };
+    this.scene.launch(SCENE_KEYS.manual, data);
+    this.scene.bringToTop(SCENE_KEYS.manual); // scene order can change, the tablet goes on top
+    this.scene.pause();
   }
 
   private freePlayer(): void {
