@@ -15,9 +15,9 @@ Formato:
 
 ## 2026-11-15 — The game is live on GitHub Pages
 - Who: Jeza (with Claude)
-- What was decided: the repo now belongs to the `jz-rs` account (https://github.com/jz-rs/astronaut-mission-trainer; the old `memocayar` links redirect). There GitHub Actions works, so the Pages source was switched from "Deploy from a branch" (it served the raw source, and the game did not start) to "GitHub Actions", and `deploy-pages.yml` ran. The game is live at https://jz-rs.github.io/astronaut-mission-trainer/ and is published again on every merge to `main`. The billing lock in the earlier entries was on the old owner's account and no longer blocks deploys. The README starts with the live links.
+- What was decided: the repo now belongs to the `jz-rs` account (https://github.com/jz-rs/astronaut-mission-trainer; the old `memocayar` links redirect). There GitHub Actions works, so the Pages source was switched from "Deploy from a branch" (it served the raw source, and the game did not start) to "GitHub Actions", and `deploy-pages.yml` ran. The game is live at https://jz-rs.github.io/astronaut-mission-trainer/ and is published again on every merge to `main`. The billing lock in the earlier entries was on the old owner's account and no longer blocks deploys. The README starts with the live links. The repo owner, jz-rs, now merges to `main`: the GitHub rule "Solo la dueña mergea a main" lets the repository admin bypass it for pull requests only (it still blocks deleting `main`, force pushes and direct pushes). This replaces "only memocayar merges" from the earlier entry; PRs are still reviewed as AGENTS.md §6 says.
 - Why: the jury must be able to play from a public link (spec 17).
-- Who it affects: everyone (the new links); spec 17; `README.md`.
+- Who it affects: everyone (the new links and who merges); spec 17; `README.md`.
 
 ## 2026-11-15 — Outdoor solar mission and base airlock (spec 18)
 - Who: workspace owner, with Codex; explicitly approved proceeding across shared contracts.
