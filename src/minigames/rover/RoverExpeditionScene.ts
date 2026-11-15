@@ -1,11 +1,10 @@
 import Phaser from 'phaser';
 import { ROVER_BALANCE } from '../../config/balance';
-import { t, type TranslationKey } from '../../i18n';
+import { t } from '../../i18n';
+import { SCENE_KEYS } from '../../scenes/sceneKeys';
 import { addCloseButton } from '../../ui/closeButton';
-import { drawFramedPhoto } from '../../ui/framedPhoto';
 import { addIconLabel, type IconLabel } from '../../ui/iconLabel';
 import {
-  FONT_SIZE,
   GAME_HEIGHT,
   GAME_WIDTH,
   HUD_HEIGHT,
@@ -15,15 +14,22 @@ import {
 } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { addScanlines, drawTechPanel } from '../../ui/techFrame';
-import { addText } from '../../ui/text';
 import { showGestureHint } from '../gestureHint';
+import { showHowToCard } from '../howTo/howToCard';
+import { StepGuide } from '../howTo/stepGuide';
+import { showRoverResult } from './roverResult';
+import { drawTripTimeBar, flyTubeToCounter, sayAboveRover } from './driveFeedback';
+import { ROVER_STEPS } from './roverRecipe';
+import { TripInstruction } from './tripInstruction';
 import { RoverTrack } from './RoverTrack';
+import { SampleStorage, type StorageResult } from './SampleStorage';
 
 /**
- * Spec 15 — Rover trip (~15 s) over the base, which keeps running meanwhile (real risk).
- * One gesture only: tap left/right of the rover to change lane, to catch shiny stones (samples)
- * by driving over them and to dodge rocks. At the end it shows
- * the real photo of the place, framed, and reports how many samples came back.
+ * Spec 15 + Mission 5 — A rover trip over the base, which keeps running meanwhile (real risk).
+ * First a how-to card (the base waits while the kid reads it). Then ~10 s of driving: tap
+ * left/right of the rover to change lane, catch rocks and dodge soft sand. Then the rover stops
+ * by a rock to store one sample like Perseverance: drill, tube, seal, shelf (SampleStorage). A sealed tube
+ * is one more sample. At the end, the real photo of the place, framed.
  * The X brings the rover back at once with the samples it already has (the energy was paid).
  */
 export interface RoverStartData {
@@ -31,24 +37,29 @@ export interface RoverStartData {
   onFinish: (samples: number) => void;
 }
 
-const RESULT_DEPTH = 100;
-const PHOTO: Rect = { x: MINIGAME_AREA.x + 30, y: MINIGAME_AREA.y + 30, width: 200, height: 140 };
-const TIME_BAR_HEIGHT = 6;
+type TripPhase = 'intro' | 'drive' | 'store' | 'done';
+
 const ICON_SIZE = 20;
-/** The hand shows a tap beside the rover: that is how it changes lane. */
+/** The hand taps left of the rover (that is how it changes lane), towards the first rock. */
 const HINT_OFFSET_X = 70;
+const FIRST_ROCK_LANE = 0;
+const COUNTER_INSET_X = 40;
 
 export class RoverExpeditionScene extends Phaser.Scene {
   static readonly KEY = 'RoverExpeditionScene';
   private locationId = '';
   private onFinish: RoverStartData['onFinish'] = () => undefined;
+  private phase: TripPhase = 'intro';
   private track!: RoverTrack;
+  private guide!: StepGuide;
+  private storage: SampleStorage | null = null;
   private samples = 0;
   private elapsedMs = 0;
   private stunnedMs = 0;
-  private finished = false;
+  private instruction!: TripInstruction;
   private counter!: IconLabel;
   private timeBar!: Phaser.GameObjects.Graphics;
+  private closeButton!: Phaser.GameObjects.Container;
 
   constructor() {
     super(RoverExpeditionScene.KEY);
@@ -57,46 +68,56 @@ export class RoverExpeditionScene extends Phaser.Scene {
   init(data: RoverStartData): void {
     this.locationId = data.locationId;
     this.onFinish = data.onFinish;
+    this.phase = 'intro';
+    this.storage = null;
     this.samples = 0;
     this.elapsedMs = 0;
     this.stunnedMs = 0;
-    this.finished = false;
   }
 
   create(): void {
     const dim = this.add.rectangle(0, HUD_HEIGHT, GAME_WIDTH, GAME_HEIGHT, PALETTE.night);
     dim.setOrigin(0).setAlpha(0.55).setInteractive(); // swallows taps meant for the base
     drawTechPanel(this.add.graphics(), MINIGAME_PANEL, PALETTE.sun);
-    addIconLabel(
-      this,
-      GAME_WIDTH / 2,
-      MINIGAME_PANEL.y + 18,
-      'rover',
-      ICON_SIZE,
-      t('rover.instruction'),
-      {
-        size: FONT_SIZE.small,
-      },
-    );
+    this.instruction = new TripInstruction(this);
     this.timeBar = this.add.graphics();
+    // The road paints the whole play area, so the step panel goes on top of it.
     this.track = new RoverTrack(this);
-    this.counter = addIconLabel(
-      this,
-      MINIGAME_AREA.x + 50,
-      MINIGAME_AREA.y + 20,
-      'sampleTube',
-      ICON_SIZE,
-      '0',
-      { color: PALETTE.sun },
-    );
+    this.guide = new StepGuide(this, MINIGAME_AREA, ROVER_STEPS);
+    const counterX = MINIGAME_AREA.x + MINIGAME_AREA.width - COUNTER_INSET_X;
+    const counterY = MINIGAME_AREA.y + 20;
+    this.counter = addIconLabel(this, counterX, counterY, 'sampleTube', ICON_SIZE, '0', {
+      color: PALETTE.sun,
+    });
     this.listenToTaps();
-    showGestureHint(this, { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y });
     addScanlines(this);
+    this.showHowTo();
   }
 
-  /** Taps anywhere steer, except on the X, which only closes. */
+  /** Like the other missions, the base waits while the card is read; then it runs again. */
+  private showHowTo(): void {
+    if (this.scene.isActive(SCENE_KEYS.base)) this.scene.pause(SCENE_KEYS.base);
+    const howTo = {
+      titleKey: 'rover.introTitle',
+      startKey: 'rover.start',
+      steps: ROVER_STEPS,
+    } as const;
+    showHowToCard(this, MINIGAME_AREA, howTo, () => {
+      this.resumeBase();
+      this.phase = 'drive';
+      this.track.spawnFirstRock(FIRST_ROCK_LANE);
+      showGestureHint(this, { x: this.track.roverX - HINT_OFFSET_X, y: this.track.rover.y });
+    });
+  }
+
+  private resumeBase(): void {
+    if (this.scene.isPaused(SCENE_KEYS.base)) this.scene.resume(SCENE_KEYS.base);
+  }
+
+  /** Taps anywhere steer while driving, except on the X, which only closes. */
   private listenToTaps(): void {
     const closeButton = addCloseButton(this, () => this.exit());
+    this.closeButton = closeButton;
     this.input.on(
       'pointerdown',
       (pointer: Phaser.Input.Pointer, over: Phaser.GameObjects.GameObject[]) => {
@@ -106,29 +127,69 @@ export class RoverExpeditionScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (this.finished) return;
+    if (this.phase === 'drive') this.updateDrive(deltaMs);
+    else if (this.phase === 'store') this.updateStore(deltaMs);
+  }
+
+  private updateDrive(deltaMs: number): void {
     this.elapsedMs += deltaMs;
-    this.drawTimeBar();
+    drawTripTimeBar(this.timeBar, this.fractionLeft(ROVER_BALANCE.durationMs));
     if (this.elapsedMs >= ROVER_BALANCE.durationMs) {
-      this.finish();
+      this.startStoring();
       return;
     }
     this.stunnedMs = Math.max(0, this.stunnedMs - deltaMs);
     for (const hit of this.track.update(deltaMs)) {
-      if (hit === 'rock') this.hitRock();
-      else this.setSamples(this.samples + 1);
+      if (hit === 'sand') this.hitSand();
+      else this.catchRock();
     }
   }
 
+  private updateStore(deltaMs: number): void {
+    this.elapsedMs += deltaMs;
+    drawTripTimeBar(this.timeBar, this.fractionLeft(ROVER_BALANCE.storeDurationMs));
+    this.storage?.update(deltaMs);
+    if (this.elapsedMs >= ROVER_BALANCE.storeDurationMs) this.finish(this.storage?.stop());
+  }
+
+  /** The drive is over: the rover stops by a rock to store samples in tubes. */
+  private startStoring(): void {
+    this.phase = 'store';
+    this.elapsedMs = 0;
+    const play: Rect = { ...MINIGAME_AREA, x: this.guide.right };
+    play.width = MINIGAME_AREA.x + MINIGAME_AREA.width - play.x;
+    this.storage = new SampleStorage(this, play, this.samples, {
+      onStep: (step) => this.showStep(step),
+      onTube: (tube, total) => this.instruction.showTube(tube, total),
+      onDone: (result) => this.finish(result),
+    });
+  }
+
+  private showStep(step: number): void {
+    this.guide.show(step);
+    this.instruction.showStep(step);
+  }
+
+  private fractionLeft(durationMs: number): number {
+    return Math.max(0, 1 - this.elapsedMs / durationMs);
+  }
+
   private handleTap(pointer: Phaser.Input.Pointer): void {
-    if (this.finished || this.stunnedMs > 0) return;
+    if (this.phase !== 'drive' || this.stunnedMs > 0) return;
     this.track.moveRover(pointer.x < this.track.roverX ? -1 : 1);
   }
 
-  private hitRock(): void {
-    this.setSamples(Math.max(0, this.samples - ROVER_BALANCE.samplesLostPerRock));
-    this.stunnedMs = ROVER_BALANCE.rockStunMs;
-    this.cameras.main.shake(200, 0.01);
+  /** Soft sand: the rover slips for a moment, but keeps the rocks it already has. */
+  private hitSand(): void {
+    this.stunnedMs = ROVER_BALANCE.sandStuckMs;
+    this.track.slip();
+    sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.sand);
+  }
+
+  /** Counted at once (the trip may end mid-flight); the flying tube only shows it. */
+  private catchRock(): void {
+    this.setSamples(this.samples + 1);
+    flyTubeToCounter(this, this.track.rover, this.counter.icon);
   }
 
   private setSamples(samples: number): void {
@@ -136,48 +197,26 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.counter.setText(`${samples}`);
   }
 
-  private drawTimeBar(): void {
-    const left = Math.max(0, 1 - this.elapsedMs / ROVER_BALANCE.durationMs);
-    const y = MINIGAME_PANEL.y + 34;
-    this.timeBar.clear();
-    this.timeBar.fillStyle(PALETTE.metalDark, 1);
-    this.timeBar.fillRect(MINIGAME_AREA.x, y, MINIGAME_AREA.width, TIME_BAR_HEIGHT);
-    this.timeBar.fillStyle(left < 0.25 ? PALETTE.alert : PALETTE.cyan, 1);
-    this.timeBar.fillRect(MINIGAME_AREA.x, y, MINIGAME_AREA.width * left, TIME_BAR_HEIGHT);
-  }
-
+  /** The X: the rover comes back at once with what it has, and the base never stays paused. */
   private exit(): void {
-    if (this.finished) return;
-    this.finished = true;
+    if (this.phase === 'done') return;
+    this.phase = 'done';
+    this.resumeBase();
     this.onFinish(this.samples);
     this.scene.stop();
   }
 
-  private finish(): void {
-    this.finished = true;
-    this.showResult();
-    this.time.delayedCall(ROVER_BALANCE.resultDisplayMs, () => {
-      this.onFinish(this.samples);
+  /** The base waits while the kid reads the result; only GO ON continues. */
+  private finish(tubes: StorageResult = { sealed: 0, contaminated: 0 }): void {
+    if (this.phase === 'done') return;
+    this.phase = 'done';
+    if (this.scene.isActive(SCENE_KEYS.base)) this.scene.pause(SCENE_KEYS.base);
+    this.closeButton.setVisible(false);
+    const total = this.samples + tubes.sealed * ROVER_BALANCE.sealedTubeSamples;
+    showRoverResult(this, this.locationId, total, tubes, () => {
+      this.resumeBase();
+      this.onFinish(total);
       this.scene.stop();
     });
-  }
-
-  /** The prize: the real place on Mars, framed, plus what was collected. */
-  private showResult(): void {
-    const cover = this.add.graphics().setDepth(RESULT_DEPTH);
-    drawTechPanel(cover, MINIGAME_AREA, PALETTE.sun, PALETTE.space);
-    const photo = this.add.container(0, 0, drawFramedPhoto(this, this.locationId, PHOTO));
-    photo.setDepth(RESULT_DEPTH);
-    const textX = PHOTO.x + PHOTO.width + 140;
-    addText(this, textX, PHOTO.y + 40, t('rover.samples', { samples: this.samples }), {
-      size: FONT_SIZE.medium,
-      color: PALETTE.sun,
-    }).setDepth(RESULT_DEPTH);
-    const why = `location.${this.locationId}.why` as TranslationKey;
-    addText(this, textX, PHOTO.y + 100, t(why), {
-      size: FONT_SIZE.small,
-      color: PALETTE.cyan,
-      wrapWidth: 240,
-    }).setDepth(RESULT_DEPTH);
   }
 }
