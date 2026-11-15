@@ -13,6 +13,13 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — La intro en la cabina pasa a ser el spec 19
+- Quién: memocayar
+- Qué se decidió: la intro en la cabina (PR #33) y "Paneles solares afuera" (PR #31) se crearon las dos como spec 18. Paneles queda como 18 porque se abrió antes, y la cabina pasa a `docs/specs/19-intro-cabina-manual.md`. El 19 estaba libre: el "invernadero sin tierra" se descartó antes de mergearse. Se actualizaron los comentarios "Spec 18" del código de la cabina y las referencias en los docs.
+- Por qué: dos specs con el mismo número confunden a las personas y a los agentes.
+- A quién afecta: spec 19 (cabina). El spec 18 (paneles) no cambia.
+- ¿Avisado al equipo?: pendiente (avisar a maviflora y jz-rs).
+
 ## 2026-11-15 — Misión del escudo: por qué hay radiación en Marte y el medidor RAD
 - Quién: C (con Claude)
 - Qué se decidió: el muro de escudo (spec 10) mantiene "arrastrar bloques de agua y regolito a los huecos", pero ahora explica por qué. Tarjeta de 3 pasos antes de jugar (con pausa): la Tierra tiene un escudo magnético y Marte lo perdió, así que la radiación llega al suelo; el agua y el regolito la frenan; el rover Curiosity la mide con su instrumento RAD. Panel de pasos a la izquierda, como en las otras misiones. A la derecha hay un **medidor RAD** que sube mientras queden huecos abiertos (se pone rojo cerca del final y dice "¡Mucha radiación!" si se llena): así se ve la radiación, que en la vida real es invisible. Dentro del hábitat hay dos astronautas, que son los que el muro protege. Cada bloque bien puesto corta el rayo debajo del muro y dice "¡Bloqueado!". **Rendimiento:** huecos tapados / huecos + `lowRadiationBonus` (0.2) si el medidor no se llenó; antes era + bonus por velocidad. **Balance:** `SHIELD_WALL_BALANCE.wallSlots` baja de 10 a 8 (para que entren el panel de pasos y el medidor) y se agregan `radiationPerHolePerSecond` (0.035) y `lowRadiationBonus` (0.2). Cambian los textos de `minigame.shield-wall.instruction` y `task.shield-wall.why`, y hay claves nuevas.
@@ -76,6 +83,55 @@ Formato:
 - ¿Avisado al equipo?: sí (este documento y el PR).
 
 ---
+
+## 2026-11-15 — Ajustes de la intro después de probarla (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: al salir de una partida (resultado o ✕ en la base) se vuelve a la **nave** (cabina), no al mapa ni al monitor. El aterrizaje termina con un fundido a negro directo a la base (sin pantalla de "llegaste"). Los diálogos de la guía usan el panel y los botones normales del juego. En el monitor la pantalla grande muestra solo destino, nombre y fotos reales (el botón de la cámara pasa por **varias fotos NASA por destino**, en `src/content/locationGallery.ts`); la explicación, los objetivos y si se puede aterrizar aparecen con el botón i. La pantallita de ruta es un mini mapa de Marte. Los textos del manual son más explicativos.
+- Por qué: pedido de C al probar la intro.
+- A quién afecta: navegación (`ResultScene.ts`, `BaseScene.ts`: cambian a dónde vuelven), `i18n` (claves nuevas y textos del manual reescritos; se borraron `landing.arrived` y `landing.start`, que solo usaba el spec 19).
+- ¿Avisado al equipo?: no todavía (va en el PR #33).
+
+## 2026-11-15 — Se implementa la intro en la cabina (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: se programa la intro con los bocetos de la cabina como arte del juego (`public/assets/sprites/cabina/`), aunque el spec decía "no implementar". Escenas nuevas: `CabinScene` (cabina, bienvenida de la guía), `ManualScene` (tablet, 10 páginas), `MonitorScene` (consola de destinos) y `LandingScene` (aterrizaje). Decisiones que el spec dejaba abiertas:
+  - **JUGAR lleva a la cabina**, no al mapa. Salir de la base y el botón "Mapa" de resultados llevan al **monitor**. `MarsMapScene` queda registrada pero ya no se llega a ella.
+  - El **monitor se puede usar antes de leer el manual** (se exploran todos los destinos), pero ATERRIZAR queda bloqueado y la pantalla dice "Primero leé el manual". Regla en `landingBlocker()` de `src/core/progression.ts`, con test.
+  - El progreso guarda dos datos nuevos: `welcomeSeen` y `manualDone`. Cerrar la tablet antes de terminar recuerda la página mientras el juego está abierto, no entre recargas.
+  - Tocar a la guía repite la bienvenida. "Saltar" lleva al último mensaje (abrir el manual), así nunca se saltea el manual.
+  - El botón FOTO del monitor muestra la foto en grande (con crédito) porque cada lugar tiene una sola foto por ahora; cuando haya galerías (spec 13) pasa a cambiar de foto. INFO muestra los objetivos.
+  - Etiquetas de comparación: oxígeno y comida usan "La ciencia que nos inspira / Nuestra versión"; rover usa "En la vida real / En tu misión".
+  - No se usa todavía el dato de los "7 minutos" del aterrizaje (falta verificarlo).
+- Por qué: la persona quiso ver la intro jugable en el juego.
+- A quién afecta: spec 11 y 02 (navegación desde JUGAR, `main.ts`, `sceneKeys.ts`), spec 12 (el monitor reemplaza al mapa), spec 05/04 (salida de la base), progreso guardado (`progressStorage.ts`), i18n, `layout.ts` y `balance.ts` (solo se agregaron valores).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — El manual de misión es una tablet, no un libro (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: el manual se muestra en una **tablet de misión** (la que está apoyada en la consola izquierda de la cabina, vista de frente y en grande; ya no flota una tablet aparte), una página por pantalla. Su interfaz tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas celestes finas con brillo, esquinas tipo visor, barras por segmentos, líneas de escaneo y un destello breve al tocar. Las páginas de cada barra y del rover deben comparar la foto real de NASA con la representación del juego. La página de oxígeno sigue la nueva misión de MOXIE (spec 08). Maquetas en `docs/arte/bocetos/cabina/manual/` (no aprobadas).
+- Por qué: el libro abierto no convenció; en una tablet, con texto claro sobre fondo oscuro, la letra chica se lee mejor y encaja con "objetos de hoy" de la guía de estilo.
+- A quién afecta: spec 19 (escenas 1, 2 y 3; el libro de la cabina pasa a ser la tablet) y spec 13 (fotos para comparar).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-14 — Primer boceto de la cabina (spec 19): vista frontal inmersiva
+- Quién: C (Emilia), con Claude
+- Qué se decidió: se empieza a explorar el arte de la cabina aunque el spec 19 decía "no generar assets". El boceto vive en `docs/arte/bocetos/` (fuera de `public/`, el juego no lo usa) y no es arte aprobado. La cabina va en **vista frontal en perspectiva con punto de fuga**, más inmersiva, como `docs/arte/propuesta-3/2-sala.png`, y **no isométrica** como la base. Mismo estilo de pixel art y paleta que el kit. La ventana y el monitor tienen el vidrio/pantalla en magenta para poner después la foto real de Marte y la interfaz. La astronauta va aparte, como sprite, para que flote en gravedad cero.
+- Por qué: la cabina es una escena fija donde se tocan objetos; una vista frontal la hace más inmersiva y deja el centro libre para la astronauta flotando.
+- A quién afecta: spec 19 (perspectiva, que estaba pendiente), spec 11 (JUGAR lleva a la cabina), spec 13 (falta una foto real de Marte entero para la ventana).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-14 — Consolidar la intro antes de producir imágenes
+- Quién: Emilia.
+- Qué se decidió: volver a la planificación previa a generar imágenes y documentarla en el spec 19. Incluir comparación de fotos NASA con pixel art, eventos y comunicaciones demoradas. Los bocetos y prompts posteriores no constituyen arte aprobado; perspectiva y composición quedan pendientes.
+- Por qué: cerrar el recorrido y el contenido antes de retomar la producción visual.
+- A quién afecta: specs 01, 11, 12, 13 y nuevo spec 19. No se implementan cambios en misiones.
+- ¿Avisado al equipo?: pendiente compartir el spec detallado; el rumbo general ya había sido aprobado.
+
+## 2026-11-14 — Intro y preparación de misión dentro de la nave
+- Quién: el equipo, según confirmación de Emilia en la planificación.
+- Qué se decidió: planificar una cabina fija después de JUGAR, con bienvenida salteable de una astronauta, ventana al espacio con una imagen real de Marte y manual obligatorio la primera vez. Completar el manual consiste en recorrer sus páginas, sin ejercicios. Debe explicar las cuatro barras y el rover. La selección de destino reemplazará la UI anterior por un monitor con botones de la nave: explorar todos los destinos, cambiar sus fotos, consultar información y aterrizar solo en destinos desbloqueados.
+- Por qué: integrar la preparación de la misión en el mundo del juego.
+- A quién afecta: specs 01, 11, 12 y 13; navegación del spec 02 y guardado del progreso. Se aprueba apartarse del límite de diez segundos y dos toques del spec 11 para la primera visita. No se cambian las misiones que está implementando otra integrante.
+- ¿Avisado al equipo?: sí, según confirmación de Emilia. La aprobación es del rumbo de diseño; el guion, los detalles visuales y la implementación siguen en planificación.
 
 ## 2026-11-14 — Biomas por nivel: cada lugar de Marte se ve distinto
 - Quién: maviflora, con Claude (propuesta aprobada: https://claude.ai/artifact/3BGsLZqDjkVsasTe6a8dpG)

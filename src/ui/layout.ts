@@ -141,3 +141,66 @@ export const LOCATION_CARD: Rect = { x: 120, y: 40, width: 400, height: 290 };
 /** Rover garage outside the airlock of the corridor (spec 15); the player waits at the airlock. */
 export const GARAGE_RECT: Rect = { x: 242, y: 318, width: 112, height: 30 };
 export const GARAGE_SPOT: Point = { x: 360, y: 212 };
+
+/**
+ * Spec 19 — Ship cabin, mission tablet, destination console and landing.
+ * The art (`sprites/cabina/`) is 1280×720 shown at SPRITE_SCALE; its screens are transparent
+ * holes, so whatever is drawn behind them (photos, screen content) shows through the glass.
+ */
+export const CABIN_WINDOW: Rect = { x: 261, y: 75, width: 118, height: 77 };
+export const CABIN_MONITOR_SCREENS: readonly Rect[] = [
+  { x: 538, y: 143, width: 47, height: 68 },
+  { x: 517, y: 166, width: 14, height: 26 },
+  { x: 506, y: 196, width: 16, height: 10 },
+];
+export const CABIN_TABLET_SCREEN: Rect = { x: 49, y: 221, width: 79, height: 39 };
+/**
+ * The tablet lies on the table in perspective: its screen is a slanted quad, measured from the
+ * art. Its long side goes from `left` up to `top`; its short side from `left` down to `bottom`.
+ */
+export const CABIN_TABLET_QUAD = {
+  left: { x: 48, y: 249.5 },
+  top: { x: 91.5, y: 222.5 },
+  right: { x: 128, y: 231.5 },
+  bottom: { x: 85, y: 262 },
+} as const;
+/** Touch areas of the objects a kid can tap in the cabin. */
+export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
+export const CABIN_MONITOR_ZONE: Rect = { x: 496, y: 108, width: 140, height: 172 };
+/** Outline of the monitor console, for its glowing edge when the guide points at it. */
+export const CABIN_MONITOR_OUTLINE: readonly Point[] = [
+  { x: 510, y: 112 },
+  { x: 628, y: 110 },
+  { x: 636, y: 126 },
+  { x: 636, y: 240 },
+  { x: 602, y: 272 },
+  { x: 497, y: 210 },
+  { x: 498, y: 200 },
+  { x: 506, y: 194 },
+  { x: 507, y: 118 },
+];
+export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
+/** The guide sprites are cut bigger than the rest of the kit. */
+export const CABIN_GUIDE_SCALE = 0.425;
+export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };
+
+/** The tablet fills the screen; pages are drawn on its glass. */
+export const TABLET_SCREEN: Rect = { x: 89, y: 60, width: 461, height: 239 };
+
+/** Destination console: its 3 screens and the physical buttons (top-left corners). */
+export const CONSOLE_BIG_SCREEN: Rect = { x: 193, y: 110, width: 254, height: 141 };
+export const CONSOLE_STARS_SCREEN: Rect = { x: 62, y: 193, width: 80, height: 66 };
+export const CONSOLE_ROUTE_SCREEN: Rect = { x: 37, y: 291, width: 79, height: 27 };
+export const CONSOLE_BUTTONS = {
+  back: { x: 162.5, y: 291.5 },
+  previous: { x: 223, y: 291 },
+  photo: { x: 278, y: 294.5 },
+  next: { x: 366.5, y: 291.5 },
+  land: { x: 497.5, y: 287 },
+  info: { x: 135.5, y: 208 },
+} as const satisfies Record<string, Point>;
+
+/** Landing: seated astronauts (top-left corners) on the empty pilot seats of the cabin. */
+export const LANDING_WINDOW: Rect = CABIN_WINDOW;
+export const LANDING_SEATED_GUIDE: Point = { x: 214, y: 116 };
+export const LANDING_SEATED_PLAYER: Point = { x: 340.5, y: 118.5 };

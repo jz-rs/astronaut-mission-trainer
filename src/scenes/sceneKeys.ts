@@ -6,4 +6,8 @@ export const SCENE_KEYS = {
   result: 'ResultScene',
   sources: 'SourcesScene',
   map: 'MarsMapScene',
+  cabin: 'CabinScene',
+  manual: 'ManualScene',
+  monitor: 'MonitorScene',
+  landing: 'LandingScene',
 } as const;

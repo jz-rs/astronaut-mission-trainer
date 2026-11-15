@@ -187,3 +187,21 @@ export const SCORING = {
   pointsPerAverageStatPoint: 10,
   pointsPerSample: 100,
 } as const;
+
+/** Spec 19 — Timing of the cabin intro. None of it uses mission time. */
+export const INTRO_BALANCE = {
+  /** A screen button lights up, then acts: the short delay tells it is a touch screen. */
+  screenFlashMs: 140,
+  /** Frames of a physical console button going down and back up. */
+  consolePressFrameMs: 50,
+  guideFloatMs: 1_800,
+  highlightPulseMs: 600,
+  landingDurationMs: 6_000,
+  /** After touchdown: a still moment, then a fade to black into the base. */
+  landingStillMs: 700,
+  landingFadeMs: 500,
+  /** How much the whole cabin grows toward the window while landing. */
+  landingCameraZoom: 1.35,
+  /** Starting altitude shown on the cabin monitor while landing, in meters (simplified). */
+  landingStartAltitudeM: 12_000,
+} as const;

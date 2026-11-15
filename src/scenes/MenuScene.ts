@@ -69,7 +69,7 @@ export class MenuScene extends Phaser.Scene {
 
   private startGame(): void {
     void enterFullscreenLandscape();
-    this.scene.start(SCENE_KEYS.map);
+    this.scene.start(SCENE_KEYS.cabin);
   }
 
   /** The base on Mars fills the screen; a dark band keeps the title readable on top of it. */

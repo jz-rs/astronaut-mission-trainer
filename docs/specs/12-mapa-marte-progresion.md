@@ -1,5 +1,7 @@
 # 12 — Mapa de Marte y progresión
 
+> Actualización de planificación: el [spec 19](19-intro-cabina-manual.md) documenta la intro, el manual inicial y la selección de destino dentro de la nave. Ver allí los cambios aprobados de recorrido y los detalles pendientes.
+
 | Dueña | Rol | Prioridad | Fase | Estado |
 |---|---|---|---|---|
 | _(nombre)_ | C | P1 | 2 | ⚪ Propuesto |

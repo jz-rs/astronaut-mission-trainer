@@ -36,6 +36,7 @@ Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá 
 | 16 | [Palanca de a dos y reunión de crisis](16-colaboracion.md) | A | P2 | 3 | ⚪ |
 | 17 | [Deploy y demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
 | 18 | [Paneles solares afuera, bajo el cielo de Marte](18-paneles-afuera.md) | B + C | P1 | 2 | ⚪ |
+| 19 | [Intro, cabina y manual de misión](19-intro-cabina-manual.md) | C | P0 | Planificación | ⚪ |
 
 ## Plantilla para specs nuevos
 
