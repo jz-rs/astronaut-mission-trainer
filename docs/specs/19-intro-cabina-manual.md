@@ -47,7 +47,7 @@ Una intervención por vez, con controles Siguiente y Saltar bienvenida:
 | Momento | Diálogo | Apoyo visual propuesto |
 |---|---|---|
 | Llegada | «¡Bienvenido a bordo! Mirá por la ventana: estamos llegando a Marte.» | La astronauta señala la ventana. |
-| Contexto | «Marte, el cuarto planeta desde el Sol, es un mundo frío, con una atmósfera muy delgada.» | Se destaca la imagen real. |
+| Contexto | «Marte, el cuarto planeta desde el Sol, es frío y tiene una atmósfera muy delgada.» | Se destaca la imagen real. |
 | Simulación | «En esta simulación, vas a dirigir una base y cuidar a su tripulación.» | Representación de la base. |
 | Realidad | «¡Prestá atención a los detalles! Todo está basado en la realidad: vas a aprender cómo sobrevive una tripulación en Marte.» | La astronauta con el pulgar arriba. |
 | Fotos y música reales | «Vas a ver fotos reales de la NASA, como la de esta ventana. ¡Y la música está hecha con sonidos reales del espacio!» | Se destaca la ventana (foto real). |
