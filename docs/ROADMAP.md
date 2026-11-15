@@ -1,108 +1,108 @@
-# Roadmap — hitos para validar y testear
+# Roadmap — milestones for validation and testing
 
-El juego avanza en **hitos**. Cada hito termina con **algo que se puede probar** y una **validación** explícita. No se pasa al siguiente hito sin validar el anterior (si algo falla, se arregla o se decide recortar y se anota en `DECISIONS.md`).
+The game progresses through **milestones**. Each milestone ends with **something testable** and explicit **validation**. Do not move on until the previous milestone is validated (if something fails, fix it or decide to cut scope and record it in `DECISIONS.md`).
 
-Los specs dicen **qué hacer**; este roadmap dice **en qué orden y cómo comprobamos que funciona**.
+The specs describe **what to build**; this roadmap describes **the order and how we verify it works**.
 
 ---
 
-## Cómo testeamos: 5 niveles
+## How we test: 5 levels
 
-| Nivel | Qué es | Cuándo | Quién |
+| Level | What it is | When | Who |
 |---|---|---|---|
-| **T1 — Automático** | `npm run check`: lint + tipos + tests de la lógica. Corre solo en cada PR (CI). | Cada PR | La máquina |
-| **T2 — Revisión de PR** | Otra integrante abre la rama, prueba los **criterios de aceptación del spec** y aprueba. | Cada PR | Otra integrante |
-| **T3 — Celu real** | Jugar desde el link publicado en **1 Android + 1 iPhone**, en horizontal. | Fin de cada hito | La dueña del hito + 1 |
-| **T4 — Persona nueva** | Alguien que **nunca vio el juego** (ideal: un chico de 7–12) juega **sin que le expliquemos nada**. Observamos y anotamos. | H3, H4, H5 | Cualquiera de las 3 |
-| **T5 — Balance** | Jugar varias partidas para ver si es demasiado fácil o difícil. | H2, H3, H4 | A |
+| **T1 — Automated** | `npm run check`: lint + types + game logic tests. Runs automatically on each PR (CI). | Every PR | The machine |
+| **T2 — PR review** | Another team member checks out the branch, tests the **spec's acceptance criteria**, and approves. | Every PR | Another team member |
+| **T3 — Real phone** | Play from the published link on **1 Android + 1 iPhone**, in landscape. | End of each milestone | Milestone owner + 1 |
+| **T4 — New player** | Someone who **has never seen the game** (ideally a child aged 7–12) plays **without any explanation from us**. Observe and take notes. | H3, H4, H5 | Any of the 3 |
+| **T5 — Balance** | Play several sessions to see whether it is too easy or too hard. | H2, H3, H4 | A |
 
-### Planilla para T4 (persona nueva)
-Copiar en `docs/playtests/AAAA-MM-DD-nombre.md`:
+### T4 worksheet (new player)
+Copy to `docs/playtests/AAAA-MM-DD-nombre.md`:
 ```
-Edad: … · Dispositivo: …
-¿Cuántos segundos tardó en hacer el primer toque correcto?  …   (objetivo: < 5 s)
-¿Entendió qué eran las barras sin preguntar?                sí / no
-¿Entendió que tenía que ir a la sala que titila?            sí / no
-¿Usó a los bots? ¿Entendió el modo auto?                    sí / no
-¿Qué preguntó? (anotar textual)                              …
-¿Dónde se trabó?                                            …
-¿Quiso jugar otra partida sin que se lo pidiéramos?        sí / no   ← la métrica más importante
-¿Recuerda algún dato real al terminar?                      …
+Age: … · Device: …
+How many seconds until the first correct tap?                 …   (target: < 5 s)
+Did they understand the bars without asking?                  yes / no
+Did they understand they should go to the flashing room?      yes / no
+Did they use the bots? Did they understand auto mode?          yes / no
+What did they ask? (write down their exact words)              …
+Where did they get stuck?                                     …
+Did they want another session without being prompted?         yes / no   ← the most important metric
+Do they remember any real fact at the end?                    …
 ```
 
-### Criterios de T5 (balance)
-- No hacer nada en Jezero → se pierde **antes del sol 3**.
-- Jugando bien en Jezero → se sobrevive con **2–3 estrellas**.
-- Con todos los bots en auto y la jugadora sin jugar → **no alcanza** para ganar.
-- Gale es notablemente más difícil que Jezero.
+### T5 criteria (balance)
+- Do nothing in Jezero → lose **before sol 3**.
+- Play well in Jezero → survive with **2–3 stars**.
+- All bots on auto and the player doing nothing → **not enough** to win.
+- Gale is noticeably harder than Jezero.
 
 ---
 
-## Hitos
+## Milestones
 
-### H0 — Alineación 🟣 (fase 0)
-**Specs:** 01 (etapas 1–2), 02 (revisión del back), 06.
-**Qué se puede probar:** nada jugable todavía, sino decisiones.
-**Validación:**
-- [ ] Las 3 aprobaron (✅) todos los specs P0.
-- [ ] Estilo visual votado; `STYLE_GUIDE.md` sin pendientes.
-- [ ] Contrato de minijuegos acordado entre A y B.
-- [ ] Repo en GitHub con las 3 como colaboradoras.
+### H0 — Alignment 🟣 (phase 0)
+**Specs:** 01 (stages 1–2), 02 (backend review), 06.
+**What can be tested:** decisions, nothing playable yet.
+**Validation:**
+- [ ] All 3 approved (✅) every P0 spec.
+- [ ] Visual style chosen by vote; no pending items in `STYLE_GUIDE.md`.
+- [ ] Minigame contract agreed between A and B.
+- [ ] GitHub repo with all 3 as collaborators.
 
-### H1 — Esqueleto publicado 🔴
-**Specs:** 02 (esqueleto + CI), 17 (deploy, adelantado).
-**Qué se puede probar:** un **link público** donde se navega Inicio → Base → Resultado (pantallas vacías).
-**Validación:**
-- [ ] T1: el CI corre en PRs.
-- [ ] T3: el link abre en Android y iPhone, en horizontal y sin zoom.
+### H1 — Published skeleton 🔴
+**Specs:** 02 (skeleton + CI), 17 (deployment, brought forward).
+**What can be tested:** a **public link** with Start → Base → Result navigation (empty screens).
+**Validation:**
+- [ ] T1: CI runs on PRs.
+- [ ] T3: the link opens on Android and iPhone, in landscape and without zoom.
 
-> Tener el link publicado desde temprano permite probar todo lo que sigue directamente en el celu.
+> Publishing the link early lets us test everything that follows directly on phones.
 
-### H2 — Primera partida jugable 🔴
-**Specs:** 03, 04, 05 (modo auto), 06, 07.
-**Qué se puede probar:** una partida completa de 5 soles con **formas simples** (sin arte final): se camina a las salas, paneles es un minijuego real, las otras 3 salas usan el minijuego provisorio, los bots trabajan en auto, se gana o se pierde y aparece el resultado.
-**Validación:**
-- [ ] T1 + T2 de cada spec.
-- [ ] T3 en ambos celus.
-- [ ] T5: primera ronda de balance (anotar números en `DECISIONS.md`).
+### H2 — First playable session 🔴
+**Specs:** 03, 04, 05 (auto mode), 06, 07.
+**What can be tested:** a complete 5-sol session with **simple shapes** (no final art): walk to rooms, panels is a real minigame, the other 3 rooms use the temporary minigame, bots work on auto, win or lose and see the result.
+**Validation:**
+- [ ] T1 + T2 for each spec.
+- [ ] T3 on both phones.
+- [ ] T5: first balance round (record numbers in `DECISIONS.md`).
 
-### H3 — Juego mínimo completo (todo P0) 🔴
-**Specs:** 01 (etapa 3: arte), 05 completo, 08, 09, 10, 11, 13.
-**Qué se puede probar:** el juego **con su estética**: 4 minijuegos reales, órdenes a bots, entrenamiento entre partidas, pantallas de inicio y resultado finales, ES/EN, datos reales.
-**Validación:**
-- [ ] T3 en ambos celus.
-- [ ] **T4 con al menos 2 personas nuevas** → arreglar lo que las trabó.
-- [ ] T5: segunda ronda de balance.
-- [ ] **Este hito ya es entregable.** Si se acaba el tiempo, se entrega esto.
+### H3 — Complete minimum game (all P0) 🔴
+**Specs:** 01 (stage 3: art), full 05, 08, 09, 10, 11, 13.
+**What can be tested:** the game **with its visual style**: 4 real minigames, bot orders, training between sessions, final start and result screens, ES/EN, real facts.
+**Validation:**
+- [ ] T3 on both phones.
+- [ ] **T4 with at least 2 new players** → fix what blocked them.
+- [ ] T5: second balance round.
+- [ ] **This milestone is ready to submit.** If time runs out, submit this.
 
-### H4 — Lo que nos diferencia (P1) 🟠
+### H4 — What makes us different (P1) 🟠
 **Specs:** 12, 14, 15.
-**Qué se puede probar:** mapa de Marte con 5 lugares y estrellas, eventos con aviso de la Tierra (o sin aviso), expedición con rover y fotos reales de NASA.
-**Validación:**
-- [ ] T4: ¿la persona nueva **quiere jugar otra partida**? ¿Intenta conseguir la 3ª estrella?
-- [ ] Dos partidas seguidas en el mismo lugar se sienten distintas.
-- [ ] T5: Gale más difícil que Jezero.
+**What can be tested:** Mars map with 5 locations and stars, events with Earth warnings (or no warning), rover expedition and real NASA photos.
+**Validation:**
+- [ ] T4: does the new player **want another session**? Do they try to earn the 3rd star?
+- [ ] Two consecutive sessions at the same location feel different.
+- [ ] T5: Gale is harder than Jezero.
 
 ### H5 — Release candidate 🟡
-**Specs:** 16 (si llega), pulido, 17.
-**Qué se puede probar:** la versión final.
-**Validación:**
-- [ ] **Congelar el código ~3 h antes de la entrega**: después de esto, solo arreglos de bugs.
-- [ ] Bug bash: las 3 juegan 15 min intentando romperlo; cada bug se anota y se prioriza.
-- [ ] T3 en todos los celus que tengamos a mano.
-- [ ] Checklist de entrega del hackathon completa (spec 17).
+**Specs:** 16 (if ready), polish, 17.
+**What can be tested:** the final version.
+**Validation:**
+- [ ] **Freeze code ~3 h before submission**: bug fixes only after that.
+- [ ] Bug bash: all 3 play for 15 min trying to break it; record and prioritize every bug.
+- [ ] T3 on every phone available.
+- [ ] Hackathon submission checklist complete (spec 17).
 
-### H6 — Entrega 🏁
-- [ ] Link público final funcionando.
-- [ ] Material de la entrega subido.
-- [ ] Demo ensayada (con QR del link).
+### H6 — Submission 🏁
+- [ ] Final public link works.
+- [ ] Submission materials uploaded.
+- [ ] Demo rehearsed (with a QR code for the link).
 
 ---
 
-## Plan B por hito
-| Si no llegamos a… | Hacemos… |
+## Plan B by milestone
+| If we cannot finish… | We do this… |
 |---|---|
-| Un minijuego en H3 | Queda el minijuego provisorio en esa sala |
-| El arte completo en H3 | Se entrega con las piezas que hay + formas de colores de la paleta |
-| H4 completo | Priorizar: mapa (12) > eventos (14) > rover (15) |
-| H5 (spec 16) | Se recorta y va al pitch como "próximo paso" |
+| A minigame in H3 | Keep the temporary minigame in that room |
+| All the art in H3 | Submit with the available pieces + shapes in palette colors |
+| All of H4 | Prioritize: map (12) > events (14) > rover (15) |
+| H5 (spec 16) | Cut it and present it in the pitch as a “next step” |
