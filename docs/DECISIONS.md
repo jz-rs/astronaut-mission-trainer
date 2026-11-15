@@ -13,6 +13,18 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Crisis redesign: real procedures on the tablet, shelter instead of the lever (spec 16)
+- Who: Marianela, with the team (design reviewed in the "Rediseño de crisis" canvas, v2) and Claude
+- What was decided:
+  - The crisis meeting votes **real NASA procedures**, not tasks. Solar storm: "Take shelter" (right) vs "Go outside". Dust storm: "Save energy" (right) vs "Clean panels". Only events in `src/core/crisisProcedures.ts` get a meeting.
+  - It is shown on the **mission tablet** over the base, edges flashing black: message from Earth with its real delay (3–22 min), the vote, then right/wrong with a real NASA photo and one line on why. A reward photo appears once the storm is over.
+  - The **player is the commander**: bots vote the same as the player. Voting right halves the event's damage (`rightChoiceDamageFactor`) and sets what bots on auto do first (`PROCEDURE_PRIORITY`).
+  - The **two-person lever is gone**. When a solar storm lands the crew has `shelterWindowMs` to get into the shield room; getting in halves the damage again (`shelterDamageFactor`).
+  - Contracts changed: `GameAction` (`holdLever` removed, `castVote` now takes `procedureId`, new `enterShelter`), `RunState` (`emergency` → `shelter`), `ScheduledEvent` (`crisisChoice`, `crewSheltered`), `EventNews` (`saved` → `decided`), `COLLAB_BALANCE` (lever values replaced). i18n: the `collab.*` keys of the lever and the old meeting were removed, `crisis.*` added. Seven new NASA photos credited in `docs/DATA_SOURCES.md`. GDD §7 and the tasks table, and spec 16, updated.
+- Why: the old meeting offered "shield vs panels" for every crisis, which is not what real crews do (nobody goes out to fix panels in a solar storm, and cleaning in the middle of a dust storm is useless). Kids now learn the real procedure and see real photos of why. The lever had no real-world equivalent; taking shelter does (Orion, ISS).
+- Affects: A (specs 05, 14, 16: `types.ts`, `actions.ts`, `collab.ts`, `events.ts`, `run.ts`, `bots/teamwork.ts`, `BaseScene`, `EventAnnouncer`, `TeamworkViews`); B (`GameAction` changed, no minigame uses the removed parts); C (`docs/GDD.md`, `docs/DATA_SOURCES.md`, i18n).
+- Team notified?: the design was reviewed by the team; the code goes in the PR.
+
 ## 2026-11-15 — The first mission manual can't be skipped (spec 19)
 - Who: Marianela, with Claude
 - What was decided: until the manual is finished, tapping the dashboard in the cabin doesn't open the destination console. The guide says `cabin.manualFirst` ("First open the mission manual: it is the tablet.") and highlights the tablet. The first read of the manual has no X button, so the only way out is reaching the last page. Once it's done, the X comes back and the manual can be reread and closed at any point. This closes the open item in spec 19 about reaching the monitor before the manual.

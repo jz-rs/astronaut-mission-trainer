@@ -64,14 +64,21 @@ export interface ScheduledEvent {
   hitSol: number;
   warningSol: number | null;
   status: 'pending' | 'warned' | 'hit';
-  /** Share of the effect that really hit (less than 1 when the crew held the lever, spec 16). */
+  /** Share of the effect that really hit (less than 1 when the crew did the right thing, spec 16). */
   damageFactor?: number;
+  /**
+   * What the crisis meeting decided (spec 16). Missing = there was no meeting;
+   * null = time ran out and nobody chose.
+   */
+  crisisChoice?: CrisisProcedureId | null;
+  /** Solar storms only: whether the people playing got into the shelter in time (spec 16). */
+  crewSheltered?: boolean;
 }
 
 /** What just happened, in order, so scenes can announce each thing once. */
 export interface EventNews {
-  /** 'saved' = the crew held the lever together and the storm did little damage (spec 16). */
-  kind: 'warning' | 'hit' | 'saved';
+  /** 'decided' = the crisis meeting ended and its choice is in the event (spec 16). */
+  kind: 'warning' | 'decided' | 'hit';
   eventId: string;
 }
 
@@ -85,20 +92,29 @@ export interface TaskNews {
   spent: number;
 }
 
-/** Spec 16 — Two astronauts must hold the lever at the same time to resist a solar storm. */
-export interface LeverEmergency {
-  eventId: string;
-  elapsedMs: number;
-  heldMs: number;
-  holders: string[];
-}
+/** Spec 16 — Real procedures the crew can vote for when Earth warns of a crisis. */
+export const CRISIS_PROCEDURE_IDS = [
+  'shelter',
+  'go-outside',
+  'save-energy',
+  'clean-panels',
+] as const;
+export type CrisisProcedureId = (typeof CRISIS_PROCEDURE_IDS)[number];
 
-/** Spec 16 — When Earth warns of an event, the crew votes what to do first. */
+/** Spec 16 — When Earth warns of a crisis, the crew votes what to do. The base is paused. */
 export interface CrisisMeeting {
   eventId: string;
-  options: [TaskId, TaskId];
-  votes: Record<string, TaskId>;
+  options: [CrisisProcedureId, CrisisProcedureId];
+  votes: Record<string, CrisisProcedureId>;
+  /** Counts the message arriving first, then the vote (COLLAB_BALANCE). */
   remainingMs: number;
+}
+
+/** Spec 16 — A solar storm landed: the crew has a few seconds to get into the shielded room. */
+export interface ShelterEmergency {
+  eventId: string;
+  elapsedMs: number;
+  sheltered: string[];
 }
 
 /** What bots on auto do first until the end of a sol (the meeting's decision). */
@@ -124,7 +140,7 @@ export interface RunState {
   taskNews: TaskNews[];
   /** Spec 15 — true while the rover is out collecting samples. */
   roverOut: boolean;
-  emergency: LeverEmergency | null;
+  shelter: ShelterEmergency | null;
   meeting: CrisisMeeting | null;
   priority: PriorityOrder | null;
 }

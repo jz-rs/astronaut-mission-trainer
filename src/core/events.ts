@@ -1,6 +1,7 @@
 import { EVENT_BALANCE, RUN_BALANCE } from '../config/balance';
-import { shouldStartLever, shouldStartMeeting, startLever, startMeeting } from './collab';
-import { applyStatChanges } from './stats';
+import { choiceDamageFactor, shouldStartMeeting, startMeeting } from './collab';
+import { landEvent } from './eventDamage';
+import { shouldStartShelter, startShelter } from './shelter';
 import { STAT_IDS, type MarsEvent, type RunState, type ScheduledEvent } from './types';
 
 /**
@@ -52,9 +53,8 @@ export function updateEvents(state: RunState): void {
     }
     if (event.status !== 'hit' && hasArrived(state, event)) {
       event.status = 'hit';
-      if (shouldStartLever(event, state)) startLever(state, event);
-      else applyStatChanges(state.stats, event.effect);
-      state.eventNews.push({ kind: 'hit', eventId: event.eventId });
+      if (shouldStartShelter(event, state)) startShelter(state, event);
+      else landEvent(state, event, choiceDamageFactor(event));
     }
   }
 }

@@ -1,33 +1,39 @@
 import type Phaser from 'phaser';
 import type { GameSession } from '../../core/GameSession';
 import type { RunState } from '../../core/types';
-import { LeverView } from './LeverView';
-import { MeetingView } from './MeetingView';
+import { CrisisFlow } from './crisis/CrisisFlow';
+import { ShelterView } from './ShelterView';
 
 /**
- * Spec 16 — Groups the lever and the crisis meeting. A meeting must be seen even if a
- * minigame is open, so the base comes to the front while it lasts and goes back after.
+ * Spec 16 — Groups the crisis tablet and the shelter. Both must be seen even if a minigame is
+ * open, so the base comes to the front while they last and goes back after.
  */
 export class TeamworkViews {
-  private readonly lever: LeverView;
-  private readonly meeting: MeetingView;
-  private meetingOnScreen = false;
+  private readonly crisis: CrisisFlow;
+  private readonly shelter: ShelterView;
+  private onTop = false;
 
   constructor(
     private readonly scene: Phaser.Scene,
     session: GameSession,
     private readonly overlayKeys: readonly string[],
   ) {
-    this.lever = new LeverView(scene, session);
-    this.meeting = new MeetingView(scene, session);
+    this.crisis = new CrisisFlow(scene, session);
+    this.shelter = new ShelterView(scene);
   }
 
-  update(state: RunState, time: number): void {
-    this.lever.update(state, time);
-    const meetingNow = this.meeting.update(state);
-    if (meetingNow && !this.meetingOnScreen) this.scene.scene.bringToTop();
-    if (!meetingNow && this.meetingOnScreen) this.restoreOverlays();
-    this.meetingOnScreen = meetingNow;
+  /** True while a crisis card waits for the kid to read it and tap its button. */
+  get pausesGame(): boolean {
+    return this.crisis.pausesGame;
+  }
+
+  update(state: RunState): void {
+    this.crisis.update(state);
+    this.shelter.update(state);
+    const showing = this.crisis.isOnScreen || this.shelter.isVisible;
+    if (showing && !this.onTop) this.scene.scene.bringToTop();
+    if (!showing && this.onTop) this.restoreOverlays();
+    this.onTop = showing;
   }
 
   /**

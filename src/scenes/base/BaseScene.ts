@@ -25,6 +25,7 @@ import { AstronautSprite, type WalkTarget } from './AstronautSprite';
 import { drawBaseMap } from './baseMap';
 import { BotFaces } from './BotFaces';
 import { BotsView } from './BotsView';
+import { preloadCrisisArt } from './crisis/crisisArt';
 import { EventAnnouncer } from './EventAnnouncer';
 import { ExitRunView } from './ExitRunView';
 import { GarageView } from './GarageView';
@@ -92,6 +93,7 @@ export class BaseScene extends Phaser.Scene {
   /** The images of this level (map, rooms, frost); the rest of the kit was loaded at boot. */
   preload(): void {
     preloadBiome(this, this.locationId);
+    preloadCrisisArt(this.load);
   }
 
   create(): void {
@@ -161,7 +163,7 @@ export class BaseScene extends Phaser.Scene {
 
   update(time: number, deltaMs: number): void {
     if (this.runEnded) return;
-    if (!this.tutorial.pausesGame && !this.exitRun.isAsking) this.session.update(deltaMs);
+    if (!this.isPaused()) this.session.update(deltaMs);
     const { state } = this.session;
     this.taskEffects.update(state, (news) => this.handleTaskEffectShown(news));
     this.hud.update(state);
@@ -172,19 +174,38 @@ export class BaseScene extends Phaser.Scene {
     this.bots.update(state, this.selectedBotId);
     this.eventAnnouncer.update(state);
     this.garage.update(state);
-    this.teamwork.update(state, time);
+    this.teamwork.update(state);
     for (const room of this.rooms.values()) room.update(state.stats, time);
     if (this.session.isOver()) this.endRun();
   }
 
+  /** The tutorial, the exit question and the crisis cards stop the clock while they are read. */
+  private isPaused(): boolean {
+    return this.tutorial.pausesGame || this.exitRun.isAsking || this.teamwork.pausesGame;
+  }
+
   private handleRoomTap(taskId: TaskId): void {
-    if (this.minigameOpen || this.runEnded) return;
+    if (this.runEnded) return;
+    if (this.session.state.shelter) {
+      this.takeShelter(taskId);
+      return;
+    }
+    if (this.minigameOpen) return;
     this.tutorial.roomTapped();
     if (this.selectedBotId) {
       this.orderBot(this.selectedBotId, taskId);
       return;
     }
     this.sendPlayer(taskId);
+  }
+
+  /** Spec 16 — During a solar storm the only room that matters is the shield room. */
+  private takeShelter(taskId: TaskId): void {
+    if (taskId !== 'shield-wall') return;
+    this.session.dispatch({ type: 'enterShelter', crewId: PLAYER_ID });
+    if (this.playerBusy) return; // in a minigame: the astronaut is already indoors
+    this.playerBusy = true;
+    this.player.walkTo(this.workSpot(taskId, PLAYER_ID), () => this.freePlayer());
   }
 
   private sendPlayer(taskId: TaskId): void {
