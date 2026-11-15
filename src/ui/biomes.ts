@@ -50,6 +50,11 @@ export function baseMapKey(locationId: string): string {
   return biome === DEFAULT_BIOME ? 'baseMap' : `baseMap-${biome}`;
 }
 
+/** Outdoor solar backgrounds have the same framing and twice the play area's resolution. */
+export function solarExteriorKey(locationId = DEFAULT_BIOME): string {
+  return `solarExterior-${biomeId(locationId)}`;
+}
+
 /** Without a location (a minigame opened on its own) the kit's plain room is used. */
 export function roomBackgroundKey(taskId: TaskId, locationId?: string): string {
   if (!locationId) return ROOM_BACKGROUNDS[taskId];
@@ -63,6 +68,7 @@ export function preloadBiome(scene: Phaser.Scene, locationId: string): void {
     roomBackgroundKey(taskId, biome),
     `${ROOM_FILE_NAMES[taskId]}-${biome}.png`,
   ]);
+  files.push([solarExteriorKey(biome), `afuera-${biome}.png`]);
   if (biome !== DEFAULT_BIOME) files.push([baseMapKey(biome), `mapa-base-${biome}.png`]);
   if (biomeLook(biome).hasFrost) files.push([FROST_TEXTURE_KEY, 'escarcha-polo.png']);
   for (const [key, file] of files) {

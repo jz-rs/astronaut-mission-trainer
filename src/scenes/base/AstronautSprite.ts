@@ -16,6 +16,7 @@ import {
 export interface WalkTarget {
   spot: Point;
   door: Point | null;
+  outdoorRoute?: readonly Point[];
 }
 
 /**
@@ -29,6 +30,7 @@ export class AstronautSprite {
   /** Door of the room it is in, or null when it is in the corridor. */
   private door: Point | null = null;
   private facing: Facing = 'front';
+  private outdoorRoute: readonly Point[] = [];
 
   constructor(
     private readonly scene: Phaser.Scene,
@@ -49,6 +51,7 @@ export class AstronautSprite {
     this.walk?.stop();
     const steps = this.buildSteps(this.planPath(target));
     this.door = target.door;
+    this.outdoorRoute = target.outdoorRoute ?? [];
     this.walk = this.scene.tweens.chain({
       targets: this.image,
       tweens: steps,
@@ -65,9 +68,10 @@ export class AstronautSprite {
     const sameRoom = this.door !== null && this.door === target.door;
     if (sameRoom) return [target.spot];
     const path: Point[] = [];
-    if (this.door) path.push(this.door);
+    if (this.door) path.push(...[...this.outdoorRoute].reverse(), this.door);
     path.push(CORRIDOR_CENTER);
     if (target.door) path.push(target.door);
+    path.push(...(target.outdoorRoute ?? []));
     path.push(target.spot);
     return path;
   }

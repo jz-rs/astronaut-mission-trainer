@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { SOLAR_PANELS_BALANCE } from '../../config/balance';
+import { SOLAR_PANELS_BALANCE, NIGHT_BALANCE, RUN_BALANCE } from '../../config/balance';
 import { t } from '../../i18n';
 import { floatText } from '../../ui/floatingText';
-import type { Rect } from '../../ui/layout';
+import { MINIGAME_AREA, type Rect } from '../../ui/layout';
 import { PALETTE } from '../../ui/palette';
 import { sparkleAt } from '../../ui/sparkle';
 import { addSprite } from '../../ui/sprites';
@@ -13,6 +13,9 @@ import { MinigameScene } from '../MinigameScene';
 import { DustCover } from './dustCover';
 import { SOLAR_STEPS } from './solarRecipe';
 import { SolarStation } from './solarStation';
+import { SolarExterior, addSolarAstronaut } from './solarExterior';
+import { crossAirlock } from './airlockTransition';
+import { bindSolarBrush } from './solarBrush';
 
 /**
  * Spec 07 — Swipe to wipe Martian dust off the solar panels (like a scratch card). The Sun shines
@@ -22,14 +25,11 @@ import { SolarStation } from './solarStation';
  * Performance = fraction cleaned, with a speed bonus when everything is clean.
  * On harsh locations dust slowly falls back, like a dust storm.
  */
-const SWIPE_SAMPLE_STEP = 4;
 /** How fast the battery drawing catches up with the real charge (per second). */
 const BATTERY_CATCH_UP = 4;
 /** A short moment to see the full battery before the result card. */
 const FINISH_DELAY_MS = 700;
 const CLEAN_POP_OFFSET_Y = 10;
-/** The glass of the energy room's window, in pixels of the room picture (same in every biome). */
-const WINDOW_GLASS = { left: 620, top: 105, right: 735, bottom: 215 };
 
 export class SolarPanelsMinigame extends MinigameScene {
   static readonly KEY = 'SolarPanelsMinigame';
@@ -38,19 +38,26 @@ export class SolarPanelsMinigame extends MinigameScene {
   private station: SolarStation | null = null;
   private guide: StepGuide | null = null;
   private shinyPanels = new Set<number>();
-  private lastPointer: Phaser.Math.Vector2 | null = null;
   private dustReturnProgress = 0;
   private boltProgress: number[] = [];
   private batteryShown = 0;
   private allClean = false;
+  private exterior!: SolarExterior;
+  private astronaut!: Phaser.GameObjects.Image;
+  private storm = false;
 
   constructor() {
     super(SolarPanelsMinigame.KEY);
   }
 
+  protected drawBackground(area: Rect): void {
+    this.station = null;
+    this.exterior = new SolarExterior(this, area, this.locationId);
+    this.updateEnvironment();
+  }
+
   protected buildGame(area: Rect): void {
     this.shinyPanels.clear();
-    this.lastPointer = null;
     this.dustReturnProgress = 0;
     this.batteryShown = 0;
     this.allClean = false;
@@ -59,24 +66,35 @@ export class SolarPanelsMinigame extends MinigameScene {
       this,
       area,
       this.guide.right,
-      this.windowRect(),
+      { x: this.exterior.sun.x, y: this.exterior.sun.y },
       this.daylight,
     );
     const dust = this.placePanels(station);
     this.station = station;
     this.dust = dust;
+    this.astronaut = addSolarAstronaut(this, area);
+    this.exterior.addWeather();
     this.boltProgress = station.slots.map(() => 0);
     station.setLight(this.panelFractions());
-    this.input.on('pointerdown', this.handleSwipe, this);
-    this.input.on('pointermove', this.handleSwipe, this);
-    this.input.on('pointerup', () => (this.lastPointer = null));
+    bindSolarBrush(
+      this,
+      dust,
+      () => this.isPlaying,
+      (panels) => this.panelsWiped(panels),
+    );
+    this.showExplanation(area, station);
+  }
+
+  private showExplanation(area: Rect, station: SolarStation): void {
     this.pauseGame();
     const howTo = {
       titleKey: 'minigame.solar-panels.introTitle',
       startKey: 'minigame.solar-panels.start',
       steps: SOLAR_STEPS,
     } as const;
-    showHowToCard(this, area, howTo, () => this.startPlaying(station));
+    crossAirlock(this, area, () => {
+      if (!this.isFinished) showHowToCard(this, area, howTo, () => this.startPlaying(station));
+    });
   }
 
   /** Each panel is the clean sprite with Martian dust on top. */
@@ -102,18 +120,27 @@ export class SolarPanelsMinigame extends MinigameScene {
 
   /** 1 at noon, down to `nightLight` at full night: the panels only get the light there is. */
   private get daylight(): number {
+    if (this.storm) return SOLAR_PANELS_BALANCE.stormLight;
     return 1 - (1 - SOLAR_PANELS_BALANCE.nightLight) * this.nightAmount;
   }
 
-  private windowRect(): Rect {
-    const topLeft = this.roomPoint(WINDOW_GLASS.left, WINDOW_GLASS.top);
-    const bottomRight = this.roomPoint(WINDOW_GLASS.right, WINDOW_GLASS.bottom);
-    return {
-      x: topLeft.x,
-      y: topLeft.y,
-      width: bottomRight.x - topLeft.x,
-      height: bottomRight.y - topLeft.y,
+  private updateEnvironment(seconds = 0): void {
+    const environment = this.readEnvironment?.() ?? {
+      solElapsedMs:
+        RUN_BALANCE.solDurationMs *
+        (NIGHT_BALANCE.nightStarts +
+          this.nightAmount * (NIGHT_BALANCE.fullNight - NIGHT_BALANCE.nightStarts)),
+      nightAmount: this.nightAmount,
+      dustStorm: false,
     };
+    this.nightAmount = environment.nightAmount;
+    this.storm = environment.dustStorm;
+    const sun = this.exterior.update(environment, seconds);
+    this.station?.setLight(this.panelFractions(), sun, this.daylight);
+  }
+
+  protected playExitTransition(onComplete: () => void): void {
+    crossAirlock(this, MINIGAME_AREA, onComplete);
   }
 
   protected calculatePerformance(): number {
@@ -122,6 +149,7 @@ export class SolarPanelsMinigame extends MinigameScene {
 
   protected updateGame(deltaMs: number): void {
     const seconds = deltaMs / 1000;
+    this.updateEnvironment(seconds);
     this.letDustFall(seconds);
     this.sendBolts(seconds);
     const charge = this.dust?.cleanFraction() ?? 0;
@@ -160,20 +188,8 @@ export class SolarPanelsMinigame extends MinigameScene {
     });
   }
 
-  /** Samples the whole finger path, so a fast swipe does not skip dust. */
-  private handleSwipe(pointer: Phaser.Input.Pointer): void {
-    if (!pointer.isDown || this.isFinished || !this.dust) return;
-    const current = new Phaser.Math.Vector2(pointer.x, pointer.y);
-    const from = this.lastPointer ?? current;
-    const distance = Phaser.Math.Distance.BetweenPoints(from, current);
-    const steps = Math.max(1, Math.ceil(distance / SWIPE_SAMPLE_STEP));
-    const touched = new Set<number>();
-    for (let step = 0; step <= steps; step += 1) {
-      const point = from.clone().lerp(current, step / steps);
-      this.dust.wipeAt(point.x, point.y).forEach((panelIndex) => touched.add(panelIndex));
-    }
-    this.lastPointer = current;
-    if (touched.size === 0) return;
+  private panelsWiped(touched: Set<number>): void {
+    if (touched.size === 0 || !this.dust) return;
     this.guide?.show(2);
     this.station?.setLight(this.panelFractions());
     touched.forEach((panelIndex) => this.celebrateIfPanelClean(panelIndex));
@@ -188,15 +204,21 @@ export class SolarPanelsMinigame extends MinigameScene {
     this.shinyPanels.add(panelIndex);
     const centerY = slot.topLeft.y + slot.width / 2;
     sparkleAt(this, slot.foot.x, centerY, 'energyFlash');
+    this.tweens.add({
+      targets: this.astronaut,
+      y: this.astronaut.y - 6,
+      duration: SOLAR_PANELS_BALANCE.celebrationMs,
+      yoyo: true,
+    });
     const message = t('minigame.solar-panels.panelClean');
     floatText(this, slot.foot.x, slot.topLeft.y - CLEAN_POP_OFFSET_Y, message, PALETTE.sun);
   }
 
-  /** Late in the sol the light through the window is weak: the kid is told why. */
+  /** Late in the sol sunlight weakens: the kid is told why. */
   private warnIfNight(station: SolarStation): void {
     const middle = station.slots[1];
     if (this.nightAmount < SOLAR_PANELS_BALANCE.nightWarning || !middle) return;
-    const y = station.window.y + station.window.height;
+    const y = MINIGAME_AREA.y + 64;
     floatText(this, middle.foot.x, y, t('minigame.solar-panels.night'), PALETTE.white);
   }
 

@@ -13,6 +13,15 @@ Formato:
 - ¿Avisado al equipo?: sí / no
 ```
 
+## 2026-11-15 — Outdoor solar mission and base airlock (spec 18)
+- Who: workspace owner, with Codex; explicitly approved proceeding across shared contracts.
+- Decision: extend spec 18 to include the corner airlock on the base map, visual crew routes outside, a quick airlock transition, and a suited astronaut beside the panels. Use biome-specific pixel art, preserving the downloaded Gemini Jezero original; recreate unavailable private Gemini assets with the image generation tool using that reference.
+- Shared contracts: add an optional background hook and live environment reader to `MinigameScene`; extend biome loading, sprite registration and solar room layout. Preserve game actions, task rewards, night restrictions and other missions' default backgrounds.
+- Weather: show the existing dust-storm event outside without adding a new gameplay penalty. Keep Olympus daytime lighting consistent with the other locations until a scientific source supports a darker sky.
+- Why: panels must collect sunlight outdoors, and the visual route should explain how the crew gets there.
+- Affects: specs 04, 06, 07 and 18; solar art assets, UI layout, shared minigame lifecycle and environment data.
+- Team notified?: no; approval was given by the workspace owner. This record documents the integration points for review.
+
 ## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
 - Quién: C (Emilia), con Claude
 - Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).
