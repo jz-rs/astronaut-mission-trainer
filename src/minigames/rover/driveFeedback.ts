@@ -1,7 +1,7 @@
 import type Phaser from 'phaser';
 import { t } from '../../i18n';
 import { floatText } from '../../ui/floatingText';
-import { addIconLabel } from '../../ui/iconLabel';
+import { addIconLabel, type IconLabel } from '../../ui/iconLabel';
 import { FONT_SIZE, MINIGAME_AREA, MINIGAME_PANEL, type Point } from '../../ui/layout';
 import { cssColor, PALETTE } from '../../ui/palette';
 import { addSpriteSized } from '../../ui/sprites';
@@ -12,10 +12,18 @@ import { addSpriteSized } from '../../ui/sprites';
  * the samples saved when the kid comes back early with the X.
  */
 const TUBE_SIZE = 18;
+const COUNTER = { iconSize: 20, insetX: 40, offsetY: 20 };
 const TUBE_FLY_MS = 350;
 const ABOVE_ROVER = 30;
 const TIME_BAR = { offsetY: 34, height: 6, lowFraction: 0.25 };
 const SAVED = { iconSize: 32, popMs: 250, holdMs: 900, strokePx: 6 };
+
+/** The samples counter, top right of the play area; it starts at 0. */
+export function addSampleCounter(scene: Phaser.Scene): IconLabel {
+  const x = MINIGAME_AREA.x + MINIGAME_AREA.width - COUNTER.insetX;
+  const y = MINIGAME_AREA.y + COUNTER.offsetY;
+  return addIconLabel(scene, x, y, 'sampleTube', COUNTER.iconSize, '0', { color: PALETTE.sun });
+}
 
 export function flyTubeToCounter(scene: Phaser.Scene, from: Point, counter: Point): void {
   sayAboveRover(scene, from, '+1', PALETTE.cyan);
