@@ -69,7 +69,7 @@ El código lo van a leer personas (nosotras y el jurado), no solo agentes.
 - **Archivos chicos**: un concepto por archivo, máximo ~200 líneas.
 - **Nada de números mágicos**: todo valor de juego va en `src/config/balance.ts`. Todo color en `src/ui/palette.ts`.
 - **Nada de texto visible en el código**: todo texto sale de `src/i18n/*.json` con `t('clave')`.
-- **Comentarios que explican el POR QUÉ**, no el qué. Cada archivo empieza con un comentario corto de para qué existe.
+- **Comentarios en inglés que explican el POR QUÉ**, no el qué. Cada archivo empieza con un comentario corto de para qué existe.
 - **TypeScript estricto**: prohibido `any`, prohibido `// @ts-ignore`.
 - **Simple > ingenioso**: nada de abstracciones "por si acaso", patrones complejos ni optimizaciones prematuras. Si hay dos formas, elegí la que una persona entiende más rápido.
 - **No dejes código muerto** ni `console.log` olvidados.
@@ -117,7 +117,9 @@ Reglas:
 ## 6. Git
 
 - Una rama por spec: `spec-07-paneles`, `spec-03-nucleo`.
-- Commits chicos y descriptivos en español o inglés, siempre el mismo idioma por commit.
+- **Todo lo que queda en el repo va en inglés** (regla de NASA Space Apps): mensajes de commit, nombres de rama, títulos y descripciones de PR, comentarios y reviews en GitHub, y comentarios del código. Commits chicos y descriptivos.
+  - Excepción: los textos del juego en `src/i18n/es.json` siguen en español (es la traducción del juego).
+  - Lo que ya está en español (commits viejos, docs) no se reescribe: nunca se reescribe la historia de git.
 - Nada entra a `main` sin un Pull Request revisado por otra integrante.
 - Nunca `push --force` a `main`.
 
