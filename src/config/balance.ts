@@ -91,8 +91,6 @@ export const OXYGEN_FACTORY_BALANCE = {
   moleculesOnScreen: 3,
   moleculeSpeed: 30,
   atomRadius: 11,
-  /** A loose O dropped this close to another one joins it into O₂. */
-  joinDistance: 40,
 } as const;
 
 export const GREENHOUSE_BALANCE = {

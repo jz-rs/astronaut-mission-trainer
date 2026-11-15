@@ -9,6 +9,8 @@
  *   - dims the base and draws the panel, the one-line instruction and the time bar;
  *   - ends the game when time runs out (or when the minigame calls `finish()`);
  *   - draws the X to leave early: no result, no reward and no energy spent (`onExit`);
+ *   - optionally pauses the whole game (`pauseGame` / `resumeGame`): its own clock AND the base
+ *     behind it, so the survival bars don't drop while a minigame explains how it is played;
  *   - shows "PERFECT! / Well done! / Almost!" plus what it teaches (resultCard.ts), and reports
  *     and closes when the kid taps GO ON.
  *
@@ -24,6 +26,7 @@ import { MINIGAME_BALANCE, TASK_BALANCE } from '../config/balance';
 import { clampPerformance } from '../core/training';
 import type { TaskId } from '../core/types';
 import { t, type TranslationKey } from '../i18n';
+import { SCENE_KEYS } from '../scenes/sceneKeys';
 import { showResultCard } from './resultCard';
 import {
   FONT_SIZE,
@@ -71,6 +74,7 @@ export abstract class MinigameScene extends Phaser.Scene {
   private onExit: () => void = () => undefined;
   private elapsedMs = 0;
   private finished = false;
+  private gamePaused = false;
   private timeBar: Phaser.GameObjects.Graphics | null = null;
   private closeButton: Phaser.GameObjects.Container | null = null;
 
@@ -89,6 +93,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.onExit = data.onExit ?? (() => undefined);
     this.elapsedMs = 0;
     this.finished = false;
+    this.gamePaused = false;
   }
 
   create(): void {
@@ -98,7 +103,7 @@ export abstract class MinigameScene extends Phaser.Scene {
   }
 
   update(_time: number, deltaMs: number): void {
-    if (this.finished) return;
+    if (this.finished || this.gamePaused) return;
     this.elapsedMs += deltaMs;
     this.drawTimeBar();
     if (this.elapsedMs >= MINIGAME_BALANCE.durationMs) {
@@ -106,6 +111,20 @@ export abstract class MinigameScene extends Phaser.Scene {
       return;
     }
     this.updateGame?.(deltaMs);
+  }
+
+  /**
+   * Freezes the minigame clock, its per-frame hook and the base behind it (bars, events, bots),
+   * so the kid can learn without losing anything. Nothing moves until `resumeGame()`.
+   */
+  protected pauseGame(): void {
+    this.gamePaused = true;
+    if (this.scene.isActive(SCENE_KEYS.base)) this.scene.pause(SCENE_KEYS.base);
+  }
+
+  protected resumeGame(): void {
+    this.gamePaused = false;
+    if (this.scene.isPaused(SCENE_KEYS.base)) this.scene.resume(SCENE_KEYS.base);
   }
 
   protected get isFinished(): boolean {
@@ -139,6 +158,7 @@ export abstract class MinigameScene extends Phaser.Scene {
   private exit(): void {
     if (this.finished) return;
     this.finished = true;
+    this.resumeGame(); // never leave the base frozen behind
     this.onExit();
     this.scene.stop();
   }
