@@ -154,6 +154,16 @@ export const CABIN_MONITOR_SCREENS: readonly Rect[] = [
   { x: 506, y: 196, width: 16, height: 10 },
 ];
 export const CABIN_TABLET_SCREEN: Rect = { x: 49, y: 221, width: 79, height: 39 };
+/**
+ * The tablet lies on the table in perspective: its screen is a slanted quad, measured from the
+ * art. Its long side goes from `left` up to `top`; its short side from `left` down to `bottom`.
+ */
+export const CABIN_TABLET_QUAD = {
+  left: { x: 48, y: 249.5 },
+  top: { x: 91.5, y: 222.5 },
+  right: { x: 128, y: 231.5 },
+  bottom: { x: 85, y: 262 },
+} as const;
 /** Touch areas of the objects a kid can tap in the cabin. */
 export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
 export const CABIN_MONITOR_ZONE: Rect = { x: 496, y: 108, width: 140, height: 172 };

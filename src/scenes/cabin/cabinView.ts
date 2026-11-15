@@ -1,20 +1,19 @@
 import Phaser from 'phaser';
 import { INTRO_BALANCE } from '../../config/balance';
 import { addCoverPhoto } from '../../ui/coverPhoto';
-import { t } from '../../i18n';
 import {
   CABIN_MONITOR_OUTLINE,
   CABIN_MONITOR_SCREENS,
   CABIN_TABLET_SCREEN,
   FONT_SIZE,
-  rectCenter,
   type Rect,
 } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
-import { addGlowText, drawVisorCorners } from '../../ui/screenUi';
+import { drawVisorCorners } from '../../ui/screenUi';
 import { SPRITE_SCALE } from '../../ui/sprites';
 import { addText } from '../../ui/text';
 import type { CabinArtKey } from './cabinArt';
+import { addTabletLabel } from './tabletLabel';
 
 /**
  * Spec 18 — Pieces shared by the cabin and the landing: the ship background with its glass holes,
@@ -92,8 +91,7 @@ export function drawCabinScreens(scene: Phaser.Scene): Phaser.GameObjects.GameOb
     });
     parts.push(glow);
   }
-  const tablet = rectCenter(CABIN_TABLET_SCREEN);
-  parts.push(addGlowText(scene, tablet.x, tablet.y, t('cabin.tablet'), { color: TECH_GLOW }));
+  parts.push(addTabletLabel(scene));
   return parts;
 }
 
