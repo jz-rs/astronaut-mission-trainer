@@ -229,8 +229,8 @@
   "rover.samplesSaved": "+{count} saved!",
   "rover.tubesSealed": "🧪 Sealed tubes: {sealed}",
   "rover.tubesLost": "Ruined by dust: {count}",
-  "minigame.oxygen-factory.notNitrogen": "That's nitrogen (N₂)!\nMOXIE only uses CO₂",
-  "minigame.oxygen-factory.notArgon": "That's argon (Ar)!\nMOXIE only uses CO₂",
+  "minigame.oxygen-factory.notNitrogen": "No N₂! Only CO₂",
+  "minigame.oxygen-factory.notArgon": "No Ar! Only CO₂",
   "minigame.greenhouse.marsSoil": "Mars soil",
-  "minigame.greenhouse.toxicSoil": "Mars soil is toxic!"
+  "minigame.greenhouse.toxicSoil": "Toxic!"
 }
