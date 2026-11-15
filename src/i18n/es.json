@@ -182,6 +182,7 @@
   "manual.ready.text": "Las cuatro barras bajan con el tiempo. Si una llega a cero, la tripulación tiene que evacuar y la misión termina. ¡Cuidá las cuatro, coordiná a tu tripulación y prestá atención a las alertas!",
   "monitor.destination": "DESTINO {current}/{total}",
   "monitor.realPhoto": "FOTO REAL NASA",
+  "monitor.landButton": "ATERRIZAR",
   "monitor.ready": "LISTO PARA ATERRIZAR",
   "monitor.needManual": "Primero leé el manual",
   "monitor.needStars": "Te faltan {stars} estrellas",

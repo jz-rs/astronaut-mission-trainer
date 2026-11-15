@@ -12,6 +12,7 @@ import { SPRITE_SCALE } from '../../ui/sprites';
 import { consoleButtonTexture, LAND_LOCKED_TEXTURE, preloadCabinArt } from '../cabin/cabinArt';
 import { SCENE_KEYS } from '../sceneKeys';
 import { createConsoleButton, type ConsoleButton } from './consoleButton';
+import { addLandHint, type LandHint } from './landHint';
 import {
   drawMonitorScreens,
   galleryLength,
@@ -36,6 +37,7 @@ export class MonitorScene extends Phaser.Scene {
   private photoIndex = 0;
   private screenParts: Phaser.GameObjects.GameObject[] = [];
   private landButton!: ConsoleButton;
+  private landHint!: LandHint;
 
   constructor() {
     super(SCENE_KEYS.monitor);
@@ -58,6 +60,7 @@ export class MonitorScene extends Phaser.Scene {
     createConsoleButton(this, 'info', () => this.toggleInfo()).sprite.setDepth(11);
     this.landButton = createConsoleButton(this, 'land', () => this.land());
     this.landButton.sprite.setDepth(11);
+    this.landHint = addLandHint(this, this.landButton.sprite);
     addScanlines(this);
     this.refresh();
   }
@@ -120,6 +123,7 @@ export class MonitorScene extends Phaser.Scene {
     this.landButton.setRestingTexture(
       state.blocker ? LAND_LOCKED_TEXTURE : consoleButtonTexture('aterrizar'),
     );
+    this.landHint.setReady(!state.blocker);
   }
 
   private land(): void {

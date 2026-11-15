@@ -195,7 +195,13 @@ export const INTRO_BALANCE = {
   /** Frames of a physical console button going down and back up. */
   consolePressFrameMs: 50,
   guideFloatMs: 1_800,
+  /** Loose things in the cabin drift slower than the guide, each a bit out of step. */
+  itemFloatMs: 2_600,
+  itemFloatPx: 5,
+  itemSpinDeg: 10,
   highlightPulseMs: 600,
+  /** The arrow over LAND bounces while the ship can land. */
+  landArrowBounceMs: 450,
   landingDurationMs: 6_000,
   /** After touchdown: a still moment, then a fade to black into the base. */
   landingStillMs: 700,

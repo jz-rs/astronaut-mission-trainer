@@ -5,6 +5,7 @@ import { loadProgress, saveProgress } from '../../services/progressStorage';
 import {
   CABIN_GUIDE_SCALE,
   CABIN_GUIDE_SPOT,
+  CABIN_DASHBOARD_OUTLINE,
   CABIN_DASHBOARD_SCREEN,
   CABIN_DASHBOARD_ZONE,
   CABIN_TABLET_ZONE,
@@ -19,11 +20,11 @@ import { INTRO_PHOTOS, preloadCabinArt, type CabinArtKey } from './cabinArt';
 import {
   addCabinBackground,
   addHighlight,
-  addDashboardGlow,
   addPhotoCredit,
   addWindowPhoto,
   drawCabinScreens,
 } from './cabinView';
+import { addFloatingItems } from './floatingItems';
 import { showGuideMessage } from './guideMessage';
 import { showWelcomeExtra, WELCOME_STEPS, type CabinTarget } from './welcomeScript';
 
@@ -41,7 +42,7 @@ export interface CabinSceneData {
 const TARGET_AREAS: Record<CabinTarget, Rect> = {
   window: CABIN_WINDOW,
   tablet: CABIN_TABLET_ZONE,
-  monitor: CABIN_DASHBOARD_ZONE,
+  monitor: CABIN_DASHBOARD_OUTLINE,
 };
 const GUIDE_FLOAT_PX = 6;
 const GUIDE_DEPTH = 20;
@@ -66,6 +67,7 @@ export class CabinScene extends Phaser.Scene {
     drawRouteMap(this, -1, CABIN_DASHBOARD_SCREEN);
     addCabinBackground(this, 'cabin');
     addPhotoCredit(this, CABIN_WINDOW, INTRO_PHOTOS.marsGlobe.credit);
+    addFloatingItems(this);
     this.guide = this.addGuide();
     this.addTouchZone(CABIN_TABLET_ZONE, () => this.openManual());
     this.addTouchZone(CABIN_DASHBOARD_ZONE, () => this.scene.start(SCENE_KEYS.monitor));
@@ -122,8 +124,7 @@ export class CabinScene extends Phaser.Scene {
 
   private point(pose: CabinArtKey, target?: CabinTarget): void {
     this.moment.forEach((part) => part.destroy());
-    if (target === 'monitor') this.moment = [addDashboardGlow(this)];
-    else this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
+    this.moment = target ? [addHighlight(this, TARGET_AREAS[target])] : [];
     this.guide.setTexture(pose);
   }
 

@@ -164,9 +164,19 @@ export const CABIN_TABLET_QUAD = {
 /** Touch areas of the objects a kid can tap in the cabin. */
 export const CABIN_TABLET_ZONE: Rect = { x: 24, y: 204, width: 138, height: 74 };
 export const CABIN_DASHBOARD_ZONE: Rect = { x: 262, y: 146, width: 116, height: 54 };
-/** Edge of the dashboard screens, for its glowing border when the guide points at it. */
+/** Edge of the dashboard screens, framed by the highlight when the guide points at it. */
 export const CABIN_DASHBOARD_OUTLINE: Rect = { x: 278, y: 151, width: 86, height: 26 };
 export const CABIN_GUIDE_SPOT: Point = { x: 125, y: 75 };
+/** Loose things floating in zero gravity, away from what a kid has to tap. */
+export const CABIN_FLOATING_ITEMS = [
+  { key: 'floatingPen', x: 205, y: 40, angle: -20 },
+  { key: 'floatingSnack', x: 458, y: 52, angle: 15 },
+  { key: 'floatingWater', x: 408, y: 128, angle: -12 },
+  { key: 'floatingRocket', x: 452, y: 214, angle: 25 },
+  { key: 'floatingWrench', x: 112, y: 44, angle: 30 },
+] as const;
+/** The floating things are drawn about this many game pixels tall. */
+export const CABIN_FLOATING_ITEM_SIZE = 34;
 /** The guide sprites are cut bigger than the rest of the kit. */
 export const CABIN_GUIDE_SCALE = 0.425;
 export const CABIN_MESSAGE_PANEL: Rect = { x: 75, y: 266, width: 490, height: 86 };

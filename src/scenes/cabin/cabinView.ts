@@ -1,13 +1,7 @@
 import Phaser from 'phaser';
 import { INTRO_BALANCE } from '../../config/balance';
 import { addCoverPhoto } from '../../ui/coverPhoto';
-import {
-  CABIN_DASHBOARD_OUTLINE,
-  CABIN_DASHBOARD_SCREEN,
-  CABIN_TABLET_SCREEN,
-  FONT_SIZE,
-  type Rect,
-} from '../../ui/layout';
+import { CABIN_DASHBOARD_SCREEN, CABIN_TABLET_SCREEN, FONT_SIZE, type Rect } from '../../ui/layout';
 import { PALETTE, TECH_GLOW } from '../../ui/palette';
 import { drawVisorCorners } from '../../ui/screenUi';
 import { SPRITE_SCALE } from '../../ui/sprites';
@@ -25,8 +19,6 @@ const CREDIT_TEXT_SCALE = 0.6;
 const CREDIT_TEXT_RESOLUTION = 4;
 const HIGHLIGHT_MARGIN = 4;
 const SCREEN_GLOW = { dim: 0.2, bright: 0.45 } as const;
-const DASHBOARD_GLOW = { wide: 6, wideAlpha: 0.3, thin: 2, dimAlpha: 0.35, radius: 4 } as const;
-const DASHBOARD_GLOW_DEPTH = 15;
 
 /** The background goes on top of what is drawn behind its transparent screens. */
 export function addCabinBackground(
@@ -93,24 +85,6 @@ export function drawCabinScreens(scene: Phaser.Scene): Phaser.GameObjects.GameOb
   }
   parts.push(addTabletLabel(scene));
   return parts;
-}
-
-/** A breathing cyan edge around the dashboard screens, like the tablet's: "tap me". */
-export function addDashboardGlow(scene: Phaser.Scene): Phaser.GameObjects.Graphics {
-  const graphics = scene.add.graphics().setDepth(DASHBOARD_GLOW_DEPTH);
-  const { x, y, width, height } = CABIN_DASHBOARD_OUTLINE;
-  graphics.lineStyle(DASHBOARD_GLOW.wide, TECH_GLOW, DASHBOARD_GLOW.wideAlpha);
-  graphics.strokeRoundedRect(x, y, width, height, DASHBOARD_GLOW.radius);
-  graphics.lineStyle(DASHBOARD_GLOW.thin, TECH_GLOW, 1);
-  graphics.strokeRoundedRect(x, y, width, height, DASHBOARD_GLOW.radius);
-  scene.tweens.add({
-    targets: graphics,
-    alpha: DASHBOARD_GLOW.dimAlpha,
-    yoyo: true,
-    repeat: -1,
-    duration: INTRO_BALANCE.highlightPulseMs,
-  });
-  return graphics;
 }
 
 /** Pulsing yellow visor corners around what the kid should look at or tap. */
