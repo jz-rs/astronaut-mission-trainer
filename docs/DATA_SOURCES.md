@@ -1,93 +1,93 @@
-# Fuentes de datos e imágenes de NASA
+# NASA data and image sources
 
-Todo dato científico o imagen real que aparezca en el juego se registra acá. Esta lista se muestra también en la pantalla de Fuentes del juego.
+Record every scientific fact or real image used in the game here. This list is also shown on the game's Sources screen.
 
-> ⚠️ La mayoría de las imágenes de NASA son de dominio público, pero **no todas** (algunas son de ESA, universidades o empresas). Verificá la licencia de cada imagen antes de usarla y poné el crédito que indique la fuente (por ejemplo "NASA/JPL-Caltech").
+> ⚠️ Most NASA images are public domain, but **not all** (some belong to ESA, universities, or companies). Check each image's license before use and include the credit specified by its source (for example, "NASA/JPL-Caltech").
 
-## Recursos que vamos a usar
+## Resources we plan to use
 
-| Tema | Recurso | URL |
+| Topic | Resource | URL |
 |---|---|---|
-| Clima espacial (tormentas solares) | DONKI | https://ccmc.gsfc.nasa.gov/tools/DONKI/ |
-| Radiación, salud y blindaje | OSDR RadLab | https://visualization.osdr.nasa.gov/radlab/gui/data-api/ |
-| Salud humana en el espacio | OSDR | https://osdr.nasa.gov/bio/repo/ |
-| Mapas e imágenes de Marte | Mars Trek | https://trek.nasa.gov/mars/ |
-| Imágenes y APIs | api.nasa.gov | https://api.nasa.gov/ |
+| Space weather (solar storms) | DONKI | https://ccmc.gsfc.nasa.gov/tools/DONKI/ |
+| Radiation, health, and shielding | OSDR RadLab | https://visualization.osdr.nasa.gov/radlab/gui/data-api/ |
+| Human health in space | OSDR | https://osdr.nasa.gov/bio/repo/ |
+| Mars maps and imagery | Mars Trek | https://trek.nasa.gov/mars/ |
+| Images and APIs | api.nasa.gov | https://api.nasa.gov/ |
 
-## Datos usados en el juego
+## Facts used in the game
 
-Claves de texto en `src/i18n/*.json`. "Verificado" = el dato se chequeó contra la fuente (2026-11-14); falta la revisión de una segunda persona.
+Text keys in `src/i18n/*.json`. "Verified" = checked against the source (2026-11-14); still awaiting a second person's review.
 
-| Dónde aparece | Dato | Fuente | Verificado |
+| Where it appears | Fact | Source | Verified |
 |---|---|---|---|
-| Minijuego oxígeno (`task.oxygen-factory.why`) | MOXIE le saca el oxígeno al CO₂ del aire | ídem MOXIE | ✅ |
-| Minijuego paneles (`why`) | El polvo tapa los paneles y deja sin energía | ídem fin de Opportunity | ✅ |
-| Minijuego invernadero (`why`) | En la ISS los astronautas riegan las plantas de Veggie | ídem Veggie fact sheet | ✅ |
-| Minijuego escudo (`why`) | El agua y el regolito frenan la radiación | Falta fuente NASA (blindaje con agua/regolito) | ⚠️ falta link |
-| Minijuego oxígeno (`task.oxygen-factory.fact`) | MOXIE fabricó oxígeno con el aire de Marte | [NASA/JPL — MOXIE completes Mars mission](https://www.jpl.nasa.gov/news/nasas-oxygen-generating-experiment-moxie-completes-mars-mission/) | ✅ |
-| Minijuego oxígeno (`fact2`) | 122 g de oxígeno ≈ lo que respira un perrito en 10 horas | ídem | ✅ |
-| Minijuego oxígeno (`fact3`) | El aire de Marte es casi todo CO₂ | ídem (MOXIE separa el oxígeno del CO₂ del aire) | ✅ |
-| Minijuego paneles (`fact`) | El polvo de Marte es muy fino y tapa los paneles | [NASA — fin de Opportunity](https://www.nasa.gov/news-release/nasas-record-setting-opportunity-rover-mission-on-mars-comes-to-end) | ⚠️ falta fuente para "como talco" |
-| Minijuego paneles (`fact2`) | Tormenta de polvo de 2018 apagó a Opportunity | ídem | ✅ |
-| Minijuego paneles (`fact3`) | En 2009 un viento limpió los paneles de Spirit | [NASA/JPL — Spirit gets energy boost](https://www.jpl.nasa.gov/news/spirit-gets-energy-boost-from-cleaner-solar-panels/) | ✅ |
-| Minijuego invernadero (`fact`, `fact3`) | Lechuga de Veggie en la ISS (2015), romana roja "Outredgeous" | [NASA — Veggie fact sheet](https://www.nasa.gov/wp-content/uploads/2019/04/veggie_fact_sheet_508.pdf) | ✅ |
-| Minijuego invernadero (`fact2`) | Zinnias casi mueren por moho (2016) y se salvaron | [Space.com, con datos de NASA](https://www.space.com/31658-zinnia-flowers-bloom-in-space-photo.html) | ✅ (fuente secundaria) |
-| Minijuego escudo (`fact`) | Marte perdió su campo magnético hace ~4.000 millones de años | [NASA SVS — Solar wind strips the Martian atmosphere](https://svs.gsfc.nasa.gov/4370/) | ✅ |
-| Minijuego escudo (`fact2`) | Mayo 2024: tormenta solar y auroras en Marte (MAVEN) | [NASA/JPL vía Phys.org](https://phys.org/news/2024-06-nasa-mars-epic-solar-storm.html) | ✅ |
-| Minijuego escudo (`fact3`) | Curiosity mide la radiación en el suelo (RAD) | [NASA/JPL — tormenta de 2017](https://www.jpl.nasa.gov/news/large-solar-storm-sparks-global-aurora-and-doubles-radiation-levels-on-the-martian-surface/) | ✅ |
-| Rover (`rover.guide2`, `rover.guide4`, `rover.fact`) | Perseverance lleva 43 tubos; cada muestra es un cilindro un poco más grueso que un lápiz, del tamaño de una tiza | [NASA — A Martian Roundtrip: Perseverance Rover Sample Tubes](https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/a-martian-roundtrip-nasas-perseverance-rover-sample-tubes/) | ✅ |
-| Rover (`rover.guide3`, `rover.contaminated`) | Los tubos se sellan para que nada de afuera contamine la muestra; primera muestra sellada el 1/9/2021 | ídem + [NASA/JPL — Perseverance collects first Mars rock sample](https://www.jpl.nasa.gov/news/nasas-perseverance-rover-collects-first-mars-rock-sample/) | ✅ |
-| Rover (`rover.guide1`) | El rover Spirit quedó atrapado en arena blanda en 2009 (en "Troy") y nunca pudo salir | [NASA/JPL — Mars Rover Spirit](https://www.jpl.nasa.gov/missions/mars-exploration-rover-spirit-mer-spirit/), [NASA — Spirit embedded in soft soil](https://www.nasa.gov/image-article/spirit-embedded-soft-soil-mars-as-engineers-devise-methods-free-spirit/) | ✅ |
-| Lugar Jezero (`location.jezero.why`) | Fue un lago | NASA — misión Perseverance | ⚠️ falta link |
-| Lugar Gale | Polvo: los paneles rinden menos | Simplificación del juego (basada en las tormentas de polvo) | ⚠️ |
-| Lugar Olympus Mons | Volcán más alto; arriba hay menos aire | [ESA — Geography of Mars](https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Geography_of_Mars) | ✅ |
-| Lugar casquete polar | Frío y meses de oscuridad | NASA — Mars facts | ⚠️ falta link |
-| Lugar Valles Marineris | Cañón de 4.000 km | [ESA — Geography of Mars](https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Geography_of_Mars) | ✅ |
-| Eventos (`data/events.json`) | 8 eventos reales: tormentas solares 2003/2017/2024, tormenta de polvo 2018, polvo de InSight 2022, moho 2016, viento de 2009, cosecha 2015 | El campo `source` de cada evento | ✅ |
-| Manual, tu misión (`manual.page.mission`) | Un sol dura 24 h 39 min | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ revisar |
-| Manual, oxígeno | El aire de Marte es casi todo CO₂; MOXIE viajó dentro de Perseverance | ídem MOXIE completes Mars mission | ✅ |
-| Manual, escudo | Marte no tiene campo magnético global y su aire es fino: llega más radiación | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ revisar |
-| Manual, rover | Sojourner fue el primer rover en Marte (1997); Perseverance aterrizó en Jezero en 2021 | [NASA — Mars Pathfinder](https://science.nasa.gov/mission/mars-pathfinder/), [NASA — Mars 2020](https://science.nasa.gov/mission/mars-2020-perseverance/) | ⚠️ revisar |
-| Manual, comunicación | Un mensaje tarda entre ~5 y ~20 minutos entre Marte y la Tierra | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ revisar |
+| Oxygen minigame (`task.oxygen-factory.why`) | MOXIE extracts oxygen from CO₂ in the air | Same MOXIE source below | ✅ |
+| Panels minigame (`why`) | Dust covers the panels and cuts off power | Same Opportunity mission-end source below | ✅ |
+| Greenhouse minigame (`why`) | Astronauts water Veggie plants on the ISS | Same Veggie fact sheet below | ✅ |
+| Shield minigame (`why`) | Water and regolith block radiation | NASA source needed (water/regolith shielding) | ⚠️ link missing |
+| Oxygen minigame (`task.oxygen-factory.fact`) | MOXIE made oxygen from Martian air | [NASA/JPL — MOXIE completes Mars mission](https://www.jpl.nasa.gov/news/nasas-oxygen-generating-experiment-moxie-completes-mars-mission/) | ✅ |
+| Oxygen minigame (`fact2`) | 122 g of oxygen ≈ what a small dog breathes in 10 hours | Same source | ✅ |
+| Oxygen minigame (`fact3`) | Martian air is almost entirely CO₂ | Same source (MOXIE separates oxygen from CO₂ in the air) | ✅ |
+| Panels minigame (`fact`) | Martian dust is very fine and covers the panels | [NASA — Opportunity mission ends](https://www.nasa.gov/news-release/nasas-record-setting-opportunity-rover-mission-on-mars-comes-to-end) | ⚠️ source needed for "like talcum powder" |
+| Panels minigame (`fact2`) | The 2018 dust storm shut down Opportunity | Same source | ✅ |
+| Panels minigame (`fact3`) | Wind cleaned Spirit's panels in 2009 | [NASA/JPL — Spirit gets energy boost](https://www.jpl.nasa.gov/news/spirit-gets-energy-boost-from-cleaner-solar-panels/) | ✅ |
+| Greenhouse minigame (`fact`, `fact3`) | Veggie lettuce on the ISS (2015), red romaine "Outredgeous" | [NASA — Veggie fact sheet](https://www.nasa.gov/wp-content/uploads/2019/04/veggie_fact_sheet_508.pdf) | ✅ |
+| Greenhouse minigame (`fact2`) | Zinnias nearly died from mold (2016) and were saved | [Space.com, using NASA data](https://www.space.com/31658-zinnia-flowers-bloom-in-space-photo.html) | ✅ (secondary source) |
+| Shield minigame (`fact`) | Mars lost its magnetic field ~4 billion years ago | [NASA SVS — Solar wind strips the Martian atmosphere](https://svs.gsfc.nasa.gov/4370/) | ✅ |
+| Shield minigame (`fact2`) | May 2024: solar storm and auroras on Mars (MAVEN) | [NASA/JPL via Phys.org](https://phys.org/news/2024-06-nasa-mars-epic-solar-storm.html) | ✅ |
+| Shield minigame (`fact3`) | Curiosity measures radiation at the surface (RAD) | [NASA/JPL — 2017 storm](https://www.jpl.nasa.gov/news/large-solar-storm-sparks-global-aurora-and-doubles-radiation-levels-on-the-martian-surface/) | ✅ |
+| Rover (`rover.guide2`, `rover.guide4`, `rover.fact`) | Perseverance carries 43 tubes; each sample is a cylinder slightly thicker than a pencil, about the size of a piece of chalk | [NASA — A Martian Roundtrip: Perseverance Rover Sample Tubes](https://www.nasa.gov/missions/mars-2020-perseverance/perseverance-rover/a-martian-roundtrip-nasas-perseverance-rover-sample-tubes/) | ✅ |
+| Rover (`rover.guide3`, `rover.contaminated`) | Tubes are sealed to prevent outside contamination; first sample sealed on 2021-09-01 | Same source + [NASA/JPL — Perseverance collects first Mars rock sample](https://www.jpl.nasa.gov/news/nasas-perseverance-rover-collects-first-mars-rock-sample/) | ✅ |
+| Rover (`rover.guide1`) | Spirit got stuck in soft sand in 2009 (at "Troy") and never escaped | [NASA/JPL — Mars Rover Spirit](https://www.jpl.nasa.gov/missions/mars-exploration-rover-spirit-mer-spirit/), [NASA — Spirit embedded in soft soil](https://www.nasa.gov/image-article/spirit-embedded-soft-soil-mars-as-engineers-devise-methods-free-spirit/) | ✅ |
+| Jezero location (`location.jezero.why`) | It used to be a lake | NASA — Perseverance mission | ⚠️ link missing |
+| Gale location | Dust: panels produce less power | Game simplification (based on dust storms) | ⚠️ |
+| Olympus Mons location | Tallest volcano; less air at the summit | [ESA — Geography of Mars](https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Geography_of_Mars) | ✅ |
+| Polar cap location | Cold and months of darkness | NASA — Mars facts | ⚠️ link missing |
+| Valles Marineris location | 4,000 km canyon | [ESA — Geography of Mars](https://www.esa.int/Science_Exploration/Space_Science/Mars_Express/Geography_of_Mars) | ✅ |
+| Events (`data/events.json`) | 8 real events: solar storms in 2003/2017/2024, 2018 dust storm, InSight dust in 2022, mold in 2016, wind in 2009, harvest in 2015 | Each event's `source` field | ✅ |
+| Manual, your mission (`manual.page.mission`) | A sol lasts 24 h 39 min | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ review needed |
+| Manual, oxygen | Martian air is almost entirely CO₂; MOXIE traveled inside Perseverance | Same MOXIE completes Mars mission source | ✅ |
+| Manual, shield | Mars has no global magnetic field and its air is thin: more radiation reaches it | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ review needed |
+| Manual, rover | Sojourner was the first rover on Mars (1997); Perseverance landed in Jezero in 2021 | [NASA — Mars Pathfinder](https://science.nasa.gov/mission/mars-pathfinder/), [NASA — Mars 2020](https://science.nasa.gov/mission/mars-2020-perseverance/) | ⚠️ review needed |
+| Manual, communication | A message takes ~5 to ~20 minutes between Mars and Earth | [NASA Science — Mars facts](https://science.nasa.gov/mars/facts/) | ⚠️ review needed |
 
-## ¿Qué misiones aterrizaron en cada nivel?
+## Which missions landed at each level?
 
-La base del juego es **ficción**: es una misión tripulada imaginaria del futuro. Hasta hoy (2026) **nadie fue a Marte** y **la NASA no tiene bases allá**. Todas las misiones fueron robots: sondas fijas y rovers. Ningún texto, imagen ni dato del juego puede dar a entender que en un lugar aterrizó algo que no aterrizó.
+The game's base is **fictional**: an imaginary future crewed mission. As of today (2026), **no one has been to Mars** and **NASA has no bases there**. All missions have been robots: stationary landers and rovers. No game text, image, or fact may imply that something landed at a location where it did not.
 
-| Nivel | ¿Aterrizó algo? | Detalle | Fuente |
+| Level | Has anything landed there? | Details | Source |
 |---|---|---|---|
-| Cráter Jezero | ✅ Sí | Perseverance (con el helicóptero Ingenuity), 18/02/2021 | [NASA — Mars 2020 Perseverance](https://science.nasa.gov/mission/mars-2020-perseverance/) |
-| Cráter Gale | ✅ Sí | Curiosity, 06/08/2012. Sigue trabajando y sube por el Monte Sharp. | [NASA — Curiosity](https://science.nasa.gov/mission/msl-curiosity/) |
-| Casquete polar | ⚠️ **Sobre el casquete, no** | Phoenix bajó el 25/05/2008 en la llanura ártica (Vastitas Borealis, ~68°N), **cerca** del casquete pero no encima: el casquete permanente empieza más o menos a los 80°N. Encontró hielo de agua bajo el suelo. | [NASA — Phoenix](https://science.nasa.gov/mission/phoenix/) |
-| Olympus Mons | ❌ **Nunca** | Solo fotos y mediciones desde órbita (Viking, Mars Global Surveyor, Mars Reconnaissance Orbiter). | [NASA PIA00300](https://images.nasa.gov/details/PIA00300) |
-| Valles Marineris | ❌ **Nunca** | Solo fotos desde órbita. | [NASA PIA00425](https://images.nasa.gov/details/PIA00425) |
+| Jezero crater | ✅ Yes | Perseverance (with the Ingenuity helicopter), 2021-02-18 | [NASA — Mars 2020 Perseverance](https://science.nasa.gov/mission/mars-2020-perseverance/) |
+| Gale crater | ✅ Yes | Curiosity, 2012-08-06. Still working and climbing Mount Sharp. | [NASA — Curiosity](https://science.nasa.gov/mission/msl-curiosity/) |
+| Polar cap | ⚠️ **Not on the cap itself** | Phoenix landed on 2008-05-25 on the Arctic plain (Vastitas Borealis, ~68°N), **near** the cap but not on it: the permanent cap starts at roughly 80°N. It found water ice beneath the soil. | [NASA — Phoenix](https://science.nasa.gov/mission/phoenix/) |
+| Olympus Mons | ❌ **Never** | Only photos and measurements from orbit (Viking, Mars Global Surveyor, Mars Reconnaissance Orbiter). | [NASA PIA00300](https://images.nasa.gov/details/PIA00300) |
+| Valles Marineris | ❌ **Never** | Only photos from orbit. | [NASA PIA00425](https://images.nasa.gov/details/PIA00425) |
 
-**Consecuencias para el juego:**
-- Las fotos reales de **Olympus Mons y Valles Marineris** son **desde órbita** y así hay que presentarlas (por ejemplo, "Foto real NASA, tomada desde órbita"). No se las puede mostrar como si fueran una vista desde el suelo.
-- La foto del **casquete polar** desde el suelo es de **Phoenix**, en la llanura ártica cercana. El crédito tiene que decir dónde se tomó.
-- La altura de Olympus Mons: la ficha vieja de Viking (PIA00300, 1998) dice 27 km. Las mediciones láser de Mars Global Surveyor (MOLA) dan unos 22 km sobre el nivel de referencia de Marte, que es lo que usa el juego.
+**Consequences for the game:**
+- Real photos of **Olympus Mons and Valles Marineris** are **from orbit** and must be presented that way (for example, "Real NASA photo, taken from orbit"). They cannot be shown as ground-level views.
+- The ground-level **polar cap** photo is from **Phoenix**, on the nearby Arctic plain. The credit must state where it was taken.
+- Olympus Mons height: the old Viking record (PIA00300, 1998) says 27 km. Mars Global Surveyor laser measurements (MOLA) give about 22 km above Mars' reference level, which is what the game uses.
 
-## Imágenes reales usadas
+## Real images used
 
-| Archivo | Qué muestra | Crédito | Licencia | URL original |
+| File | What it shows | Credit | License | Original URL |
 |---|---|---|---|---|
-| `public/assets/nasa/jezero.jpg` | Jezero desde el suelo: primera panorámica en alta resolución de Perseverance (recortada) | NASA/JPL-Caltech/ASU/MSSS | Dominio público (NASA/JPL) | [PIA23727](https://photojournal.jpl.nasa.gov/catalog/PIA23727) |
-| `public/assets/nasa/gale.jpg` | Monte Sharp, dentro del cráter Gale, visto por Curiosity (recortada) | NASA/JPL-Caltech/MSSS | Dominio público (NASA/JPL) | [PIA16099](https://photojournal.jpl.nasa.gov/catalog/PIA16099) |
-| `public/assets/nasa/olympus-mons.jpg` | Olympus Mons visto desde arriba, mosaico de los Viking (recortada) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
-| `public/assets/nasa/north-pole.jpg` | Casquete polar norte en verano, Mars Global Surveyor (recortada) | NASA/JPL/MSSS | Dominio público (NASA/JPL) | [PIA02800](https://photojournal.jpl.nasa.gov/catalog/PIA02800) |
-| `public/assets/nasa/valles-marineris.jpg` | Valles Marineris, mosaico de los Viking (recortada) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00422](https://photojournal.jpl.nasa.gov/catalog/PIA00422) |
-| `public/assets/nasa/marte-disco-completo.jpg` | Marte entero (disco redondo, con Valles Marineris en el centro), mosaico de los Viking (achicada a 960 px). Para la ventana de la cabina y el inicio del aterrizaje (spec 19) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00407](https://images.nasa.gov/details/PIA00407) |
-| `public/assets/nasa/moxie-dentro-de-perseverance.jpg` | MOXIE (dorado) ya instalado dentro del rover Perseverance (achicada a 960 px). Tablet, página de oxígeno | NASA/JPL-Caltech | Dominio público (NASA/JPL) | [PIA24203](https://images.nasa.gov/details/PIA24203) |
-| `public/assets/nasa/veggie-lechugas-en-la-estacion.jpg` | Lechugas creciendo en Veggie, dentro de la Estación Espacial Internacional (2014). Tablet, página de comida (achicada a 960 px) | NASA/JSC | Dominio público (NASA) | [iss040e007676](https://images.nasa.gov/details/iss040e007676) |
-| `public/assets/nasa/jezero-delta-desde-el-suelo.jpg` | El delta del antiguo río de Jezero visto desde el suelo por Perseverance. Monitor, galería de Jezero (achicada a 960 px) | NASA/JPL-Caltech/ASU/MSSS | Dominio público (NASA) | [PIA24485](https://images.nasa.gov/details/PIA24485) |
-| `public/assets/nasa/jezero-delta-panoramica.jpg` | Panorámica del delta de Jezero tomada por Perseverance. Monitor, galería de Jezero (achicada a 960 px) | NASA/JPL-Caltech/ASU/MSSS | Dominio público (NASA) | [PIA25022](https://images.nasa.gov/details/PIA25022) |
-| `public/assets/nasa/gale-desde-orbita.jpg` | El cráter Gale y el Monte Sharp vistos desde órbita. Monitor, galería de Gale (achicada a 960 px) | NASA/JPL-Caltech/ASU | Dominio público (NASA) | [PIA14290](https://images.nasa.gov/details/PIA14290) |
-| `public/assets/nasa/gale-capas-de-roca.jpg` | Capas de roca en el Monte Sharp vistas por Curiosity. Monitor, galería de Gale (achicada a 960 px) | NASA/JPL-Caltech/MSSS | Dominio público (NASA) | [PIA19068](https://images.nasa.gov/details/PIA19068) |
-| `public/assets/nasa/olympus-mons-color.jpg` | Olympus Mons en color, desde órbita. Monitor, galería de Olympus Mons (achicada a 960 px) | NASA/JPL | Dominio público (NASA) | [PIA02982](https://images.nasa.gov/details/PIA02982) |
-| `public/assets/nasa/north-pole-casquete-espiral.jpg` | El casquete polar norte con sus valles en espiral, desde órbita. Monitor, galería del Polo Norte (achicada a 960 px) | NASA/JPL-Caltech/MSSS | Dominio público (NASA) | [PIA13163](https://images.nasa.gov/details/PIA13163) |
-| `public/assets/nasa/north-pole-capas-de-hielo.jpg` | Capas de hielo y polvo en el borde del casquete norte (HiRISE). Monitor, galería del Polo Norte (achicada a 960 px) | NASA/JPL-Caltech/Univ. of Arizona | Dominio público (NASA) | [PIA21022](https://images.nasa.gov/details/PIA21022) |
-| `public/assets/nasa/valles-marineris-mosaico.jpg` | Mosaico de Valles Marineris (THEMIS, Mars Odyssey). Monitor, galería de Valles Marineris (achicada a 960 px) | NASA/JPL/Arizona State University | Dominio público (NASA) | [PIA06926](https://images.nasa.gov/details/PIA06926) |
-| `public/assets/nasa/perseverance-selfie-ingenuity.jpg` | Selfie de Perseverance con el helicóptero Ingenuity, sol 46 (06/04/2021) (achicada a 960 px). Tablet, página del rover | NASA/JPL-Caltech/MSSS | Dominio público (NASA/JPL) | [PIA24542](https://images.nasa.gov/details/PIA24542) |
+| `public/assets/nasa/jezero.jpg` | Jezero from the ground: Perseverance's first high-resolution panorama (cropped) | NASA/JPL-Caltech/ASU/MSSS | Public domain (NASA/JPL) | [PIA23727](https://photojournal.jpl.nasa.gov/catalog/PIA23727) |
+| `public/assets/nasa/gale.jpg` | Mount Sharp inside Gale crater, seen by Curiosity (cropped) | NASA/JPL-Caltech/MSSS | Public domain (NASA/JPL) | [PIA16099](https://photojournal.jpl.nasa.gov/catalog/PIA16099) |
+| `public/assets/nasa/olympus-mons.jpg` | Olympus Mons from above, Viking mosaic (cropped) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
+| `public/assets/nasa/north-pole.jpg` | Northern polar cap in summer, Mars Global Surveyor (cropped) | NASA/JPL/MSSS | Public domain (NASA/JPL) | [PIA02800](https://photojournal.jpl.nasa.gov/catalog/PIA02800) |
+| `public/assets/nasa/valles-marineris.jpg` | Valles Marineris, Viking mosaic (cropped) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00422](https://photojournal.jpl.nasa.gov/catalog/PIA00422) |
+| `public/assets/nasa/marte-disco-completo.jpg` | Whole Mars (round disk, Valles Marineris in the center), Viking mosaic (resized to 960 px). Cabin window and start of landing (spec 19) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00407](https://images.nasa.gov/details/PIA00407) |
+| `public/assets/nasa/moxie-dentro-de-perseverance.jpg` | MOXIE (gold) installed inside the Perseverance rover (resized to 960 px). Tablet, oxygen page | NASA/JPL-Caltech | Public domain (NASA/JPL) | [PIA24203](https://images.nasa.gov/details/PIA24203) |
+| `public/assets/nasa/veggie-lechugas-en-la-estacion.jpg` | Lettuce growing in Veggie aboard the International Space Station (2014). Tablet, food page (resized to 960 px) | NASA/JSC | Public domain (NASA) | [iss040e007676](https://images.nasa.gov/details/iss040e007676) |
+| `public/assets/nasa/jezero-delta-desde-el-suelo.jpg` | Jezero's ancient river delta seen from the ground by Perseverance. Monitor, Jezero gallery (resized to 960 px) | NASA/JPL-Caltech/ASU/MSSS | Public domain (NASA) | [PIA24485](https://images.nasa.gov/details/PIA24485) |
+| `public/assets/nasa/jezero-delta-panoramica.jpg` | Jezero delta panorama taken by Perseverance. Monitor, Jezero gallery (resized to 960 px) | NASA/JPL-Caltech/ASU/MSSS | Public domain (NASA) | [PIA25022](https://images.nasa.gov/details/PIA25022) |
+| `public/assets/nasa/gale-desde-orbita.jpg` | Gale crater and Mount Sharp seen from orbit. Monitor, Gale gallery (resized to 960 px) | NASA/JPL-Caltech/ASU | Public domain (NASA) | [PIA14290](https://images.nasa.gov/details/PIA14290) |
+| `public/assets/nasa/gale-capas-de-roca.jpg` | Rock layers on Mount Sharp seen by Curiosity. Monitor, Gale gallery (resized to 960 px) | NASA/JPL-Caltech/MSSS | Public domain (NASA) | [PIA19068](https://images.nasa.gov/details/PIA19068) |
+| `public/assets/nasa/olympus-mons-color.jpg` | Olympus Mons in color, from orbit. Monitor, Olympus Mons gallery (resized to 960 px) | NASA/JPL | Public domain (NASA) | [PIA02982](https://images.nasa.gov/details/PIA02982) |
+| `public/assets/nasa/north-pole-casquete-espiral.jpg` | Northern polar cap with spiral troughs, from orbit. Monitor, North Pole gallery (resized to 960 px) | NASA/JPL-Caltech/MSSS | Public domain (NASA) | [PIA13163](https://images.nasa.gov/details/PIA13163) |
+| `public/assets/nasa/north-pole-capas-de-hielo.jpg` | Ice and dust layers at the edge of the northern cap (HiRISE). Monitor, North Pole gallery (resized to 960 px) | NASA/JPL-Caltech/Univ. of Arizona | Public domain (NASA) | [PIA21022](https://images.nasa.gov/details/PIA21022) |
+| `public/assets/nasa/valles-marineris-mosaico.jpg` | Valles Marineris mosaic (THEMIS, Mars Odyssey). Monitor, Valles Marineris gallery (resized to 960 px) | NASA/JPL/Arizona State University | Public domain (NASA) | [PIA06926](https://images.nasa.gov/details/PIA06926) |
+| `public/assets/nasa/perseverance-selfie-ingenuity.jpg` | Perseverance selfie with the Ingenuity helicopter, sol 46 (2021-04-06) (resized to 960 px). Tablet, rover page | NASA/JPL-Caltech/MSSS | Public domain (NASA/JPL) | [PIA24542](https://images.nasa.gov/details/PIA24542) |
 | `public/assets/nasa/sol-llamarada-sdo.jpg` | X-class solar flare seen by the Solar Dynamics Observatory, 19/10/2014 (resized to 960 px). Crisis tablet, solar storm vote (spec 16) | NASA/GSFC/SDO | Public domain (NASA) | [GSFC_20171208_Archive_e000934](https://images.nasa.gov/details/GSFC_20171208_Archive_e000934) |
 | `public/assets/nasa/orion-maniquies-radiacion.jpg` | The two radiation-measuring manikins (MARE) inside the Artemis I Orion crew module, 2022 (resized to 960 px). Crisis tablet, "take shelter" was right | NASA/Frank Michaux | Public domain (NASA) | [KSC-20220808-PH-FMX01_0011](https://images.nasa.gov/details/KSC-20220808-PH-FMX01_0011) |
 | `public/assets/nasa/curiosity-radiacion-2024.jpg` | Curiosity navcam frame full of streaks and specks from the solar storm's charged particles, 20/05/2024. Crisis tablet, "go outside" was wrong | NASA/JPL-Caltech | Public domain (NASA/JPL) | [PIA26302](https://images.nasa.gov/details/PIA26302) |
@@ -95,8 +95,8 @@ La base del juego es **ficción**: es una misión tripulada imaginaria del futur
 | `public/assets/nasa/tormenta-de-polvo-2018.jpg` | Mars Reconnaissance Orbiter map of the 2018 global dust storm, with Opportunity and Curiosity marked. Crisis tablet, dust storm vote and "save energy" was right | NASA/JPL-Caltech/MSSS | Public domain (NASA/JPL) | [PIA22519](https://images.nasa.gov/details/PIA22519) |
 | `public/assets/nasa/opportunity-paneles-2007.jpg` | Opportunity's solar panels photographed after the 2007 dust storm, to check how dusty they were (resized to 960 px). Crisis tablet, "clean panels" was wrong | NASA/JPL-Caltech/Cornell | Public domain (NASA/JPL) | [PIA15114](https://images.nasa.gov/details/PIA15114) |
 | `public/assets/nasa/opportunity-limpio-2014.jpg` | Opportunity self-portrait after winds removed much of the dust from its panels, March 2014 (resized to 960 px). Crisis tablet, dust storm reward | NASA/JPL-Caltech/Cornell Univ./Arizona State Univ. | Public domain (NASA/JPL) | [PIA18079](https://images.nasa.gov/details/PIA18079) |
-| `public/assets/sprites/biomas/sala-*-jezero.png` | Jezero desde el suelo, Perseverance (recortada, vista por la ventana de cada sala) | NASA/JPL-Caltech/ASU/MSSS | Dominio público (NASA/JPL) | [PIA24921](https://photojournal.jpl.nasa.gov/catalog/PIA24921) |
-| `public/assets/sprites/biomas/sala-*-gale.png` | Monte Sharp, dentro del cráter Gale, visto por Curiosity (recortada, vista por la ventana de cada sala) | NASA/JPL-Caltech/MSSS | Dominio público (NASA/JPL) | [PIA16099](https://photojournal.jpl.nasa.gov/catalog/PIA16099) |
-| `public/assets/sprites/biomas/sala-*-north-pole.png` | Llanura ártica de Vastitas Borealis (~68°N) vista por Phoenix, cerca del casquete pero no encima (recortada, vista por la ventana de cada sala) | NASA/JPL-Caltech/Univ. of Arizona/Texas A&M | Dominio público (NASA/JPL) | [PIA10713](https://photojournal.jpl.nasa.gov/catalog/PIA10713) |
-| `public/assets/sprites/biomas/sala-*-olympus-mons.png` | Olympus Mons **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
-| `public/assets/sprites/biomas/sala-*-valles-marineris.png` | Valles Marineris **desde órbita**, mosaico de los Viking (recortada, vista por la ventana de cada sala) | NASA/JPL/USGS | Dominio público (NASA/JPL) | [PIA00425](https://photojournal.jpl.nasa.gov/catalog/PIA00425) |
+| `public/assets/sprites/biomas/sala-*-jezero.png` | Jezero from the ground, Perseverance (cropped, seen through each room's window) | NASA/JPL-Caltech/ASU/MSSS | Public domain (NASA/JPL) | [PIA24921](https://photojournal.jpl.nasa.gov/catalog/PIA24921) |
+| `public/assets/sprites/biomas/sala-*-gale.png` | Mount Sharp inside Gale crater, seen by Curiosity (cropped, seen through each room's window) | NASA/JPL-Caltech/MSSS | Public domain (NASA/JPL) | [PIA16099](https://photojournal.jpl.nasa.gov/catalog/PIA16099) |
+| `public/assets/sprites/biomas/sala-*-north-pole.png` | Vastitas Borealis Arctic plain (~68°N) seen by Phoenix, near the cap but not on it (cropped, seen through each room's window) | NASA/JPL-Caltech/Univ. of Arizona/Texas A&M | Public domain (NASA/JPL) | [PIA10713](https://photojournal.jpl.nasa.gov/catalog/PIA10713) |
+| `public/assets/sprites/biomas/sala-*-olympus-mons.png` | Olympus Mons **from orbit**, Viking mosaic (cropped, seen through each room's window) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00300](https://photojournal.jpl.nasa.gov/catalog/PIA00300) |
+| `public/assets/sprites/biomas/sala-*-valles-marineris.png` | Valles Marineris **from orbit**, Viking mosaic (cropped, seen through each room's window) | NASA/JPL/USGS | Public domain (NASA/JPL) | [PIA00425](https://photojournal.jpl.nasa.gov/catalog/PIA00425) |

@@ -1,65 +1,65 @@
-# Plan de trabajo
+# Work plan
 
-> Cómo validamos cada etapa: ver [`ROADMAP.md`](ROADMAP.md).
+> How we validate each stage: see [`ROADMAP.md`](ROADMAP.md).
 
-Entrega: **mañana a la tarde**. Equipo: 3 programadoras con agentes de IA y generadores de imágenes.
+Deadline: **tomorrow afternoon**. Team: 3 developers using AI agents and image generators.
 
 ## Roles
 
-| Rol | Se ocupa de | Persona |
+| Role | Responsible for | Person |
 |---|---|---|
-| **A — Motor** | Lógica del juego, base, movimiento, bots, eventos | _(completar)_ |
-| **B — Minijuegos** | Contrato de minijuegos y cada minijuego | _(completar)_ |
-| **C — Estética, contenido y pantallas** | Dirección de arte, set de imágenes, pantallas, mapa de Marte, textos, datos NASA, deploy | _(completar)_ |
+| **A — Engine** | Game logic, base, movement, bots, events | _(to fill in)_ |
+| **B — Minigames** | Minigame contract and each minigame | _(to fill in)_ |
+| **C — Art, content, and screens** | Art direction, image set, screens, Mars map, text, NASA data, deployment | _(to fill in)_ |
 
-Cada spec tiene **una sola dueña**. Se puede pedir ayuda, pero la responsable es una.
+Each spec has **one owner**. Help is welcome, but one person is accountable.
 
-## Fases
+## Phases
 
-### Fase 0 — Ponernos de acuerdo (≈ 1–2 h) 🟣
-Objetivo: que las 3 estemos alineadas antes de producir.
-- **Todas**: leer `GDD.md` + los specs, aprobar con ✅ o comentar.
-- **C**: [01 Dirección de arte](specs/01-direccion-de-arte.md) — set de imágenes de referencia → **votamos el estilo entre las 3**.
-- **A**: [02 Base técnica](specs/02-base-tecnica.md) — revisar la lógica existente con el equipo y armar el esqueleto del front + CI.
-- **B**: [06 Contrato de minijuegos](specs/06-contrato-minijuegos.md) — fijar la interfaz para que A y B no se bloqueen.
+### Phase 0 — Agree on the direction (≈ 1–2 h) 🟣
+Goal: align all 3 team members before production.
+- **Everyone**: read `GDD.md` + the specs, approve with ✅ or comment.
+- **C**: [01 Art direction](specs/01-direccion-de-arte.md) — reference image set → **all 3 vote on the style**.
+- **A**: [02 Technical foundation](specs/02-base-tecnica.md) — review the existing logic with the team and build the frontend skeleton + CI.
+- **B**: [06 Minigame contract](specs/06-contrato-minijuegos.md) — settle the interface so A and B do not block each other.
 
-**Salida de la fase 0**: estilo visual votado, código base decidido, interfaz de minijuegos fijada.
+**Phase 0 outcome**: visual style chosen by vote, code foundation agreed, minigame interface settled.
 
-### Fase 1 — Juego mínimo jugable (P0) 🔴
-El juego tiene que poder jugarse de punta a punta, aunque sea feo.
+### Phase 1 — Minimum playable game (P0) 🔴
+The game must be playable from start to finish, even if it looks rough.
 
 | A | B | C |
 |---|---|---|
-| 03 Núcleo de la partida | 07 Paneles solares | 11 Pantallas inicio/resultado + celu |
-| 04 Base y movimiento | 08 Fábrica de oxígeno | 13 Contenido educativo e idiomas |
-| 05 Tripulación y bots | 09 Invernadero | (producción de sprites del spec 01) |
-| | 10 Muro de escudo | |
+| 03 Game session core | 07 Solar panels | 11 Start/result screens + mobile |
+| 04 Base and movement | 08 Oxygen factory | 13 Educational content and languages |
+| 05 Crew and bots | 09 Greenhouse | (sprite production from spec 01) |
+| | 10 Shield wall | |
 
-**Hito**: se juega una partida completa en el celu, en ES y EN.
+**Milestone**: a complete session can be played on a phone, in ES and EN.
 
-### Fase 2 — Lo que nos diferencia (P1) 🟠
+### Phase 2 — What makes us different (P1) 🟠
 | A | B | C |
 |---|---|---|
-| 14 Eventos y avisos con retraso | 15 Expedición rover | 12 Mapa de Marte y progresión |
+| 14 Events and delayed warnings | 15 Rover expedition | 12 Mars map and progression |
 
-### Fase 3 — Colaboración (P2) 🟡
+### Phase 3 — Collaboration (P2) 🟡
 | A | B | C |
 |---|---|---|
-| 16 Palanca de a dos + reunión de crisis | Pulido de minijuegos | Sonido, animaciones |
+| 16 Two-person lever + crisis meeting | Minigame polish | Sound, animations |
 
-### Fase 4 — Entrega 🏁
-- **C**: [17 Deploy y demo](specs/17-deploy-y-demo.md) (el deploy automático se configura **en la fase 1**, para probar en el celu desde temprano).
-- **Congelar el código ~3 h antes de la entrega.** Después de eso solo arreglos de bugs.
-- Todas: probar en celus distintos, preparar el pitch.
+### Phase 4 — Submission 🏁
+- **C**: [17 Deployment and demo](specs/17-deploy-y-demo.md) (automatic deployment is configured **in phase 1**, to start testing on phones early).
+- **Freeze code ~3 h before submission.** Bug fixes only after that.
+- Everyone: test on different phones, prepare the pitch.
 
-## Prioridades si se nos acaba el tiempo
-Se recorta de abajo hacia arriba: P2 → P1. **Nunca se recorta P0.**
-Si un minijuego no llega, queda el minijuego provisorio (tocar 5 veces) en su sala.
+## Priorities if time runs out
+Cut from the bottom up: P2 → P1. **Never cut P0.**
+If a minigame is not ready, keep the temporary minigame (tap 5 times) in its room.
 
-## Puntos de sincronización
-Cortos (10 min), las 3 juntas:
-1. Al terminar la fase 0 (votación de estilo y contrato).
-2. Al terminar la fase 1 (probar el juego entero).
-3. Antes de congelar el código.
+## Synchronization points
+Short (10 min), with all 3 team members:
+1. At the end of phase 0 (style vote and contract).
+2. At the end of phase 1 (test the whole game).
+3. Before the code freeze.
 
-Además: cualquier aviso de "⚠️ decisión que afecta al equipo" se comparte en el chat del equipo apenas aparece.
+Also: share any “⚠️ decision affecting the team” warning in the team chat as soon as it appears.
