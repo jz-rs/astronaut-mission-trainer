@@ -102,10 +102,11 @@ Reglas:
 ## 4. Diseño para chicos de 7 a 12 años
 
 - **Cero curva de aprendizaje**: al entrar se tiene que saber qué tocar. Un botón principal grande por pantalla.
-- **Íconos antes que texto.** Textos de una línea. Nunca un bloque de texto antes de jugar.
+- **Íconos antes que texto.** Textos de una línea. Nunca un bloque de texto corrido antes de jugar.
+  - Excepción: un minijuego puede abrir con una **tarjeta de explicación** cuando la mecánica enseña cómo funciona algo real (ej.: MOXIE en la Fábrica de oxígeno). Tiene que ser en pasos con dibujitos, una línea por paso (máximo 4), y un botón grande para empezar. Mientras se ve, el juego queda en pausa (`pauseGame()` / `resumeGame()` de `MinigameScene`).
 - **Botones táctiles de 48 px de juego como mínimo.**
 - **Toda acción tiene respuesta visual (y sonora cuando haya audio).**
-- **Lo educativo llega después de la acción, como premio**, en una línea.
+- **Lo educativo llega después de la acción, como premio**, en una línea (salvo la tarjeta de explicación de arriba).
 - **Mobile first, horizontal.** Probar siempre en el celu o en modo dispositivo del navegador.
 
 ## 5. Estética
