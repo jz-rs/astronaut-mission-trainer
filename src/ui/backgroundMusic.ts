@@ -7,7 +7,7 @@ import type { MusicMood } from '../core/musicMood';
  *   - tense: the Pillars of Creation, from second 10 (its opening is too quiet to notice), for
  *     night, storms and problems in the base (core/musicMood.ts).
  * Changing mood crossfades, so it never cuts. It plays softly under the game, and the kid can
- * mute it (and the sound effects) from the start screen. Browsers only allow sound after the first tap: Phaser waits.
+ * mute it (and the sound effects) with the sound button on every screen (soundButton.ts). Browsers only allow sound after the first tap: Phaser waits.
  */
 const CALM_KEY = 'musicCalm';
 const TENSE_KEY = 'musicTense';
@@ -23,6 +23,7 @@ export function preloadMusic(load: Phaser.Loader.LoaderPlugin): void {
 
 class BackgroundMusic {
   private mood: MusicMood = 'calm';
+  private isMuted = false;
   private readonly calm: Phaser.Sound.BaseSound;
   private readonly tense: Phaser.Sound.BaseSound;
 
@@ -61,11 +62,16 @@ class BackgroundMusic {
     }
   }
 
+  /**
+   * Kept here: Phaser's WebAudio mute changes on the next audio tick, so reading it right after
+   * setting it still gives the old value.
+   */
   get muted(): boolean {
-    return this.game.sound.mute;
+    return this.isMuted;
   }
 
   set muted(muted: boolean) {
+    this.isMuted = muted;
     this.game.sound.mute = muted;
   }
 }

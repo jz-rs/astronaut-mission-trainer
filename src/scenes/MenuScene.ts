@@ -1,9 +1,7 @@
 import Phaser from 'phaser';
 import { getLanguage, setLanguage, t, type Language } from '../i18n';
 import { loadProgress, saveProgress } from '../services/progressStorage';
-import { isMusicMuted, setMusicMuted } from '../ui/backgroundMusic';
 import { createButton } from '../ui/Button';
-import { addSpeakerIcon } from '../ui/speakerIcon';
 import { astronautFrameKey } from '../ui/astronautFrames';
 import { ASTRONAUT_SCALE, FONT_SIZE, GAME_WIDTH } from '../ui/layout';
 import { PALETTE } from '../ui/palette';
@@ -19,8 +17,7 @@ import { addText } from '../ui/text';
 import { SCENE_KEYS } from './sceneKeys';
 
 /**
- * Spec 11 — Start screen: title over the base on Mars, ONE giant PLAY button, ES/EN and a
- * music on/off button.
+ * Spec 11 — Start screen: title over the base on Mars, ONE giant PLAY button, ES/EN.
  * From opening the link to playing: one tap.
  */
 const LANGUAGES: readonly Language[] = ['es', 'en'];
@@ -58,7 +55,6 @@ export class MenuScene extends Phaser.Scene {
     });
     this.tweens.add({ targets: play, scale: 1.05, yoyo: true, repeat: -1, duration: 600 });
     this.createLanguageButtons();
-    this.createMusicButton();
     this.createSourcesButton();
     addScanlines(this);
     this.showPhoneControls();
@@ -115,24 +111,6 @@ export class MenuScene extends Phaser.Scene {
         onPress: () => this.changeLanguage(language),
       });
     });
-  }
-
-  /** A speaker icon, no words: music and sounds play everywhere until it is turned off. */
-  private createMusicButton(): void {
-    const muted = isMusicMuted();
-    const button = createButton(this, {
-      x: 40 + LANGUAGES.length * 60,
-      y: 330,
-      width: 52,
-      height: 36,
-      label: '',
-      color: muted ? PALETTE.metal : PALETTE.sun,
-      onPress: () => {
-        setMusicMuted(!muted);
-        this.scene.restart();
-      },
-    });
-    button.add(addSpeakerIcon(this, muted));
   }
 
   private createSourcesButton(): void {

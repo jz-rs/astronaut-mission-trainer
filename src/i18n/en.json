@@ -293,5 +293,7 @@
   "crisis.dust-storm.wrong.caption": "OPPORTUNITY, 2007",
   "crisis.dust-storm.reward.text": "Afterwards, the wind can clean the panels.",
   "crisis.dust-storm.reward.detail": "It happened to Opportunity! Here is its selfie, freshly cleaned.",
-  "crisis.dust-storm.reward.caption": "OPPORTUNITY, 2014"
+  "crisis.dust-storm.reward.caption": "OPPORTUNITY, 2014",
+  "sound.mute": "Turn sound off",
+  "sound.unmute": "Turn sound on"
 }

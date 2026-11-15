@@ -2,11 +2,11 @@ import Phaser from 'phaser';
 
 /**
  * Short sound effects, also real NASA recordings (docs/DATA_SOURCES.md):
- *   - tap: a metallic "dink" that InSight's seismometer heard on Mars at sunset. It plays for
- *     anything the kid touches that reacts (buttons, rooms, molecules, tools), so every touch
- *     answers with a sound (AGENTS.md §4);
+ *   - tap: one soft note of a star, from the sonification of Webb's Cosmic Cliffs. It plays
+ *     for anything the kid touches that reacts (buttons, rooms, molecules, tools), so every
+ *     touch answers with a sound (AGENTS.md §4);
  *   - landing: the rumble of the Artemis I launch, while the cabin zooms toward the window.
- * The speaker button of the start screen mutes these too.
+ * The sound button (soundButton.ts) mutes these too.
  */
 const TAP_KEY = 'sfxTap';
 const LANDING_KEY = 'sfxLanding';
@@ -14,7 +14,7 @@ const TAP_VOLUME = 0.5;
 const LANDING_VOLUME = 0.6;
 
 export function preloadSoundEffects(load: Phaser.Loader.LoaderPlugin): void {
-  load.audio(TAP_KEY, 'assets/audio/sfx-tap-insight-dink.m4a');
+  load.audio(TAP_KEY, 'assets/audio/sfx-tap-webb-star.m4a');
   load.audio(LANDING_KEY, 'assets/audio/sfx-landing-artemis-liftoff.m4a');
 }
 
