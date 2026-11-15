@@ -31,7 +31,7 @@ Formato:
 
 ## 2026-11-15 — El manual de misión es una tablet, no un libro (spec 18)
 - Quién: C (Emilia), con Claude
-- Qué se decidió: el manual se muestra en una **tablet de misión** (la misma que flota en la cabina, de frente y en grande), una página por pantalla. Su interfaz tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas celestes finas con brillo, esquinas tipo visor, barras por segmentos, líneas de escaneo y un destello breve al tocar. Las páginas de cada barra y del rover deben comparar la foto real de NASA con la representación del juego. La página de oxígeno sigue la nueva misión de MOXIE (spec 08). Maquetas en `docs/arte/bocetos/cabina/manual/` (no aprobadas).
+- Qué se decidió: el manual se muestra en una **tablet de misión** (la que está apoyada en la consola izquierda de la cabina, vista de frente y en grande; ya no flota una tablet aparte), una página por pantalla. Su interfaz tiene **estética de pantalla**, distinta de los botones físicos de la consola: líneas celestes finas con brillo, esquinas tipo visor, barras por segmentos, líneas de escaneo y un destello breve al tocar. Las páginas de cada barra y del rover deben comparar la foto real de NASA con la representación del juego. La página de oxígeno sigue la nueva misión de MOXIE (spec 08). Maquetas en `docs/arte/bocetos/cabina/manual/` (no aprobadas).
 - Por qué: el libro abierto no convenció; en una tablet, con texto claro sobre fondo oscuro, la letra chica se lee mejor y encaja con "objetos de hoy" de la guía de estilo.
 - A quién afecta: spec 18 (escenas 1, 2 y 3; el libro de la cabina pasa a ser la tablet) y spec 13 (fotos para comparar).
 - ¿Avisado al equipo?: no todavía.
