@@ -25,9 +25,9 @@ const TOOL_COLUMN_WIDTH = 76;
  * room layout), back row first so the front plants are drawn over the back ones.
  */
 const BEDS_IN_PICTURE: readonly Point[] = [
-  { x: 418, y: 358 },
-  { x: 585, y: 395 },
-  { x: 712, y: 420 },
+  { x: 418, y: 378 },
+  { x: 585, y: 415 },
+  { x: 712, y: 442 },
   { x: 300, y: 440 },
   { x: 465, y: 495 },
   { x: 645, y: 537 },

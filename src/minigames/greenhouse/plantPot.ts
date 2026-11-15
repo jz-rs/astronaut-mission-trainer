@@ -9,28 +9,30 @@ import { addLamp, addSpriteOfHeight } from './greenhouseIcons';
  * the pink LED lamp of the room. Sometimes it needs something, and it shows it so the kid knows
  * what to bring:
  *   - water: it turns yellow, with a water drop over it;
- *   - light: its bed goes dark (the lamp went off) and it turns pale, with a lit lamp over it.
+ *   - light: its bed and the plant go dark (the lamp went off), with a lit lamp next to it.
  * Helped with the right thing, it grows; if nobody helps in time, it withers.
  */
 export type Need = 'water' | 'light';
 type PotState = 'healthy' | 'needy' | 'withered';
 
 /** The beds of the picture are small: the lettuces are shown a bit smaller to fit in them. */
-const PLANT_SCALE = 0.8;
+const PLANT_SCALE = 0.7;
 /** The plant stands a bit below the middle of its bed. */
 const PLANT_DROP = 8;
 /** The touch area around a plant (bigger than the plant, for small fingers). */
 const TOUCH = { width: 76, height: 76 };
 /** The dark patch on the bed when its lamp is off. */
 const SHADE = { width: 92, height: 40, alpha: 0.7 };
-const BUBBLE_ABOVE_BASE = 64;
+/** The bubble sits right next to the top of the plant, so it is clearly its bubble. */
+const BUBBLE_BESIDE = { x: 20, y: 2 };
+const BOB_PIXELS = 3;
 const BUBBLE_SIZE = 22;
 const BUBBLE_PLATE_RADIUS = 15;
 const LAMP_ICON_SCALE = 0.45;
 const LAMP_ICON_LIFT = 6;
-/** A thirsty plant turns yellow; a plant without light turns pale. */
+/** A thirsty plant turns yellow; a plant without light goes dark. */
 const THIRSTY_TINT = PALETTE.sun;
-const PALE_TINT = PALETTE.metalLight;
+const DARK_TINT = PALETTE.metal;
 const GROW_SPRITES: readonly SpriteKey[] = ['lettuceSprout', 'lettuceYoung', 'lettuceHealthy'];
 const SHAKE_PIXELS = 4;
 const SHAKE_MS = 50;
@@ -57,7 +59,7 @@ export class PlantPot {
     this.shade.setVisible(false);
     this.sprite = addSprite(scene, x, y + PLANT_DROP, GROW_SPRITES[0] ?? 'lettuceHealthy');
     this.sprite.setOrigin(0.5, 1).setScale(this.sprite.scale * PLANT_SCALE);
-    const bubble = addNeedBubble(scene, x, y - BUBBLE_ABOVE_BASE);
+    const bubble = addNeedBubble(scene);
     ({ container: this.bubble, waterIcon: this.waterIcon, lampIcon: this.lampIcon } = bubble);
     this.body = scene.add.zone(x, y - TOUCH.height / 4, TOUCH.width, TOUCH.height);
     this.body.setInteractive({ useHandCursor: true });
@@ -80,10 +82,10 @@ export class PlantPot {
     this.state = 'needy';
     this.need = need;
     this.waitedMs = 0;
-    this.bubble.setVisible(true);
+    this.showBubble();
     this.waterIcon.setVisible(need === 'water');
     this.lampIcon.setVisible(need === 'light');
-    this.sprite.setTint(need === 'water' ? THIRSTY_TINT : PALE_TINT);
+    this.sprite.setTint(need === 'water' ? THIRSTY_TINT : DARK_TINT);
     this.shade.setVisible(need === 'light');
   }
 
@@ -119,6 +121,16 @@ export class PlantPot {
     this.sprite.clearTint().setTexture('lettuceWithered');
   }
 
+  /** Next to the top of the plant, which is higher as it grows. */
+  private showBubble(): void {
+    const { x, y } = this.top;
+    const bubbleY = y + BUBBLE_BESIDE.y;
+    this.scene.tweens.killTweensOf(this.bubble);
+    this.bubble.setPosition(x + BUBBLE_BESIDE.x, bubbleY).setVisible(true);
+    const bob = { y: bubbleY - BOB_PIXELS, yoyo: true, repeat: -1, duration: 300 };
+    this.scene.tweens.add({ targets: this.bubble, ...bob });
+  }
+
   private shake(): void {
     const { x } = this.bubble;
     this.scene.tweens.add({
@@ -132,15 +144,14 @@ export class PlantPot {
   }
 }
 
-/** The bubble over a plant that says what it needs: a water drop or a lamp. */
-function addNeedBubble(scene: Phaser.Scene, x: number, y: number) {
+/** The bubble next to a plant that says what it needs: a water drop or a lamp. */
+function addNeedBubble(scene: Phaser.Scene) {
   const waterIcon = addSpriteOfHeight(scene, 0, 0, 'waterDrop', BUBBLE_SIZE);
   // A lit lamp, like the Light tool: the bubble shows what to bring, as the drop does.
   const lampIcon = addLamp(scene, 0, -LAMP_ICON_LIFT).setScale(LAMP_ICON_SCALE);
   const plate = scene.add.circle(0, 0, BUBBLE_PLATE_RADIUS, PALETTE.white, 0.9);
   plate.setStrokeStyle(2, PALETTE.metalDark);
-  const container = scene.add.container(x, y, [plate, waterIcon, lampIcon]);
+  const container = scene.add.container(0, 0, [plate, waterIcon, lampIcon]);
   container.setVisible(false).setDepth(2);
-  scene.tweens.add({ targets: container, y: y - 3, yoyo: true, repeat: -1, duration: 300 });
   return { container, waterIcon, lampIcon };
 }
