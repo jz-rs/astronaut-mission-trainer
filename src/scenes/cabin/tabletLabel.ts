@@ -37,19 +37,10 @@ export function addTabletLabel(scene: Phaser.Scene): Phaser.GameObjects.Image {
 }
 
 function drawSlantedWord(texture: Phaser.Textures.CanvasTexture, font: string): void {
-  const { left, top, right, bottom } = CABIN_TABLET_QUAD;
-  const along = unit(average(minus(top, left), minus(right, bottom)));
-  const screenAcross = unit(average(minus(bottom, left), minus(right, top)));
-  const upright = { x: -along.y, y: along.x };
-  const across = unit(mix(upright, screenAcross, LEAN));
-  const center = {
-    x: (left.x + top.x + right.x + bottom.x) / 4,
-    y: (left.y + top.y + right.y + bottom.y) / 4,
-  };
   const context = texture.getContext();
   context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, texture.width, texture.height);
-  const origin = { x: center.x - CABIN_TABLET_ZONE.x, y: center.y - CABIN_TABLET_ZONE.y };
+  const { along, across, origin } = screenAxes();
   const scaled = (value: number): number => value * RESOLUTION;
   context.setTransform(
     scaled(along.x),
@@ -67,6 +58,16 @@ function drawSlantedWord(texture: Phaser.Textures.CanvasTexture, font: string): 
   context.shadowBlur = GLOW_BLUR_PX * RESOLUTION;
   context.fillText(t('cabin.tablet'), 0, 0);
   texture.refresh();
+}
+
+/** The directions of the word (along the long side, and leaning a bit like the screen) and its center. */
+function screenAxes(): { along: Point; across: Point; origin: Point } {
+  const { left, top, right, bottom } = CABIN_TABLET_QUAD;
+  const along = unit(average(minus(top, left), minus(right, bottom)));
+  const screenAcross = unit(average(minus(bottom, left), minus(right, top)));
+  const across = unit(mix({ x: -along.y, y: along.x }, screenAcross, LEAN));
+  const center = average(average(left, right), average(top, bottom));
+  return { along, across, origin: minus(center, CABIN_TABLET_ZONE) };
 }
 
 function minus(a: Point, b: Point): Point {
