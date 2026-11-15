@@ -21,19 +21,23 @@ const PLANT_SCALE = 0.55;
 const PLANT_DROP = 5;
 /** The touch area around a plant (bigger than the plant, for small fingers). */
 const TOUCH = { width: 76, height: 76 };
-/** The bubble sits right next to the top of the plant, so it is clearly its bubble. */
-const BUBBLE_BESIDE = { x: 20, y: 2 };
+/** The bubble sits right next to the top of the plant, on its left, so it is clearly its bubble. */
+const BUBBLE_BESIDE = { x: -18, y: 2 };
 const BOB_PIXELS = 3;
-const BUBBLE_SIZE = 22;
-const BUBBLE_PLATE_RADIUS = 15;
-const LAMP_ICON_SCALE = 0.45;
-const LAMP_ICON_LIFT = 6;
+const BUBBLE_SIZE = 17;
+const BUBBLE_PLATE_RADIUS = 12;
+const LAMP_ICON_SCALE = 0.35;
+const LAMP_ICON_LIFT = 5;
 /** A thirsty plant turns yellow; a plant without light goes dark. */
 const THIRSTY_TINT = PALETTE.sun;
 const DARK_TINT = PALETTE.metal;
 const GROW_SPRITES: readonly SpriteKey[] = ['lettuceSprout', 'lettuceYoung', 'lettuceHealthy'];
 const SHAKE_PIXELS = 4;
 const SHAKE_MS = 50;
+/** Mars soil makes the plant go red and droop for a moment. */
+const POISON_TINT = PALETTE.alert;
+const POISON_MS = 600;
+const POISON_SQUASH = 0.8;
 
 export class PlantPot {
   state: PotState = 'healthy';
@@ -104,6 +108,31 @@ export class PlantPot {
       ease: 'Back.Out',
     });
     return true;
+  }
+
+  /**
+   * Mars soil is toxic: the plant goes red and droops for a moment, then is as before (a
+   * plant that was waiting for something keeps waiting). It never counts as help.
+   */
+  poison(): void {
+    if (this.state === 'withered') return;
+    const { scaleY } = this.sprite;
+    this.sprite.setTint(POISON_TINT);
+    this.scene.tweens.add({
+      targets: this.sprite,
+      scaleY: scaleY * POISON_SQUASH,
+      duration: POISON_MS / 2,
+      yoyo: true,
+      onComplete: () => {
+        this.sprite.setScale(this.sprite.scaleX, scaleY);
+        this.restoreTint();
+      },
+    });
+  }
+
+  private restoreTint(): void {
+    if (this.state !== 'needy') this.sprite.clearTint();
+    else this.sprite.setTint(this.need === 'water' ? THIRSTY_TINT : DARK_TINT);
   }
 
   wither(): void {

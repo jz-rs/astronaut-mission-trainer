@@ -18,7 +18,12 @@ import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
 import { showRoverResult } from './roverResult';
-import { drawTripTimeBar, flyTubeToCounter, sayAboveRover } from './driveFeedback';
+import {
+  drawTripTimeBar,
+  flyTubeToCounter,
+  sayAboveRover,
+  showSavedSamples,
+} from './driveFeedback';
 import { ROVER_STEPS } from './roverRecipe';
 import { TripInstruction } from './tripInstruction';
 import { RoverTrack } from './RoverTrack';
@@ -179,11 +184,11 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.track.moveRover(pointer.x < this.track.roverX ? -1 : 1);
   }
 
-  /** Soft sand: the rover slips for a moment, but keeps the rocks it already has. */
+  /** Soft sand: the rover slips for a moment, but keeps its rocks. Red, like every wrong choice. */
   private hitSand(): void {
     this.stunnedMs = ROVER_BALANCE.sandStuckMs;
     this.track.slip();
-    sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.sand);
+    sayAboveRover(this, this.track.rover, t('rover.sandStuck'), PALETTE.alert);
   }
 
   /** Counted at once (the trip may end mid-flight); the flying tube only shows it. */
@@ -197,13 +202,24 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.counter.setText(`${samples}`);
   }
 
-  /** The X: the rover comes back at once with what it has, and the base never stays paused. */
+  /**
+   * The X: the rover comes back at once with everything it has so far (rocks caught and tubes
+   * already sealed; a tube still open does not count), and the base never stays paused. The
+   * samples are saved right away; a big "+3 saved!" stays a moment so the kid sees it.
+   */
   private exit(): void {
     if (this.phase === 'done') return;
+    const total = this.totalSamples(this.storage?.stop());
     this.phase = 'done';
     this.resumeBase();
-    this.onFinish(this.samples);
-    this.scene.stop();
+    this.onFinish(total);
+    this.closeButton.setVisible(false);
+    if (total > 0) showSavedSamples(this, total, () => this.scene.stop());
+    else this.scene.stop();
+  }
+
+  private totalSamples(tubes: StorageResult = { sealed: 0, contaminated: 0 }): number {
+    return this.samples + tubes.sealed * ROVER_BALANCE.sealedTubeSamples;
   }
 
   /** The base waits while the kid reads the result; only GO ON continues. */
@@ -212,7 +228,7 @@ export class RoverExpeditionScene extends Phaser.Scene {
     this.phase = 'done';
     if (this.scene.isActive(SCENE_KEYS.base)) this.scene.pause(SCENE_KEYS.base);
     this.closeButton.setVisible(false);
-    const total = this.samples + tubes.sealed * ROVER_BALANCE.sealedTubeSamples;
+    const total = this.totalSamples(tubes);
     showRoverResult(this, this.locationId, total, tubes, () => {
       this.resumeBase();
       this.onFinish(total);

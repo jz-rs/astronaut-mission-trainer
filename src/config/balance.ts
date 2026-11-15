@@ -119,6 +119,8 @@ export const OXYGEN_FACTORY_BALANCE = {
   moleculesOnScreen: 3,
   moleculeSpeed: 30,
   atomRadius: 11,
+  /** Performance lost each time an N₂ or Ar decoy is fed to MOXIE. */
+  decoyPenalty: 0.15,
 } as const;
 
 export const GREENHOUSE_BALANCE = {
@@ -129,6 +131,8 @@ export const GREENHOUSE_BALANCE = {
   /** Share of the needs that are light (the rest are water). */
   lightNeedShare: 0.5,
   noWitheredBonus: 0.2,
+  /** Performance lost each time Mars soil (toxic) is given to a plant. */
+  marsSoilPenalty: 0.15,
 } as const;
 
 export const SHIELD_WALL_BALANCE = {

@@ -28,12 +28,15 @@ const NEXT_BUTTON = { width: 104, height: 30 } as const;
 const SKIP_BUTTON = { width: 84, height: 30 } as const;
 const STEP_DOT = { size: 6, gap: 6 } as const;
 
+/** The open message can be found by this name (the guide's bubble hides while it is there). */
+export const GUIDE_MESSAGE_NAME = 'guideMessage';
+
 export function showGuideMessage(
   scene: Phaser.Scene,
   options: GuideMessageOptions,
 ): Phaser.GameObjects.Container {
   const panel = CABIN_MESSAGE_PANEL;
-  const message = scene.add.container(0, 0).setDepth(DEPTH);
+  const message = scene.add.container(0, 0).setDepth(DEPTH).setName(GUIDE_MESSAGE_NAME);
   message.add(drawPanel(scene, options));
   const textWidth = panel.width - NEXT_BUTTON.width - PADDING * 3;
   const text = addText(scene, panel.x + PADDING, panel.y + PADDING, options.text, {

@@ -26,6 +26,41 @@ Formato:
 - Affects: A (specs 05, 14, 16: `types.ts`, `actions.ts`, `collab.ts`, `events.ts`, `run.ts`, `bots/teamwork.ts`, `BaseScene`, `EventAnnouncer`, `TeamworkViews`); B (`GameAction` changed, no minigame uses the removed parts); C (`docs/GDD.md`, `docs/DATA_SOURCES.md`, i18n).
 - Team notified?: the design was reviewed by the team; the code goes in the PR.
 
+## 2026-11-15 — Wrong choices in the oxygen and greenhouse missions (specs 08, 09, 15)
+- Who: Jeza, with Claude
+- What was decided: like the rover's soft sand, two missions get a "wrong choice" that only a kid who learned the science avoids. **Oxygen factory**: one N₂ and one Ar molecule float among the CO₂ (real Martian air is ~95 % CO₂ plus a little nitrogen and argon). MOXIE spits them back with a very short message ("No N₂! Only CO₂") and each one fed costs `OXYGEN_FACTORY_BALANCE.decoyPenalty` (0.15) of performance. **Greenhouse**: a third tool, "Mars soil" (a red-brown heap, no cross on it). Given to a plant, the plant goes red and droops for a moment, "Toxic!" shows up, the request is not helped, and it costs `GREENHOUSE_BALANCE.marsSoilPenalty` (0.15). The rover's "Soft sand!" message turns red too (it was sand-colored), so every wrong choice looks the same. `floatText` (`src/ui/floatingText.ts`) gets an optional `durationMs` so these teaching messages stay long enough to read; existing calls don't change.
+- Why: reward the kid's knowledge (step 1 of each how-to card already teaches it: Mars air is CO₂; Mars soil is toxic for plants), not only speed.
+- Who it affects: B (specs 08, 09 and 15: `src/minigames/oxygen-factory/*`, `src/minigames/greenhouse/*`, `RoverExpeditionScene.ts`); everyone only through new values in `balance.ts`, new keys in `i18n/*.json` and the optional `floatText` parameter.
+- Team notified?: yes (with the PR).
+
+## 2026-11-15 — Globito "..." sobre la guía de la cabina (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: sobre la cabeza de la guía hay un globito de diálogo con "..." que sube y baja suave. Se esconde mientras hay un mensaje de la guía abierto. Tocarlo hace lo mismo que tocar a la guía (repite la bienvenida).
+- Por qué: en las pruebas nadie se daba cuenta de que la guía se puede tocar.
+- A quién afecta: solo el spec 19 (`cabin/guideBubble.ts` nuevo, `CabinScene`, `guideMessage`).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — El aterrizaje ya no muestra "Destino confirmado" (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: se saca el cartel "Destino confirmado: [lugar] / ¡Prepará a tu tripulación!" de arriba del aterrizaje. Se borran `src/scenes/landing/landingUi.ts` y las claves `landing.confirmed` y `landing.prepare` (solo las usaba ese cartel).
+- Por qué: no hace falta; el aterrizaje ya muestra el lugar por la ventana.
+- A quién afecta: solo el spec 19 (`LandingScene`, i18n).
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — En la base, la X roja de salir pasa a ser "◀ VOLVER"
+- Quién: C (Emilia), con Claude
+- Qué se decidió: el botón de arriba a la izquierda de la base (salir de la partida, con la pregunta de confirmación de siempre) deja de ser una X roja y pasa a ser **◀ VOLVER / BACK**, oscuro con borde gris, del mismo tamaño que el de la cabina. Los dos salen de un componente compartido nuevo, `src/ui/backButton.ts` (versión clara para la cabina, oscura para la base). La clave de texto pasa a ser `hud.back`. La X roja de los minijuegos y de la tarjeta del mapa no cambia.
+- Por qué: a C le gusta más, y el "volver" es igual en la nave y en la base.
+- A quién afecta: dueña de la base (spec 04, `src/scenes/base/ExitRunView.ts`: cambia solo el botón, la pregunta sigue igual). `layout.ts` (se agrega `BASE_BACK_BUTTON`). `src/ui/backButton.ts` es nuevo.
+- ¿Avisado al equipo?: no todavía.
+
+## 2026-11-15 — Cabina: la ventana también abre la consola, botón Volver y botón físico de la tablet (spec 19)
+- Quién: C (Emilia), con Claude
+- Qué se decidió: (1) tocar la **ventana con Marte** también abre la consola de destinos, y cuando la guía señala la consola un **halo dorado** sigue el borde del vidrio de la ventana y de la pantalla del tablero, como el brillo de la tablet (se lee la forma del vidrio desde la imagen; ya no son esquinas). El halo celeste de la tablet también late igual: se prende y se apaga despacio; (2) en la cabina hay un botón **◀ Volver / Back** arriba a la izquierda, con el mismo estilo que los botones de la pantalla de inicio (en color crema y con una flecha dibujada), que lleva al inicio; (3) el **botón redondo de la tablet** cierra el manual, igual que la X: solo cuando la X está (la primera lectura sigue siendo obligatoria). La ventana respeta lo mismo que el tablero: hasta terminar el manual, la guía manda a la tablet.
+- Por qué: en las pruebas no se entendía qué tocar para elegir destino, y desde la nave no había forma de volver al inicio (ver spec 20).
+- A quién afecta: solo archivos del spec 19 (`CabinScene`, `ManualScene`, nuevo `src/ui/backButton.ts`). Se agregan 2 valores en `layout.ts` y la clave `hud.back` en `i18n`.
+- ¿Avisado al equipo?: no todavía.
+
 ## 2026-11-15 — The first mission manual can't be skipped (spec 19)
 - Who: Marianela, with Claude
 - What was decided: until the manual is finished, tapping the dashboard in the cabin doesn't open the destination console. The guide says `cabin.manualFirst` ("First open the mission manual: it is the tablet.") and highlights the tablet. The first read of the manual has no X button, so the only way out is reaching the last page. Once it's done, the X comes back and the manual can be reread and closed at any point. This closes the open item in spec 19 about reaching the monitor before the manual.
