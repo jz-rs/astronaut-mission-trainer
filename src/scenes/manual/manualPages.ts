@@ -97,7 +97,7 @@ export const MANUAL_PAGES: readonly ManualPage[] = [
   },
   {
     title: 'manual.energy.title',
-    lines: pageLines('energy'),
+    lines: pageLines('energy', ['science', 'problem', 'play']),
     fact: 'manual.energy.fact',
     color: STAT_COLORS.energy,
     icon: 'iconEnergy',
