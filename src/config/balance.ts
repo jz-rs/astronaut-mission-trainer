@@ -124,8 +124,6 @@ export const OXYGEN_FACTORY_BALANCE = {
 } as const;
 
 export const GREENHOUSE_BALANCE = {
-  columns: 3,
-  rows: 2,
   /** Every this long a healthy plant needs something (water or light). */
   needEveryMs: 1_800,
   /** A plant waits this long for its water or light before it withers. */

@@ -2,9 +2,9 @@ import type Phaser from 'phaser';
 import type { HowToStep } from '../howTo/howToCard';
 import { arrowPart, layoutRow, plusPart, type RowPart } from '../howTo/pictureRow';
 import {
+  addEarth,
   addGasBubble,
   addLamp,
-  addPillowWithSprout,
   addSpriteOfHeight,
   addToxicSoil,
 } from './greenhouseIcons';
@@ -15,7 +15,7 @@ import {
  * side panel shows only the pictures while playing.
  */
 type GreenhousePart =
-  '→' | '+' | 'toxicSoil' | 'pillow' | 'water' | 'lamp' | 'lettuce' | 'co2' | 'o2';
+  '→' | '+' | 'toxicSoil' | 'earth' | 'sprout' | 'water' | 'lamp' | 'lettuce' | 'co2' | 'o2';
 
 const ICON_HEIGHT = 28;
 const ICON_WIDTH = 32;
@@ -30,7 +30,10 @@ function picture(parts: readonly GreenhousePart[]): HowToStep['picture'] {
 }
 
 export const GREENHOUSE_STEPS: readonly HowToStep[] = [
-  { picture: picture(['toxicSoil', '→', 'pillow']), textKey: 'minigame.greenhouse.guide1' },
+  {
+    picture: picture(['toxicSoil', '→', 'earth', '→', 'sprout']),
+    textKey: 'minigame.greenhouse.guide1',
+  },
   {
     picture: picture(['water', '+', 'lamp', '→', 'lettuce']),
     textKey: 'minigame.greenhouse.guide2',
@@ -46,15 +49,16 @@ function addPart(scene: Phaser.Scene, part: GreenhousePart): RowPart {
       return plusPart(scene);
     case 'toxicSoil':
       return { item: addToxicSoil(scene), width: ICON_WIDTH };
-    case 'pillow':
-      return { item: addPillowWithSprout(scene, ICON_HEIGHT), width: ICON_WIDTH };
+    case 'earth':
+      return { item: addEarth(scene), width: ICON_HEIGHT };
     case 'lamp':
       return { item: addLamp(scene, 0, LAMP_OFFSET_Y), width: ICON_WIDTH + 4 };
     case 'co2':
     case 'o2':
       return { item: addGasBubble(scene, part), width: ICON_HEIGHT };
     default: {
-      const key = part === 'water' ? 'waterDrop' : 'lettuceHealthy';
+      const key =
+        part === 'water' ? 'waterDrop' : part === 'sprout' ? 'lettuceSprout' : 'lettuceHealthy';
       const image = addSpriteOfHeight(scene, 0, 0, key, ICON_HEIGHT);
       return { item: image, width: image.displayWidth };
     }

@@ -36,7 +36,6 @@ Para trabajar con tu agente: *"Leé AGENTS.md y docs/specs/NN-xxx.md y trabajá 
 | 16 | [Palanca de a dos y reunión de crisis](16-colaboracion.md) | A | P2 | 3 | ⚪ |
 | 17 | [Deploy y demo](17-deploy-y-demo.md) | C | P0 | 4 | ⚪ |
 | 18 | [Paneles solares afuera, bajo el cielo de Marte](18-paneles-afuera.md) | B + C | P1 | 2 | ⚪ |
-| 19 | [Invernadero sin tierra: lechugas en almohadas Veggie](19-invernadero-sin-tierra.md) | C + B | P1 | 2 | ⚪ |
 
 ## Plantilla para specs nuevos
 

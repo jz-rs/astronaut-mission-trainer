@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { GREENHOUSE_BALANCE } from '../../config/balance';
-import type { Rect } from '../../ui/layout';
+import type { Point, Rect } from '../../ui/layout';
 import { showGestureHint } from '../gestureHint';
 import { showHowToCard } from '../howTo/howToCard';
 import { StepGuide } from '../howTo/stepGuide';
@@ -11,14 +11,27 @@ import { PlantPot, type Need } from './plantPot';
 import { Toolbox } from './toolbox';
 
 /**
- * Spec 09 — The greenhouse, like NASA's Veggie on the Space Station: lettuces grow in pillows of
- * special soil (Mars soil is toxic for them) under pink LED lamps. Each plant shows what it
- * needs, water or light, and the kid brings the right tool (drag it, or tap tool then plant).
+ * Spec 09 — The greenhouse: lettuces grow in the beds of the room, in soil brought from Earth
+ * (Mars soil is toxic for them), under pink LED lamps like NASA's Veggie on the Space Station.
+ * Each plant shows what it needs, water or light, and the kid brings the right tool (drag it,
+ * or tap tool then plant).
  * Helped, it grows and gives off O₂; forgotten, it withers.
  * Performance = needs helped / needs asked, + bonus if none withered.
  * Harsher locations = plants ask more often and wait less.
  */
 const TOOL_COLUMN_WIDTH = 76;
+/**
+ * The middle of each of the 6 beds of the greenhouse room picture (every location uses the same
+ * room layout), back row first so the front plants are drawn over the back ones.
+ */
+const BEDS_IN_PICTURE: readonly Point[] = [
+  { x: 418, y: 358 },
+  { x: 585, y: 395 },
+  { x: 712, y: 420 },
+  { x: 300, y: 440 },
+  { x: 465, y: 495 },
+  { x: 645, y: 537 },
+];
 const OXYGEN_RISE_PX = 40;
 const OXYGEN_MS = 900;
 
@@ -44,13 +57,7 @@ export class GreenhouseMinigame extends MinigameScene {
     this.nextNeedMs = 0;
     this.guide = new StepGuide(this, area, GREENHOUSE_STEPS);
     const toolsX = area.x + area.width - TOOL_COLUMN_WIDTH;
-    const plantsArea = {
-      x: this.guide.right,
-      y: area.y,
-      width: toolsX - this.guide.right,
-      height: area.height,
-    };
-    this.pots = this.createPots(plantsArea);
+    this.pots = this.createPots();
     const toolColumn = { x: toolsX, y: area.y, width: TOOL_COLUMN_WIDTH, height: area.height };
     this.toolbox = new Toolbox(this, toolColumn, (need, x, y) => {
       const pot = this.pots.find((candidate) => candidate.contains(x, y));
@@ -65,23 +72,15 @@ export class GreenhouseMinigame extends MinigameScene {
     showHowToCard(this, area, howTo, () => this.resumeGame());
   }
 
-  private createPots(plantsArea: Rect): PlantPot[] {
-    const { columns, rows } = GREENHOUSE_BALANCE;
-    const width = plantsArea.width / columns;
-    const height = plantsArea.height / rows;
-    const pots: PlantPot[] = [];
-    for (let row = 0; row < rows; row += 1) {
-      for (let column = 0; column < columns; column += 1) {
-        const x = plantsArea.x + column * width;
-        const pot = new PlantPot(this, { x, y: plantsArea.y + row * height, width, height });
-        pot.body.on('pointerdown', () => {
-          const selected = this.toolbox?.selected;
-          if (selected) this.give(pot, selected);
-        });
-        pots.push(pot);
-      }
-    }
-    return pots;
+  private createPots(): PlantPot[] {
+    return BEDS_IN_PICTURE.map(({ x, y }) => {
+      const pot = new PlantPot(this, this.roomPoint(x, y));
+      pot.body.on('pointerdown', () => {
+        const selected = this.toolbox?.selected;
+        if (selected) this.give(pot, selected);
+      });
+      return pot;
+    });
   }
 
   protected calculatePerformance(): number {

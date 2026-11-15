@@ -8,12 +8,12 @@
 **Darle a cada planta lo que pide (agua o luz LED) antes de que se seque**, para entender cómo se cultiva comida en el espacio y que las plantas también hacen oxígeno.
 
 ## Por qué importa
-Sin comida no hay misión larga a Marte. Enseña el experimento Veggie, que cosechó lechuga en la Estación Espacial: crece en almohadas de tierra especial (la de Marte es tóxica, tiene percloratos) bajo luces LED rojas y azules, y las plantas toman CO₂ y largan O₂.
+Sin comida no hay misión larga a Marte. Enseña el experimento Veggie, que cosechó lechuga en la Estación Espacial: crece bajo luces LED rojas y azules; en Marte, como la tierra de allá es tóxica (tiene percloratos), las plantas crecerían en tierra traída de la Tierra, y las plantas toman CO₂ y largan O₂.
 
 ## Cómo se juega
-- Antes de jugar, una tarjeta de 3 pasos con dibujitos (tierra tóxica → almohada; agua + luz → lechuga; CO₂ → lechuga → O₂), con el juego en pausa. Mientras se juega, los mismos pasos quedan en un panel a la izquierda.
-- Una grilla de 3 × 2 lechugas, cada una con su lámpara LED rosa arriba.
-- Al azar, una planta pide **agua** (se pone amarilla, con una gotita arriba) o **luz** (se le apaga la lámpara y se pone pálida, con una lámpara arriba).
+- Antes de jugar, una tarjeta de 3 pasos con dibujitos (tierra de Marte tóxica → la Tierra → brote; agua + luz → lechuga; CO₂ → lechuga → O₂), con el juego en pausa. Mientras se juega, los mismos pasos quedan en un panel a la izquierda.
+- 6 lechugas, una en cada cantero de la sala (tierra traída de la Tierra), bajo las lámparas LED rosas de la sala.
+- Al azar, una planta pide **agua** (se pone amarilla, con una gotita arriba) o **luz** (su cantero se oscurece, como si se apagara la lámpara, y se pone pálida, con una lámpara arriba).
 - A la derecha hay dos herramientas grandes, **Agua** y **Luz**: se arrastra la herramienta a la planta, o se toca la herramienta y después la planta.
 - La correcta la hace crecer (brote → joven → grande) y suelta una burbuja azul de O₂. La equivocada no hace nada (la burbuja tiembla).
 - Si no se la ayuda a tiempo, se marchita.
