@@ -28,6 +28,11 @@ const TITLE_BAND = { y: 46, height: 96, alpha: 0.75 } as const;
 const TITLE_Y = TITLE_BAND.y + 36;
 const SUBTITLE_Y = TITLE_BAND.y + TITLE_BAND.height - 16;
 const CENTER_X = GAME_WIDTH / 2;
+/**
+ * The pixel font has no "▶", so phones borrow it from another font. The invisible U+FE0E asks
+ * for the plain-text triangle: without it, iPhones draw the gray ▶️ emoji box instead.
+ */
+const PLAY_ARROW = '▶︎';
 
 export class MenuScene extends Phaser.Scene {
   constructor() {
@@ -50,7 +55,7 @@ export class MenuScene extends Phaser.Scene {
       y: 210,
       width: 240,
       height: 72,
-      label: `▶ ${t('menu.play')}`,
+      label: `${PLAY_ARROW} ${t('menu.play')}`,
       fontSize: FONT_SIZE.title,
       color: PALETTE.cyan,
       onPress: () => this.startGame(),

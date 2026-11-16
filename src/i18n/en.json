@@ -112,7 +112,7 @@
   "task.solar-panels.why": "Mars gets less than half the sunlight Earth gets: if dust covers the panels, there's no power.",
   "task.greenhouse.why": "The base's plants don't need the Sun: they grow with LED lights, even at night!",
   "task.shield-wall.why": "On the Orion spacecraft, if a solar storm comes, astronauts build a shelter with the supplies on board.",
-  "minigame.continue": "GO ON ▶",
+  "minigame.continue": "GO ON ▶\uFE0E",
   "hud.you": "YOU",
   "tutorial.welcome": "You are the base commander!",
   "tutorial.goal": "Don't let any bar reach 0 for 5 sols",
