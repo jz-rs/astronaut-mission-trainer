@@ -146,4 +146,26 @@ describe('minigame lifecycle with an airlock', () => {
     expect(onFinish).not.toHaveBeenCalled();
     expect(mission.scene.isPaused('BaseScene')).toBe(false);
   });
+
+  it('leaves the base running when the X pauses and resumes it in the same frame', () => {
+    // Phaser applies pause/resume of another scene at the end of the frame, in order.
+    const queuedSceneChanges: Array<() => void> = [];
+    const pause = vi.mocked(mission.scene.pause);
+    const resume = vi.mocked(mission.scene.resume);
+    const pauseNow = pause.getMockImplementation();
+    const resumeNow = resume.getMockImplementation();
+    pause.mockImplementation((key) => {
+      queuedSceneChanges.push(() => pauseNow?.(key));
+      return mission.scene;
+    });
+    resume.mockImplementation((key) => {
+      queuedSceneChanges.push(() => resumeNow?.(key));
+      return mission.scene;
+    });
+    callbacks.exit();
+    mission.afterCrossing?.();
+    queuedSceneChanges.splice(0).forEach((applyChange) => applyChange());
+    expect(onExit).toHaveBeenCalledOnce();
+    expect(mission.scene.isPaused('BaseScene')).toBe(false);
+  });
 });

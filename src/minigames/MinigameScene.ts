@@ -68,6 +68,12 @@ export abstract class MinigameScene extends Phaser.Scene {
   private elapsedMs = 0;
   private finished = false;
   private gamePaused = false;
+  /**
+   * Whether THIS minigame paused the base. Phaser applies pause/resume of another scene at the
+   * end of the frame, so asking "is the base paused?" right after pausing still says no: the X
+   * paused and resumed in the same frame, the resume was skipped, and the base stayed frozen.
+   */
+  private holdsBasePaused = false;
   private roomScale = 1;
   private roomKey = '';
   private timeBar: Phaser.GameObjects.Graphics | null = null;
@@ -91,6 +97,7 @@ export abstract class MinigameScene extends Phaser.Scene {
     this.elapsedMs = 0;
     this.finished = false;
     this.gamePaused = false;
+    this.holdsBasePaused = false;
   }
 
   create(): void {
@@ -116,12 +123,16 @@ export abstract class MinigameScene extends Phaser.Scene {
    */
   protected pauseGame(): void {
     this.gamePaused = true;
-    if (this.scene.isActive(SCENE_KEYS.base)) this.scene.pause(SCENE_KEYS.base);
+    if (this.holdsBasePaused || !this.scene.isActive(SCENE_KEYS.base)) return;
+    this.scene.pause(SCENE_KEYS.base);
+    this.holdsBasePaused = true;
   }
 
   protected resumeGame(): void {
     this.gamePaused = false;
-    if (this.scene.isPaused(SCENE_KEYS.base)) this.scene.resume(SCENE_KEYS.base);
+    if (!this.holdsBasePaused) return;
+    this.scene.resume(SCENE_KEYS.base);
+    this.holdsBasePaused = false;
   }
 
   protected get isFinished(): boolean {
