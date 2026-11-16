@@ -9,7 +9,7 @@ import type { MusicMood } from '../core/musicMood';
  * Only one plays at a time: changing mood crossfades for a moment, then the other one stops.
  * It plays softly under the game, and the kid can mute it (and the sound effects) with the
  * sound on/off button of the base's top bar and the start screen (soundToggle.ts). Browsers
- * only allow sound after the first tap: Phaser waits.
+ * only allow sound after the first tap: it starts with any tap (wakeAudioOnAnyTap).
  */
 const CALM_KEY = 'musicCalm';
 const TENSE_KEY = 'musicTense';
@@ -95,11 +95,36 @@ function moveVolume(track: Track, target: number, step: number): void {
   if ('setVolume' in sound && typeof sound.setVolume === 'function') sound.setVolume(track.volume);
 }
 
+/** Taps and keys that phones accept as "the kid wants sound" (touchstart alone is not enough). */
+const AUDIO_UNLOCK_EVENTS = ['pointerup', 'touchend', 'click', 'keydown'] as const;
+
+/**
+ * Phones keep the audio asleep until a real tap. Phaser only listens to the first touch, and on
+ * some Android phones that touch does not count yet, so the music waited for the fullscreen tap.
+ * Here every tap anywhere (even on the start screen) wakes the audio, until it is really playing.
+ */
+function wakeAudioOnAnyTap(game: Phaser.Game): void {
+  const { sound } = game;
+  if (!(sound instanceof Phaser.Sound.WebAudioSoundManager)) return;
+  const { context } = sound;
+  const stopListening = (): void => {
+    for (const name of AUDIO_UNLOCK_EVENTS) window.removeEventListener(name, wakeAudio, true);
+  };
+  function wakeAudio(): void {
+    if (context.state === 'running') return stopListening();
+    void context.resume().then(() => {
+      if (context.state === 'running') stopListening();
+    });
+  }
+  for (const name of AUDIO_UNLOCK_EVENTS) window.addEventListener(name, wakeAudio, true);
+}
+
 let music: BackgroundMusic | null = null;
 
 /** Called once, after the music is loaded. */
 export function startBackgroundMusic(game: Phaser.Game): void {
   music ??= new BackgroundMusic(game);
+  wakeAudioOnAnyTap(game);
 }
 
 export function setMusicMood(mood: MusicMood): void {

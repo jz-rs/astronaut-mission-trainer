@@ -112,7 +112,7 @@
   "task.solar-panels.why": "A Marte llega menos de la mitad de luz del Sol que a la Tierra: si el polvo tapa los paneles, no hay energía.",
   "task.greenhouse.why": "Las plantas de la base no necesitan el Sol: crecen con luces LED, ¡también de noche!",
   "task.shield-wall.why": "En la nave Orion, si llega una tormenta solar, los astronautas arman un refugio con las provisiones de a bordo.",
-  "minigame.continue": "SEGUIR ▶",
+  "minigame.continue": "SEGUIR ▶\uFE0E",
   "hud.you": "VOS",
   "tutorial.welcome": "¡Estás al mando de la base!",
   "tutorial.goal": "Que ninguna barra llegue a 0 durante 5 soles",
